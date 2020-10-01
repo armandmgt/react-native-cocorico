@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { StyleSheet, View, Text } from 'react-native';
 import Title from '../../../Components/Texts/Title';
 import CCRCTextInput from '../../../Components/Inputs/Text';
 import CCRCButton from '../../../Components/Inputs/Button';
+import { setStatusBarHidden } from 'expo-status-bar';
 
 const isValidEmail = (email: string) =>
   !!email.match(
@@ -26,6 +27,9 @@ const AccountScreen: React.FunctionComponent<Props> = ({
     email: '',
     dirty: false,
   });
+  // useEffect(() => {
+  //   setStatusBarHidden(true, 'none');
+  // }, []);
   return (
     <View style={styles.root}>
       <View style={styles.content}>
@@ -50,7 +54,7 @@ const AccountScreen: React.FunctionComponent<Props> = ({
         style={styles.button}
         title="Continuer"
         onPress={() => {
-          navigation.navigate('Login');
+          if (isValidEmail(email)) navigation.navigate('Login');
         }}
       />
     </View>
