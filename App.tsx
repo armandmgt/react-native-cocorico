@@ -1,5 +1,6 @@
-import { StatusBar } from 'expo-status-bar';
+/* eslint-disable react/style-prop-object */
 import React from 'react';
+import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
 
 export default function App() {
@@ -10,12 +11,13 @@ export default function App() {
     </View>
   );
 }
+const whiteColor = '#fff';
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: whiteColor,
     alignItems: 'center',
-    justifyContent: 'center',
-  },
+    justifyContent: 'center'
+  }
 });
