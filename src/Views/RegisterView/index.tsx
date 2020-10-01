@@ -9,7 +9,7 @@ type RegisterStep = 'email' | 'password' | 'profile';
 const steps = {
   email: EmailView,
   password: PasswordView,
-  profile: ProfileView
+  profile: ProfileView,
 };
 
 const Register = () => {

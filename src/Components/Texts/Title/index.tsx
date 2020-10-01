@@ -1,5 +1,4 @@
 import React, { FunctionComponent } from 'react';
-import PropTypes from 'prop-types';
 import { StyleSheet, Text } from 'react-native';
 
 interface TitleProps {
@@ -8,10 +7,6 @@ interface TitleProps {
 
 const Title: FunctionComponent<TitleProps> = ({ children }) => {
   return <Text style={styles.text}>{children}</Text>;
-};
-
-Title.propTypes = {
-  children: PropTypes.node,
 };
 
 Title.defaultProps = {

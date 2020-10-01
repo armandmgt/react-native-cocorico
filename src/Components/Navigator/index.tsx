@@ -53,7 +53,7 @@ const RegisterStackNavigator = () => {
 
 const Navigator = () => {
   const SwitchNavigator = {
-    Auth: <AuthStackNavigator />
+    Auth: <AuthStackNavigator />,
   };
   const state = 'Auth';
 

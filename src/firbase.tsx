@@ -16,7 +16,7 @@ const firebaseConfig = {
   storageBucket: 'cocorico-c7133.appspot.com',
   messagingSenderId: '20901951452',
   appId: '1:20901951452:web:d67205df4484d6786e8119',
-  measurementId: 'G-H350MP78JE'
+  measurementId: 'G-H350MP78JE',
 };
 
 firebase.initializeApp(firebaseConfig);
