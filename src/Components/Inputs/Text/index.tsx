@@ -14,13 +14,7 @@ const CustomTextInput: FunctionComponent<CustomTextInputProps> = ({
   color,
   valid,
   style,
-  placeholder,
-  secure,
-  value,
-  onChangeText,
-  onEndEditing,
-  textContentType,
-  keyboardType,
+  ...props
 }) => {
   return (
     <View
@@ -32,19 +26,7 @@ const CustomTextInput: FunctionComponent<CustomTextInputProps> = ({
         style,
       ]}
     >
-      <TextInput
-        style={[{ color }, styles.input]}
-        placeholder={placeholder}
-        autoCapitalize="none"
-        secureTextEntry={secure}
-        textContentType={textContentType}
-        keyboardType={keyboardType}
-        selectionColor={color}
-        onChangeText={onChangeText}
-        onEndEditing={onEndEditing}
-        value={value}
-      />
-      <TextInput style={{ height: 1 }} />
+      <TextInput style={styles.input} {...props} />
     </View>
   );
 };

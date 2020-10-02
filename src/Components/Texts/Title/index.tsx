@@ -1,16 +1,12 @@
 import React, { FunctionComponent } from 'react';
-import { StyleSheet, Text } from 'react-native';
+import { StyleSheet, Text, StyleProp, TextStyle } from 'react-native';
 
 interface TitleProps {
-  children: React.ReactNode;
+  style?: StyleProp<TextStyle>;
 }
 
-const Title: FunctionComponent<TitleProps> = ({ children }) => {
-  return <Text style={styles.text}>{children}</Text>;
-};
-
-Title.defaultProps = {
-  children: null,
+const Title: FunctionComponent<TitleProps> = ({ style, children }) => {
+  return <Text style={[styles.text, style]}>{children}</Text>;
 };
 
 const styles = StyleSheet.create({

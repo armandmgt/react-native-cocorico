@@ -34,7 +34,7 @@ const AuthStackNavigator = () => {
   const AuthStack = createStackNavigator<AuthStackParamList>();
 
   return (
-    <AuthStack.Navigator>
+    <AuthStack.Navigator initialRouteName="Register">
       <AuthStack.Screen
         name="Account"
         component={AccountScreen}
@@ -74,7 +74,7 @@ const RegisterStackNavigator = () => {
   const RegisterStack = createStackNavigator<RegisterStackParamList>();
 
   return (
-    <RegisterStack.Navigator>
+    <RegisterStack.Navigator initialRouteName="CreateProfile">
       <RegisterStack.Screen
         name="CreatePassword"
         component={CreatePasswordScreen}
