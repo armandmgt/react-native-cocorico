@@ -1,4 +1,4 @@
-import React, { FunctionComponent, useState } from 'react';
+import React, { FunctionComponent, useCallback, useState } from 'react';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { StyleSheet, View, Text } from 'react-native';
 import Title from '../../../Components/Texts/Title';
@@ -25,6 +25,11 @@ const AccountScreen: FunctionComponent<Props> = ({ navigation }: Props) => {
     email: '',
     dirty: false,
   });
+
+  const handleSubmit = useCallback(() => {
+    if (isValidEmail(email)) navigation.navigate('Login');
+  }, [navigation, email]);
+
   return (
     <FullScreenContainer>
       <View style={styles.content}>
@@ -48,9 +53,7 @@ const AccountScreen: FunctionComponent<Props> = ({ navigation }: Props) => {
       <CCRCButton
         style={styles.button}
         title="Continuer"
-        onPress={() => {
-          if (isValidEmail(email)) navigation.navigate('Login');
-        }}
+        onPress={handleSubmit}
       />
     </FullScreenContainer>
   );

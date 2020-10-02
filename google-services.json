@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "20901951452",
+    "firebase_url": "https://cocorico-c7133.firebaseio.com",
+    "project_id": "cocorico-c7133",
+    "storage_bucket": "cocorico-c7133.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:20901951452:android:eac857d65244063b6e8119",
+        "android_client_info": {
+          "package_name": "app.cocorico"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "20901951452-hcgudo0pub3dj3tona9og50lupd0mb65.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBp91Q2JD5Tf4KW7oFiB10ZrKKoKLgB62s"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "20901951452-hcgudo0pub3dj3tona9og50lupd0mb65.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
