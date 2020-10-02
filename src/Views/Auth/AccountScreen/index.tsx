@@ -28,9 +28,19 @@ const AccountScreen: FunctionComponent<Props> = ({ navigation }: Props) => {
     dirty: false,
   });
 
-  const handleSubmit = useCallback(() => {
-    if (isValidEmail(email))
-      navigation.navigate('Login', { screen: 'EnterPassword' });
+  const handleSubmit = useCallback(async () => {
+    if (isValidEmail(email)) {
+      try {
+        const doc = await firestore().collection('users').doc(email).get();
+        if (doc.exists) {
+          navigation.navigate('Login', { screen: 'EnterPassword' });
+        } else {
+          navigation.navigate('Register', { screen: 'CreateProfile' });
+        }
+      } catch (err) {
+        // Show error somehow
+      }
+    }
   }, [navigation, email]);
 
   return (
