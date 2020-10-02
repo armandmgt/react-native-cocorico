@@ -8,8 +8,20 @@ import ForgotPasswordScreen from '../../Views/Auth/Login/ForgotPasswordScreen';
 import CreatePasswordScreen from '../../Views/Auth/Register/CreatePasswordScreen';
 import CreateProfileScreen from '../../Views/Auth/Register/CreateProfileScreen';
 
+type NestedNavigatorParams<ParamList> = {
+  [K in keyof ParamList]: undefined extends ParamList[K]
+    ? { screen: K; params?: ParamList[K] }
+    : { screen: K; params: ParamList[K] };
+}[keyof ParamList];
+
+export type AuthStackParamList = {
+  Account: undefined;
+  Login: NestedNavigatorParams<LoginStackParamList>;
+  Register: NestedNavigatorParams<RegisterStackParamList>;
+};
+
 const AuthStackNavigator = () => {
-  const AuthStack = createStackNavigator();
+  const AuthStack = createStackNavigator<AuthStackParamList>();
 
   return (
     <AuthStack.Navigator initialRouteName="Account">
@@ -20,8 +32,13 @@ const AuthStackNavigator = () => {
   );
 };
 
+export type LoginStackParamList = {
+  EnterPassword: undefined;
+  ForgotPassword: undefined;
+};
+
 const LoginStackNavigator = () => {
-  const LoginStack = createStackNavigator();
+  const LoginStack = createStackNavigator<LoginStackParamList>();
 
   return (
     <LoginStack.Navigator initialRouteName="EnterPassword">
@@ -34,8 +51,13 @@ const LoginStackNavigator = () => {
   );
 };
 
+export type RegisterStackParamList = {
+  CreatePassword: undefined;
+  CreateProfile: undefined;
+};
+
 const RegisterStackNavigator = () => {
-  const RegisterStack = createStackNavigator();
+  const RegisterStack = createStackNavigator<RegisterStackParamList>();
 
   return (
     <RegisterStack.Navigator initialRouteName="CreatePassword">

@@ -2,8 +2,10 @@ import * as React from 'react';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { StyleSheet, Button, View, Text } from 'react-native';
 
+import type { AuthStackParamList } from '../../../Components/Navigator';
+
 interface Props {
-  navigation: StackNavigationProp<any>;
+  navigation: StackNavigationProp<AuthStackParamList, 'Account'>;
 }
 
 const AccountScreen = ({ navigation }: Props) => {
@@ -12,11 +14,15 @@ const AccountScreen = ({ navigation }: Props) => {
       <Text>Account Screen</Text>
       <Button
         title="navigateLogin"
-        onPress={() => navigation.navigate('Login')}
+        onPress={() =>
+          navigation.navigate('Login', { screen: 'EnterPassword' })
+        }
       />
       <Button
         title="navigateRegister"
-        onPress={() => navigation.navigate('Register')}
+        onPress={() =>
+          navigation.navigate('Register', { screen: 'CreatePassword' })
+        }
       />
     </View>
   );
