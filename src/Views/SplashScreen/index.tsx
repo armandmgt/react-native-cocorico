@@ -14,7 +14,6 @@ import {
   Roboto_900Black,
   Roboto_900Black_Italic,
 } from '@expo-google-fonts/roboto';
-import * as ExpoSplashScreen from 'expo-splash-screen';
 import { AppLoading } from 'expo';
 import * as Font from 'expo-font';
 import initializeApp from '../../firebase';
@@ -39,13 +38,10 @@ interface Props extends DispatchProps {}
 
 const SplashScreen = ({ setAuthStatus }: Props) => {
   const startupAsync = async () => {
-    // await ExpoSplashScreen.preventAutoHideAsync();
     await Font.loadAsync(customFonts);
     initializeApp();
 
     console.log('Loaded');
-
-    // await ExpoSplashScreen.hideAsync();
 
     setAuthStatus('SIGNED_OUT');
   };
