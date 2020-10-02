@@ -2,14 +2,19 @@
 import React from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, View } from 'react-native';
+import { Provider } from 'react-redux';
 import Navigator from './src/Components/Navigator';
+
+import store from './src/Services/Store';
 
 export default function App() {
   return (
-    <View style={styles.container}>
-      <Navigator />
-      <StatusBar style="auto" />
-    </View>
+    <Provider store={store}>
+      <View style={styles.container}>
+        <Navigator />
+        <StatusBar style="auto" />
+      </View>
+    </Provider>
   );
 }
 

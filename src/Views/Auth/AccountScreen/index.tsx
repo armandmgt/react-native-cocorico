@@ -1,10 +1,12 @@
 import React, { FunctionComponent, useState } from 'react';
 import { StackNavigationProp } from '@react-navigation/stack';
-import { StyleSheet, View, Text } from 'react-native';
+import { StyleSheet, View, Text, Button } from 'react-native';
+import { connect } from 'react-redux';
 import Title from '../../../Components/Texts/Title';
 import CCRCTextInput from '../../../Components/Inputs/Text';
 import CCRCButton from '../../../Components/Inputs/Button';
 import FullScreenContainer from '../../../Components/FullScreenContainer';
+import { RootState, Dispatch } from '../../../Services/Store';
 
 import type { AuthStackParamList } from '../../../Components/Navigator';
 
@@ -13,7 +15,18 @@ const isValidEmail = (email: string) =>
     /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
   );
 
-interface Props {
+const mapState = (state: RootState) => ({
+  count: state.custom,
+});
+type StateProps = ReturnType<typeof mapState>;
+
+const mapDispatch = (dispatch: Dispatch) => ({
+  increment: () => dispatch.custom.increment(1),
+  incrementAsync: () => dispatch.custom.incrementAsync(1),
+});
+type DispatchProps = ReturnType<typeof mapDispatch>;
+
+interface Props extends StateProps, DispatchProps {
   navigation: StackNavigationProp<AuthStackParamList, 'Account'>;
 }
 
@@ -22,7 +35,12 @@ interface State {
   dirty: boolean;
 }
 
-const AccountScreen: FunctionComponent<Props> = ({ navigation }: Props) => {
+const AccountScreen: FunctionComponent<Props> = ({
+  navigation,
+  count,
+  increment,
+  incrementAsync,
+}: Props) => {
   const [{ email, dirty }, setEmail] = useState<State>({
     email: '',
     dirty: false,
@@ -30,7 +48,7 @@ const AccountScreen: FunctionComponent<Props> = ({ navigation }: Props) => {
   return (
     <FullScreenContainer>
       <View style={styles.content}>
-        <Title>Cocoricooo !</Title>
+        <Title>{`Cocoricooo ! ${count}`}</Title>
         <Text style={styles.helperText}>
           Pour commencer, entrez votre adresse email.
         </Text>
@@ -47,6 +65,8 @@ const AccountScreen: FunctionComponent<Props> = ({ navigation }: Props) => {
           textContentType="emailAddress"
         />
       </View>
+      <Button title="increment" onPress={() => increment()} />
+      <Button title="incrementAsync" onPress={() => incrementAsync()} />
       <CCRCButton
         style={styles.button}
         title="Continuer"
@@ -79,4 +99,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default AccountScreen;
+export default connect(mapState, mapDispatch)(AccountScreen);
