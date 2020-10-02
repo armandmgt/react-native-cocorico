@@ -1,4 +1,4 @@
-import React, { FunctionComponent, useState } from 'react';
+import React, { FunctionComponent, useCallback, useState } from 'react';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { StyleSheet, View, Text, Button } from 'react-native';
 import { connect } from 'react-redux';
@@ -45,6 +45,12 @@ const AccountScreen: FunctionComponent<Props> = ({
     email: '',
     dirty: false,
   });
+
+  const handleSubmit = useCallback(() => {
+    if (isValidEmail(email))
+      navigation.navigate('Login', { screen: 'EnterPassword' });
+  }, [navigation, email]);
+
   return (
     <FullScreenContainer>
       <View style={styles.content}>
@@ -70,10 +76,7 @@ const AccountScreen: FunctionComponent<Props> = ({
       <CCRCButton
         style={styles.button}
         title="Continuer"
-        onPress={() => {
-          if (isValidEmail(email))
-            navigation.navigate('Login', { screen: 'EnterPassword' });
-        }}
+        onPress={handleSubmit}
       />
     </FullScreenContainer>
   );

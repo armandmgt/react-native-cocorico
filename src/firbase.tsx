@@ -1,11 +1,12 @@
-import * as firebase from 'firebase';
+import app from '@react-native-firebase/app';
 
 // Optionally import the services that you want to use
-import 'firebase/auth';
-// import "firebase/database";
-import 'firebase/firestore';
-import 'firebase/functions';
-// import "firebase/storage";
+import '@react-native-firebase/auth';
+// import "@react-native-firebase/database";
+import '@react-native-firebase/firestore';
+import '@react-native-firebase/functions';
+import '@react-native-firebase/analytics';
+// import "@react-native-firebase/storage";
 
 // Initialize Firebase
 const firebaseConfig = {
@@ -19,5 +20,7 @@ const firebaseConfig = {
   measurementId: 'G-H350MP78JE',
 };
 
-firebase.initializeApp(firebaseConfig);
-firebase.analytics();
+export default function initializeApp() {
+  app.initializeApp(firebaseConfig);
+  app.analytics();
+}

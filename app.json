@@ -13,10 +13,14 @@
     "updates": {
       "fallbackToCacheTimeout": 0
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
+    "android": {
+      "package": "app.cocorico",
+      "googleServicesFile": "./google-services.json"
+    },
     "ios": {
+      "bundleIdentifier": "app.cocorico",
+      "googleServicesFile": "./GoogleService-Info.plist",
       "supportsTablet": true
     },
     "web": {
