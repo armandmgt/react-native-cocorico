@@ -1,10 +1,13 @@
-import React, { FunctionComponent, useCallback, useState } from 'react';
+import React, { FunctionComponent, useState } from 'react';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { StyleSheet, View, Text } from 'react-native';
+import { connect } from 'react-redux';
+import { firestore } from 'firebase';
 import Title from '../../../Components/Texts/Title';
 import CCRCTextInput from '../../../Components/Inputs/Text';
 import CCRCButton from '../../../Components/Inputs/Button';
 import FullScreenContainer from '../../../Components/FullScreenContainer';
+import { Dispatch } from '../../../Services/Store';
 
 import type { AuthStackParamList } from '../../../Components/Navigator';
 
@@ -13,7 +16,7 @@ const isValidEmail = (email: string) =>
     /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
   );
 
-interface Props {
+interface Props extends DispatchProps {
   navigation: StackNavigationProp<AuthStackParamList, 'Account'>;
 }
 
@@ -22,15 +25,19 @@ interface State {
   dirty: boolean;
 }
 
-const AccountScreen: FunctionComponent<Props> = ({ navigation }: Props) => {
+const AccountScreen: FunctionComponent<Props> = ({
+  navigation,
+  storeEmail,
+}: Props) => {
   const [{ email, dirty }, setEmail] = useState<State>({
     email: '',
     dirty: false,
   });
 
-  const handleSubmit = useCallback(async () => {
+  const handleSubmit = async () => {
     if (isValidEmail(email)) {
       try {
+        storeEmail(email);
         const doc = await firestore().collection('users').doc(email).get();
         if (doc.exists) {
           navigation.navigate('Login', { screen: 'EnterPassword' });
@@ -41,7 +48,7 @@ const AccountScreen: FunctionComponent<Props> = ({ navigation }: Props) => {
         // Show error somehow
       }
     }
-  }, [navigation, email]);
+  };
 
   return (
     <FullScreenContainer>
@@ -61,6 +68,8 @@ const AccountScreen: FunctionComponent<Props> = ({ navigation }: Props) => {
           placeholder="Adresse email"
           keyboardType="email-address"
           textContentType="emailAddress"
+          autoCompleteType="email"
+          autoCapitalize="none"
         />
       </View>
       <CCRCButton
@@ -92,4 +101,9 @@ const styles = StyleSheet.create({
   },
 });
 
-export default AccountScreen;
+const mapDispatch = (dispatch: Dispatch) => ({
+  storeEmail: (email: string) => dispatch.auth.setEmail(email),
+});
+type DispatchProps = ReturnType<typeof mapDispatch>;
+
+export default connect(null, mapDispatch)(AccountScreen);
