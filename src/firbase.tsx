@@ -1,12 +1,12 @@
-import app from '@react-native-firebase/app';
+import app from 'firebase/app';
 
 // Optionally import the services that you want to use
-import '@react-native-firebase/auth';
-// import "@react-native-firebase/database";
-import '@react-native-firebase/firestore';
-import '@react-native-firebase/functions';
-import '@react-native-firebase/analytics';
-// import "@react-native-firebase/storage";
+import 'firebase/auth';
+// import "firebase/database";
+import 'firebase/firestore';
+import 'firebase/functions';
+// import 'firebase/analytics';
+// import "firebase/storage";
 
 // Initialize Firebase
 const firebaseConfig = {
@@ -22,5 +22,4 @@ const firebaseConfig = {
 
 export default function initializeApp() {
   app.initializeApp(firebaseConfig);
-  app.analytics();
 }
