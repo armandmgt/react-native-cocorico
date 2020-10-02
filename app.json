@@ -15,12 +15,10 @@
     },
     "assetBundlePatterns": ["**/*"],
     "android": {
-      "package": "app.cocorico",
-      "googleServicesFile": "./google-services.json"
+      "package": "app.cocorico"
     },
     "ios": {
       "bundleIdentifier": "app.cocorico",
-      "googleServicesFile": "./GoogleService-Info.plist",
       "supportsTablet": true
     },
     "web": {
