@@ -2,6 +2,7 @@ import React, { FunctionComponent, useCallback, useState } from 'react';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { StyleSheet, View, Text, Button } from 'react-native';
 import { connect } from 'react-redux';
+import { firestore } from 'firebase';
 import Title from '../../../Components/Texts/Title';
 import CCRCTextInput from '../../../Components/Inputs/Text';
 import CCRCButton from '../../../Components/Inputs/Button';
@@ -46,15 +47,25 @@ const AccountScreen: FunctionComponent<Props> = ({
     dirty: false,
   });
 
-  const handleSubmit = useCallback(() => {
-    if (isValidEmail(email))
-      navigation.navigate('Login', { screen: 'EnterPassword' });
+  const handleSubmit = useCallback(async () => {
+    if (isValidEmail(email)) {
+      try {
+        const doc = await firestore().collection('users').doc(email).get();
+        if (doc.exists) {
+          navigation.navigate('Login', { screen: 'EnterPassword' });
+        } else {
+          navigation.navigate('Register', { screen: 'CreateProfile' });
+        }
+      } catch (err) {
+        // Show error somehow
+      }
+    }
   }, [navigation, email]);
 
   return (
     <FullScreenContainer>
       <View style={styles.content}>
-        <Title>{`Cocoricooo ! ${count}`}</Title>
+        <Title>Cocoricooo !</Title>
         <Text style={styles.helperText}>
           Pour commencer, entrez votre adresse email.
         </Text>
@@ -71,8 +82,6 @@ const AccountScreen: FunctionComponent<Props> = ({
           textContentType="emailAddress"
         />
       </View>
-      <Button title="increment" onPress={() => increment()} />
-      <Button title="incrementAsync" onPress={() => incrementAsync()} />
       <CCRCButton
         style={styles.button}
         title="Continuer"
