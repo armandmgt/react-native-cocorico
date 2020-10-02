@@ -25,7 +25,11 @@ const AuthStackNavigator = () => {
 
   return (
     <AuthStack.Navigator initialRouteName="Account">
-      <AuthStack.Screen name="Account" component={AccountScreen} />
+      <AuthStack.Screen
+        name="Account"
+        component={AccountScreen}
+        options={{ headerShown: false }}
+      />
       <AuthStack.Screen name="Login" component={LoginStackNavigator} />
       <AuthStack.Screen name="Register" component={RegisterStackNavigator} />
     </AuthStack.Navigator>
@@ -75,7 +79,7 @@ const RegisterStackNavigator = () => {
 
 const Navigator = () => {
   const SwitchNavigator = {
-    Auth: <AuthStackNavigator />
+    Auth: <AuthStackNavigator />,
   };
   const state = 'Auth';
 
