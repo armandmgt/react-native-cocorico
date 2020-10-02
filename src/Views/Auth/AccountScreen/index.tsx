@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { FunctionComponent, useState } from 'react';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { StyleSheet, View, Text } from 'react-native';
 import Title from '../../../Components/Texts/Title';
 import CCRCTextInput from '../../../Components/Inputs/Text';
 import CCRCButton from '../../../Components/Inputs/Button';
-import { setStatusBarHidden } from 'expo-status-bar';
+import FullScreenContainer from '../../../Components/FullScreenContainer';
 
 const isValidEmail = (email: string) =>
   !!email.match(
@@ -20,18 +20,13 @@ interface State {
   dirty: boolean;
 }
 
-const AccountScreen: React.FunctionComponent<Props> = ({
-  navigation,
-}: Props) => {
+const AccountScreen: FunctionComponent<Props> = ({ navigation }: Props) => {
   const [{ email, dirty }, setEmail] = useState<State>({
     email: '',
     dirty: false,
   });
-  // useEffect(() => {
-  //   setStatusBarHidden(true, 'none');
-  // }, []);
   return (
-    <View style={styles.root}>
+    <FullScreenContainer>
       <View style={styles.content}>
         <Title>Cocoricooo !</Title>
         <Text style={styles.helperText}>
@@ -57,18 +52,11 @@ const AccountScreen: React.FunctionComponent<Props> = ({
           if (isValidEmail(email)) navigation.navigate('Login');
         }}
       />
-    </View>
+    </FullScreenContainer>
   );
 };
 
 const styles = StyleSheet.create({
-  root: {
-    paddingHorizontal: 35,
-    flex: 1,
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'center',
-  },
   content: {
     display: 'flex',
     flexDirection: 'column',
