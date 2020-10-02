@@ -1,12 +1,13 @@
 import * as React from 'react';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { StyleSheet, Button, View, Text } from 'react-native';
+import type { LoginStackParamList } from '../../../../Components/Navigator';
 
 interface Props {
-  navigation: StackNavigationProp<any>;
+  navigation: StackNavigationProp<LoginStackParamList, 'ForgotPassword'>;
 }
 
-const AccountScreen = ({ navigation }: Props) => {
+const ForgotPasswordScreen = ({ navigation }: Props) => {
   return (
     <View style={styles.container}>
       <Text>ForgotPassword Screen</Text>
@@ -27,4 +28,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export default AccountScreen;
+export default ForgotPasswordScreen;

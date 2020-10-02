@@ -6,13 +6,15 @@ import CCRCTextInput from '../../../Components/Inputs/Text';
 import CCRCButton from '../../../Components/Inputs/Button';
 import FullScreenContainer from '../../../Components/FullScreenContainer';
 
+import type { AuthStackParamList } from '../../../Components/Navigator';
+
 const isValidEmail = (email: string) =>
   !!email.match(
     /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
   );
 
 interface Props {
-  navigation: StackNavigationProp<any>;
+  navigation: StackNavigationProp<AuthStackParamList, 'Account'>;
 }
 
 interface State {
@@ -27,7 +29,8 @@ const AccountScreen: FunctionComponent<Props> = ({ navigation }: Props) => {
   });
 
   const handleSubmit = useCallback(() => {
-    if (isValidEmail(email)) navigation.navigate('Login');
+    if (isValidEmail(email))
+      navigation.navigate('Login', { screen: 'EnterPassword' });
   }, [navigation, email]);
 
   return (
