@@ -47,7 +47,7 @@ const styles = StyleSheet.create({
   title: {
     color: colors.clouds,
     fontSize: 22,
-    fontWeight: 'bold',
+    fontFamily: 'Roboto_700Bold',
   },
 });
 

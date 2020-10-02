@@ -55,7 +55,6 @@ const CreateProfileScreen: FunctionComponent<Props> = ({
         <Title style={styles.title}>Commencons par les presentations...</Title>
         <Text style={styles.helperText}>C&apos;est quoi votre petit nom ?</Text>
         <CCRCTextInput
-          outline
           style={styles.input}
           valid={firstnameDirty ? isValidName(firstname) : undefined}
           value={firstname}
@@ -73,36 +72,31 @@ const CreateProfileScreen: FunctionComponent<Props> = ({
           autoCompleteType="name"
           autoCapitalize="words"
         />
-        {!!firstname && (
-          <>
-            <Text style={styles.helperText}>
-              Et votre nom de famille c&apos;est...
-            </Text>
-            <CCRCTextInput
-              outline
-              style={styles.input}
-              valid={lastnameDirty ? isValidName(lastname) : undefined}
-              value={lastname}
-              onChangeText={(value: string) => {
-                setValues({
-                  firstname,
-                  firstnameDirty: true,
-                  lastname: value,
-                  lastnameDirty,
-                });
-              }}
-              placeholder="Nom de famille"
-              keyboardType="default"
-              textContentType="familyName"
-              autoCompleteType="name"
-              autoCapitalize="words"
-            />
-          </>
-        )}
+        <Text style={styles.helperText}>
+          Et votre nom de famille c&apos;est...
+        </Text>
+        <CCRCTextInput
+          style={styles.input}
+          valid={lastnameDirty ? isValidName(lastname) : undefined}
+          value={lastname}
+          onChangeText={(value: string) => {
+            setValues({
+              firstname,
+              firstnameDirty: true,
+              lastname: value,
+              lastnameDirty,
+            });
+          }}
+          placeholder="Nom de famille"
+          keyboardType="default"
+          textContentType="familyName"
+          autoCompleteType="name"
+          autoCapitalize="words"
+        />
       </View>
       <CCRCButton
         style={styles.button}
-        title="Continuer"
+        title="Continuer "
         onPress={handleSubmit}
       />
     </FullScreenContainer>
@@ -122,14 +116,14 @@ const styles = StyleSheet.create({
   helperText: {
     fontFamily: 'Roboto',
     fontSize: 16,
-    marginBottom: 32,
+    marginTop: 25,
   },
   input: {
-    height: 66,
-    marginBottom: 20,
+    height: 50,
+    paddingHorizontal: 5,
   },
   button: {
-    marginVertical: 40,
+    marginVertical: 30,
   },
 });
 

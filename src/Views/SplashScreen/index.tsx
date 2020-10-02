@@ -39,13 +39,13 @@ interface Props extends DispatchProps {}
 
 const SplashScreen = ({ setAuthStatus }: Props) => {
   const startupAsync = async () => {
-    await ExpoSplashScreen.preventAutoHideAsync();
+    // await ExpoSplashScreen.preventAutoHideAsync();
     await Font.loadAsync(customFonts);
     initializeApp();
 
     console.log('Loaded');
 
-    await ExpoSplashScreen.hideAsync();
+    // await ExpoSplashScreen.hideAsync();
 
     setAuthStatus('SIGNED_OUT');
   };
