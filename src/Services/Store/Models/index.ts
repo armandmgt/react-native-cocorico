@@ -1,8 +1,8 @@
 import { RootModel } from './types';
-import customModel from './customModel';
+import sessionModel from './sessionModel';
 
 const models: RootModel = {
-  custom: customModel,
+  session: sessionModel,
 };
 
 export default models;

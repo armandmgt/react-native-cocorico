@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { StyleSheet, Button, View, Text } from 'react-native';
 import type { LoginStackParamList } from '../../../../Components/Navigator';

@@ -15,9 +15,8 @@ Title.defaultProps = {
 
 const styles = StyleSheet.create({
   text: {
-    fontFamily: 'Roboto',
+    fontFamily: 'Roboto_700Bold',
     fontSize: 52,
-    fontWeight: 'bold',
   },
 });
 

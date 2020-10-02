@@ -1,6 +1,9 @@
 import * as React from 'react';
+import { connect } from 'react-redux';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
+
+import SplashScreen from '../../Views/SplashScreen';
 
 import AccountScreen from '../../Views/Auth/AccountScreen';
 import EnterPasswordScreen from '../../Views/Auth/Login/EnterPasswordScreen';
@@ -8,11 +11,18 @@ import ForgotPasswordScreen from '../../Views/Auth/Login/ForgotPasswordScreen';
 import CreatePasswordScreen from '../../Views/Auth/Register/CreatePasswordScreen';
 import CreateProfileScreen from '../../Views/Auth/Register/CreateProfileScreen';
 
+import { RootState } from '../../Services/Store';
+import { AuthStatus } from '../../Constants/types';
+
 type NestedNavigatorParams<ParamList> = {
   [K in keyof ParamList]: undefined extends ParamList[K]
     ? { screen: K; params?: ParamList[K] }
     : { screen: K; params: ParamList[K] };
 }[keyof ParamList];
+
+export type SplashStackParamList = {
+  Splash: undefined;
+};
 
 export type AuthStackParamList = {
   Account: undefined;
@@ -24,7 +34,7 @@ const AuthStackNavigator = () => {
   const AuthStack = createStackNavigator<AuthStackParamList>();
 
   return (
-    <AuthStack.Navigator initialRouteName="Account">
+    <AuthStack.Navigator>
       <AuthStack.Screen
         name="Account"
         component={AccountScreen}
@@ -45,7 +55,7 @@ const LoginStackNavigator = () => {
   const LoginStack = createStackNavigator<LoginStackParamList>();
 
   return (
-    <LoginStack.Navigator initialRouteName="EnterPassword">
+    <LoginStack.Navigator>
       <LoginStack.Screen name="EnterPassword" component={EnterPasswordScreen} />
       <LoginStack.Screen
         name="ForgotPassword"
@@ -64,7 +74,7 @@ const RegisterStackNavigator = () => {
   const RegisterStack = createStackNavigator<RegisterStackParamList>();
 
   return (
-    <RegisterStack.Navigator initialRouteName="CreatePassword">
+    <RegisterStack.Navigator>
       <RegisterStack.Screen
         name="CreatePassword"
         component={CreatePasswordScreen}
@@ -77,13 +87,23 @@ const RegisterStackNavigator = () => {
   );
 };
 
-const Navigator = () => {
-  const SwitchNavigator = {
-    Auth: <AuthStackNavigator />,
-  };
-  const state = 'Auth';
+interface Props extends StateProps {}
 
-  return <NavigationContainer>{SwitchNavigator[state]}</NavigationContainer>;
+const Navigator = ({ authStatus }: Props) => {
+  const SwitchNavigator: { [key in AuthStatus]: React.ReactNode } = {
+    LOADING: <SplashScreen />,
+    SIGNED_OUT: <AuthStackNavigator />,
+    SIGNED_IN: null,
+  };
+
+  return (
+    <NavigationContainer>{SwitchNavigator[authStatus]}</NavigationContainer>
+  );
 };
 
-export default Navigator;
+const mapState = ({ session: { authStatus } }: RootState) => ({
+  authStatus,
+});
+type StateProps = ReturnType<typeof mapState>;
+
+export default connect(mapState)(Navigator);

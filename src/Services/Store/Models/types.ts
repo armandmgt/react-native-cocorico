@@ -1,6 +1,6 @@
 import { Models } from '@rematch/core';
-import type { CustomModelType } from './customModel';
+import type { SessionModelType } from './sessionModel';
 
 export interface RootModel extends Models<RootModel> {
-  custom: CustomModelType;
+  session: SessionModelType;
 }
