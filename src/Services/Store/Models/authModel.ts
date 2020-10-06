@@ -1,18 +1,18 @@
 import { createModel } from '@rematch/core';
+import { AuthStatus } from '../../../Constants/types';
 import { RootModel } from './types';
-
-type AuthStatus = 'LOGGED_OUT' | 'LOGGED_IN';
 
 interface AuthState {
   email?: string;
   status: AuthStatus;
 }
 
+const INITIAL_STATE: AuthState = {
+  status: 'LOADING',
+};
+
 const authModel = createModel<RootModel>()({
-  state: {
-    email: undefined,
-    status: 'LOGGED_OUT',
-  } as AuthState,
+  state: INITIAL_STATE,
   reducers: {
     setStatus(state, status: AuthStatus) {
       return { ...state, status };

@@ -48,6 +48,7 @@ const styles = StyleSheet.create({
     color: colors.clouds,
     fontSize: 22,
     fontFamily: 'Roboto_700Bold',
+    fontWeight: 'bold',
   },
 });
 

@@ -43,15 +43,15 @@ const SplashScreen = ({ setAuthStatus }: Props) => {
 
     console.log('Loaded');
 
-    setAuthStatus('SIGNED_OUT');
+    setAuthStatus('LOGGED_OUT');
   };
 
   setTimeout(startupAsync, 1000);
   return <AppLoading />;
 };
 
-const mapDispatch = ({ session: { setAuthStatus } }: Dispatch) => ({
-  setAuthStatus,
+const mapDispatch = ({ auth: { setStatus } }: Dispatch) => ({
+  setAuthStatus: setStatus,
 });
 type DispatchProps = ReturnType<typeof mapDispatch>;
 export default connect(null, mapDispatch)(SplashScreen);

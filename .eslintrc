@@ -4,12 +4,15 @@
   "parserOptions": {
     "project": "./tsconfig.json"
   },
-  "plugins": ["@typescript-eslint", "react-native", "prettier"],
+  "plugins": ["@typescript-eslint", "react-native", "prettier", "import"],
   "extends": [
     "airbnb-typescript",
     "airbnb/hooks",
     "prettier",
-    "prettier/@typescript-eslint"
+    "prettier/@typescript-eslint",
+    "plugin:import/errors",
+    "plugin:import/warnings",
+    "plugin:import/typescript"
   ],
   "settings": {
     "import/resolver": {

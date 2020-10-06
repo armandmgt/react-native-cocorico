@@ -34,14 +34,22 @@ const AuthStackNavigator = () => {
   const AuthStack = createStackNavigator<AuthStackParamList>();
 
   return (
-    <AuthStack.Navigator initialRouteName="Register">
+    <AuthStack.Navigator initialRouteName="Account">
       <AuthStack.Screen
         name="Account"
         component={AccountScreen}
         options={{ headerShown: false }}
       />
-      <AuthStack.Screen name="Login" component={LoginStackNavigator} />
-      <AuthStack.Screen name="Register" component={RegisterStackNavigator} />
+      <AuthStack.Screen
+        name="Login"
+        options={{ headerShown: false }}
+        component={LoginStackNavigator}
+      />
+      <AuthStack.Screen
+        name="Register"
+        options={{ headerShown: false }}
+        component={RegisterStackNavigator}
+      />
     </AuthStack.Navigator>
   );
 };
@@ -56,7 +64,11 @@ const LoginStackNavigator = () => {
 
   return (
     <LoginStack.Navigator>
-      <LoginStack.Screen name="EnterPassword" component={EnterPasswordScreen} />
+      <LoginStack.Screen
+        name="EnterPassword"
+        options={{ headerShown: false }}
+        component={EnterPasswordScreen}
+      />
       <LoginStack.Screen
         name="ForgotPassword"
         component={ForgotPasswordScreen}
@@ -77,10 +89,12 @@ const RegisterStackNavigator = () => {
     <RegisterStack.Navigator initialRouteName="CreateProfile">
       <RegisterStack.Screen
         name="CreatePassword"
+        options={{ headerShown: false }}
         component={CreatePasswordScreen}
       />
       <RegisterStack.Screen
         name="CreateProfile"
+        options={{ headerShown: false }}
         component={CreateProfileScreen}
       />
     </RegisterStack.Navigator>
@@ -92,8 +106,8 @@ interface Props extends StateProps {}
 const Navigator = ({ authStatus }: Props) => {
   const SwitchNavigator: { [key in AuthStatus]: React.ReactNode } = {
     LOADING: <SplashScreen />,
-    SIGNED_OUT: <AuthStackNavigator />,
-    SIGNED_IN: null,
+    LOGGED_OUT: <AuthStackNavigator />,
+    LOGGED_IN: null,
   };
 
   return (
@@ -101,8 +115,8 @@ const Navigator = ({ authStatus }: Props) => {
   );
 };
 
-const mapState = ({ session: { authStatus } }: RootState) => ({
-  authStatus,
+const mapState = ({ auth: { status } }: RootState) => ({
+  authStatus: status,
 });
 type StateProps = ReturnType<typeof mapState>;
 

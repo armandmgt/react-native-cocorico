@@ -1,1 +1,1 @@
-export type AuthStatus = 'LOADING' | 'SIGNED_IN' | 'SIGNED_OUT';
+export type AuthStatus = 'LOADING' | 'LOGGED_IN' | 'LOGGED_OUT';

@@ -1,4 +1,5 @@
 import { createModel } from '@rematch/core';
+import { auth, firestore } from 'firebase';
 import { RootModel } from './types';
 
 interface ProfileState {
@@ -14,6 +15,18 @@ const profileModel = createModel<RootModel>()({
   reducers: {
     setNames(state, payload) {
       return { ...state, ...payload };
+    },
+  },
+  effects: {
+    async createUser(payload, state) {
+      const { password } = payload;
+      const {
+        auth: { email },
+        profile: { firstname, lastname },
+      } = state;
+      await auth().createUserWithEmailAndPassword(email, password);
+      const doc = firestore().collection('users').doc(email);
+      await doc.set({ firstname, lastname });
     },
   },
 });
