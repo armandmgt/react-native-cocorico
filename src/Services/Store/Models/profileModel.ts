@@ -18,7 +18,7 @@ const profileModel = createModel<RootModel>()({
     },
   },
   effects: {
-    async createUser(payload, state) {
+    async createUser(payload: { password: string }, state) {
       const { password } = payload;
       const {
         auth: { email },
