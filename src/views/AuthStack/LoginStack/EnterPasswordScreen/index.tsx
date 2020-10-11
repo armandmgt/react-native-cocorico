@@ -1,4 +1,4 @@
-import React, { FunctionComponent, useCallback, useState } from 'react';
+import React, { FunctionComponent, useState } from 'react';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { StyleSheet, View, Text } from 'react-native';
 import { connect } from 'react-redux';
@@ -9,26 +9,28 @@ import Title from '@cocorico/components/Texts/Title';
 import CCRCTextInput from '@cocorico/components/Inputs/Text';
 import CCRCButton from '@cocorico/components/Inputs/Button';
 import { Roboto } from '@cocorico/constants/fonts';
-import type { Dispatch, RootState } from '@cocorico/services/store';
+import type { RootState } from '@cocorico/services/store';
 import type { LoginStackParamList } from '@cocorico/components/Navigator/types';
 
-interface Props extends StateProps, DispatchProps {
+interface Props extends StateProps {
   navigation: StackNavigationProp<LoginStackParamList, 'EnterPassword'>;
 }
 
 type State = string;
 
-const EnterPasswordScreen: FunctionComponent<Props> = ({
-  email,
-  setLoggedIn,
-}: Props) => {
+const EnterPasswordScreen: FunctionComponent<Props> = ({ email }: Props) => {
+  const [loading, setLoading] = useState<boolean>(false);
   const [password, setPassword] = useState<State>('');
   const [error, setError] = useState<string>('');
 
   const handleSubmit = async () => {
     try {
-      if (email) await auth.signInWithEmailAndPassword(email, password);
+      if (email) {
+        setLoading(true);
+        await auth.signInWithEmailAndPassword(email, password);
+      }
     } catch (err) {
+      setLoading(false);
       setError(err.message);
     }
   };
@@ -60,6 +62,7 @@ const EnterPasswordScreen: FunctionComponent<Props> = ({
         style={styles.button}
         title="Continuer"
         onPress={handleSubmit}
+        disabled={loading}
       />
     </FullScreenContainer>
   );
@@ -90,9 +93,4 @@ const mapState = (state: RootState) => ({
 });
 type StateProps = ReturnType<typeof mapState>;
 
-const mapDispatch = (dispatch: Dispatch) => ({
-  setLoggedIn: () => dispatch.auth.setStatus('LOGGED_IN'),
-});
-type DispatchProps = ReturnType<typeof mapDispatch>;
-
-export default connect(mapState, mapDispatch)(EnterPasswordScreen);
+export default connect(mapState, null)(EnterPasswordScreen);

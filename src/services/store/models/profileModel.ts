@@ -1,4 +1,5 @@
 import { createModel } from '@rematch/core';
+import { Alert } from 'react-native';
 
 import { auth, firestore } from '@cocorico/services/firebase';
 
@@ -26,9 +27,13 @@ const profileModel = createModel<RootModel>()({
         auth: { email },
         profile: { firstname, lastname },
       } = state;
-      await auth.createUserWithEmailAndPassword(email, password);
-      const doc = firestore.collection('users').doc(email);
-      await doc.set({ firstname, lastname });
+      try {
+        await auth.createUserWithEmailAndPassword(email, password);
+        const doc = firestore.collection('users').doc(email);
+        await doc.set({ firstname, lastname });
+      } catch (err) {
+        Alert.alert(err);
+      }
     },
   },
 });

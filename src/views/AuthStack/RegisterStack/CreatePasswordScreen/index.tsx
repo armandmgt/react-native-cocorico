@@ -19,17 +19,19 @@ type State = string;
 
 const CreatePasswordScreen: FunctionComponent<Props> = ({
   createUser,
-  setLoggedIn,
 }: Props) => {
+  const [loading, setLoading] = useState<boolean>(false);
   const [password, setPassword] = useState<State>('');
   const [error, setError] = useState<string>('');
 
   const handleSubmit = async () => {
     try {
       if (password) {
+        setLoading(true);
         createUser({ password });
       }
     } catch (err) {
+      setLoading(false);
       setError(err.message);
     }
   };
@@ -61,6 +63,7 @@ const CreatePasswordScreen: FunctionComponent<Props> = ({
         style={styles.button}
         title="Continuer"
         onPress={handleSubmit}
+        disabled={loading}
       />
     </FullScreenContainer>
   );
@@ -89,12 +92,8 @@ const styles = StyleSheet.create({
   },
 });
 
-const mapDispatch = ({
-  profile: { createUser },
-  auth: { setStatus },
-}: Dispatch) => ({
+const mapDispatch = ({ profile: { createUser } }: Dispatch) => ({
   createUser,
-  setLoggedIn: () => setStatus('LOGGED_IN'),
 });
 type DispatchProps = ReturnType<typeof mapDispatch>;
 

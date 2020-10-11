@@ -18,13 +18,22 @@ interface CustomButtonProps extends ButtonProps {
 const CustomButton: FunctionComponent<CustomButtonProps> = ({
   style,
   title,
+  disabled,
   ...props
 }) => {
   return (
-    <TouchableOpacity style={[styles.root, style]} {...props}>
+    <TouchableOpacity
+      style={[styles.root, style]}
+      disabled={disabled}
+      {...props}
+    >
       <LinearGradient
         style={styles.gradient}
-        colors={[colors.primary, colors.secondary]}
+        colors={
+          disabled
+            ? [colors.concrete, colors.concrete]
+            : [colors.primary, colors.secondary]
+        }
       >
         <Text style={styles.title}>{title}</Text>
       </LinearGradient>
