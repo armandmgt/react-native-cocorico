@@ -8,18 +8,17 @@ import FullScreenContainer from '@cocorico/components/FullScreenContainer';
 import Title from '@cocorico/components/Texts/Title';
 import CCRCTextInput from '@cocorico/components/Inputs/Text';
 import CCRCButton from '@cocorico/components/Inputs/Button';
-import { Roboto } from '@cocorico/constants/fonts';
-import type { Dispatch } from '@cocorico/services/store';
+import type { Dispatch, RootState } from '@cocorico/services/store';
 import type { LoginStackParamList } from '@cocorico/components/Navigator/types';
 
-interface Props extends DispatchProps {
+interface Props extends StateProps, DispatchProps {
   navigation: StackNavigationProp<LoginStackParamList, 'EnterPassword'>;
 }
 
 type State = string;
 
-const CreatePasswordScreen: FunctionComponent<Props> = ({
-  createUser,
+const EnterPasswordScreen: FunctionComponent<Props> = ({
+  email,
   setLoggedIn,
 }: Props) => {
   const [password, setPassword] = useState<State>('');
@@ -33,9 +32,7 @@ const CreatePasswordScreen: FunctionComponent<Props> = ({
 
   const handleSubmit = async () => {
     try {
-      if (password) {
-        createUser({ password });
-      }
+      if (email) await auth().signInWithEmailAndPassword(email, password);
     } catch (err) {
       setError(err.message);
     }
@@ -44,9 +41,9 @@ const CreatePasswordScreen: FunctionComponent<Props> = ({
   return (
     <FullScreenContainer>
       <View style={styles.content}>
-        <Title style={styles.title}>Hop ! Plus qu&apos;un mot de passe.</Title>
+        <Title>C&apos;est chouette de vous revoir.</Title>
         <Text style={styles.helperText}>
-          Renseignez un mot de passe afin de créer votre compte.
+          Renseignez votre mot de passe afin de vous connecter.
         </Text>
         <CCRCTextInput
           outline
@@ -59,7 +56,7 @@ const CreatePasswordScreen: FunctionComponent<Props> = ({
           }}
           placeholder="Votre mot de passe"
           keyboardType="default"
-          textContentType="newPassword"
+          textContentType="password"
           autoCompleteType="password"
         />
         <Text>{error}</Text>
@@ -80,11 +77,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     flexGrow: 1,
   },
-  title: {
-    fontSize: 46,
-  },
   helperText: {
-    fontFamily: Roboto[500],
+    fontFamily: 'Roboto',
     fontSize: 16,
     marginBottom: 32,
   },
@@ -96,13 +90,14 @@ const styles = StyleSheet.create({
   },
 });
 
-const mapDispatch = ({
-  profile: { createUser },
-  auth: { setStatus },
-}: Dispatch) => ({
-  createUser,
-  setLoggedIn: () => setStatus('LOGGED_IN'),
+const mapState = (state: RootState) => ({
+  email: state.auth.email,
+});
+type StateProps = ReturnType<typeof mapState>;
+
+const mapDispatch = (dispatch: Dispatch) => ({
+  setLoggedIn: () => dispatch.auth.setStatus('LOGGED_IN'),
 });
 type DispatchProps = ReturnType<typeof mapDispatch>;
 
-export default connect(null, mapDispatch)(CreatePasswordScreen);
+export default connect(mapState, mapDispatch)(EnterPasswordScreen);
