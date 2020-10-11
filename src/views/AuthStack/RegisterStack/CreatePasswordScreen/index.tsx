@@ -1,8 +1,7 @@
-import React, { FunctionComponent, useCallback, useState } from 'react';
+import React, { FunctionComponent, useState } from 'react';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { StyleSheet, View, Text } from 'react-native';
 import { connect } from 'react-redux';
-import { auth } from 'firebase';
 
 import FullScreenContainer from '@cocorico/components/FullScreenContainer';
 import Title from '@cocorico/components/Texts/Title';
@@ -10,10 +9,10 @@ import CCRCTextInput from '@cocorico/components/Inputs/Text';
 import CCRCButton from '@cocorico/components/Inputs/Button';
 import { Roboto } from '@cocorico/constants/fonts';
 import type { Dispatch } from '@cocorico/services/store';
-import type { LoginStackParamList } from '@cocorico/components/Navigator/types';
+import type { RegisterStackParamList } from '@cocorico/components/Navigator/types';
 
 interface Props extends DispatchProps {
-  navigation: StackNavigationProp<LoginStackParamList, 'EnterPassword'>;
+  navigation: StackNavigationProp<RegisterStackParamList, 'CreatePassword'>;
 }
 
 type State = string;
@@ -24,12 +23,6 @@ const CreatePasswordScreen: FunctionComponent<Props> = ({
 }: Props) => {
   const [password, setPassword] = useState<State>('');
   const [error, setError] = useState<string>('');
-
-  const handleAuthentication = useCallback(() => {
-    setLoggedIn();
-  }, [setLoggedIn]);
-
-  auth().onAuthStateChanged(handleAuthentication);
 
   const handleSubmit = async () => {
     try {
@@ -84,7 +77,7 @@ const styles = StyleSheet.create({
     fontSize: 46,
   },
   helperText: {
-    fontFamily: Roboto[500],
+    fontFamily: Roboto[400],
     fontSize: 16,
     marginBottom: 32,
   },

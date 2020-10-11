@@ -9,6 +9,7 @@ import {
   ViewStyle,
 } from 'react-native';
 
+import { Roboto } from '@cocorico/constants/fonts';
 import colors from '@cocorico/constants/colors';
 
 interface CustomButtonProps extends ButtonProps {
@@ -48,7 +49,7 @@ const styles = StyleSheet.create({
   title: {
     color: colors.clouds,
     fontSize: 22,
-    fontFamily: 'Roboto_700Bold',
+    fontFamily: Roboto[700],
     fontWeight: 'bold',
   },
 });

@@ -2,13 +2,14 @@ import React, { FunctionComponent, useState } from 'react';
 import { StyleSheet, View, Text } from 'react-native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { connect } from 'react-redux';
-import { firestore } from 'firebase';
 
+import { firestore } from '@cocorico/services/firebase';
 import Title from '@cocorico/components/Texts/Title';
 import CCRCTextInput from '@cocorico/components/Inputs/Text';
 import CCRCButton from '@cocorico/components/Inputs/Button';
 import FullScreenContainer from '@cocorico/components/FullScreenContainer';
-import { Dispatch } from '@cocorico/services/store';
+import { Roboto } from '@cocorico/constants/fonts';
+import type { Dispatch } from '@cocorico/services/store';
 import type { AuthStackParamList } from '@cocorico/components/Navigator/types';
 
 const isValidEmail = (email: string) =>
@@ -38,7 +39,7 @@ const AccountScreen: FunctionComponent<Props> = ({
     if (isValidEmail(email)) {
       try {
         storeEmail(email);
-        const doc = await firestore().collection('users').doc(email).get();
+        const doc = await firestore.collection('users').doc(email).get();
         if (doc.exists) {
           navigation.navigate('Login', { screen: 'EnterPassword' });
         } else {
@@ -89,7 +90,7 @@ const styles = StyleSheet.create({
     flexGrow: 1,
   },
   helperText: {
-    fontFamily: 'Roboto_400Regular',
+    fontFamily: Roboto[400],
     fontSize: 16,
     marginBottom: 32,
   },

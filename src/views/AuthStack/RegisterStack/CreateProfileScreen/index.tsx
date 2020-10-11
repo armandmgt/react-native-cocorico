@@ -7,14 +7,15 @@ import Title from '@cocorico/components/Texts/Title';
 import CCRCTextInput from '@cocorico/components/Inputs/Text';
 import CCRCButton from '@cocorico/components/Inputs/Button';
 import FullScreenContainer from '@cocorico/components/FullScreenContainer';
+import { Roboto } from '@cocorico/constants/fonts';
 import type { Dispatch } from '@cocorico/services/store';
-import type { AuthStackParamList } from '@cocorico/components/Navigator/types';
+import type { RegisterStackParamList } from '@cocorico/components/Navigator/types';
 
 const isValidName = (name: string) =>
   !!name.match(/^([A-zÀ-ú]+-?)+([A-zÀ-ú]+)$/);
 
 interface Props extends DispatchProps {
-  navigation: StackNavigationProp<AuthStackParamList, 'Account'>;
+  navigation: StackNavigationProp<RegisterStackParamList, 'CreateProfile'>;
 }
 
 interface State {
@@ -42,8 +43,9 @@ const CreateProfileScreen: FunctionComponent<Props> = ({
     if (isValidName(firstname) && isValidName(lastname)) {
       try {
         setNames({ firstname, lastname });
-        navigation.navigate('Register', { screen: 'CreatePassword' });
+        navigation.push('CreatePassword');
       } catch (err) {
+        console.log('Error :', err);
         // Show error somehow
       }
     }
@@ -114,7 +116,7 @@ const styles = StyleSheet.create({
     fontSize: 36,
   },
   helperText: {
-    fontFamily: 'Roboto',
+    fontFamily: Roboto[400],
     fontSize: 16,
     marginTop: 25,
   },

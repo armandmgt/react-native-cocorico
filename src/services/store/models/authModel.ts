@@ -6,18 +6,18 @@ import { RootModel } from './types';
 
 interface AuthState {
   email?: string;
-  status: AuthStatus;
+  authStatus: AuthStatus;
 }
 
 const INITIAL_STATE: AuthState = {
-  status: 'LOADING',
+  authStatus: 'LOADING',
 };
 
 const authModel = createModel<RootModel>()({
   state: INITIAL_STATE,
   reducers: {
-    setStatus(state, status: AuthStatus) {
-      return { ...state, status };
+    setAuthStatus(state, payload: AuthStatus) {
+      return { ...state, authStatus: payload };
     },
     setEmail(state, email: string) {
       return { ...state, email };

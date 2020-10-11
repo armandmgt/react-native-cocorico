@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 import {
   Roboto_100Thin,
@@ -17,7 +17,6 @@ import {
 import { AppLoading } from 'expo';
 import * as Font from 'expo-font';
 
-import { auth } from '@cocorico/services/firebase';
 import type { Dispatch } from '@cocorico/services/store';
 
 const customFonts = {
@@ -37,31 +36,21 @@ const customFonts = {
 
 interface Props extends DispatchProps {}
 
-const SplashScreen = ({ setAuthStatus }: Props) => {
-  useEffect(() => {
-    const unsubscribeAuth = auth.onAuthStateChanged(async (authUser) => {
-      try {
-        console.log('Auth User :', authUser);
-        // await (authUser ? setUser(authUser) : setUser(null));
-      } catch (error) {
-        console.log(error);
-      }
-    });
-    return unsubscribeAuth;
-  }, []);
-
+const SplashScreen = ({ setAppStatus }: Props) => {
   const startupAsync = async () => {
     await Font.loadAsync(customFonts);
 
-    setAuthStatus('LOGGED_OUT');
+    setAppStatus('LOADED');
   };
 
   setTimeout(startupAsync, 1000);
+
+  console.log('Splashscreen');
   return <AppLoading />;
 };
 
-const mapDispatch = ({ auth: { setStatus } }: Dispatch) => ({
-  setAuthStatus: setStatus,
+const mapDispatch = ({ session: { setAppStatus } }: Dispatch) => ({
+  setAppStatus,
 });
 type DispatchProps = ReturnType<typeof mapDispatch>;
 export default connect(null, mapDispatch)(SplashScreen);

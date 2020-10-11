@@ -1,22 +1,22 @@
 import { createModel } from '@rematch/core';
 
-import { AuthStatus } from '@cocorico/constants/types';
+import { AppStatus } from '@cocorico/constants/types';
 
 import { RootModel } from './types';
 
 interface SessionState {
-  authStatus: AuthStatus;
+  appStatus: AppStatus;
 }
 
 const INITIAL_STATE = {
-  authStatus: 'LOADING',
+  appStatus: 'LOADING',
 };
 
 const sessionModel = createModel<RootModel>()({
   state: INITIAL_STATE as SessionState,
   reducers: {
-    setAuthStatus(state, payload: AuthStatus) {
-      return { ...state, authStatus: payload };
+    setAppStatus(state, payload: AppStatus) {
+      return { ...state, appStatus: payload };
     },
   },
 });
