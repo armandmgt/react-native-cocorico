@@ -88,14 +88,14 @@ const RegisterStackNavigator = () => {
   return (
     <RegisterStack.Navigator initialRouteName="CreateProfile">
       <RegisterStack.Screen
-        name="CreatePassword"
-        options={{ headerShown: false }}
-        component={CreatePasswordScreen}
-      />
-      <RegisterStack.Screen
         name="CreateProfile"
         options={{ headerShown: false }}
         component={CreateProfileScreen}
+      />
+      <RegisterStack.Screen
+        name="CreatePassword"
+        options={{ headerShown: false }}
+        component={CreatePasswordScreen}
       />
     </RegisterStack.Navigator>
   );

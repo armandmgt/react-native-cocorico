@@ -13,7 +13,7 @@ const profileModel = createModel<RootModel>()({
     lastname: '',
   } as ProfileState,
   reducers: {
-    setNames(state, payload) {
+    setNames(state, payload: { firstname: string; lastname: string }) {
       return { ...state, ...payload };
     },
   },
