@@ -2,20 +2,19 @@
   "root": true,
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
-    "project": "./tsconfig.json"
+    "project": "./tsconfig.json",
+    "tsconfigRootDir": "./"
   },
   "plugins": ["@typescript-eslint", "react-native", "prettier", "import"],
   "extends": [
     "airbnb-typescript",
     "airbnb/hooks",
     "prettier",
-    "prettier/@typescript-eslint",
-    "plugin:import/errors",
-    "plugin:import/warnings",
-    "plugin:import/typescript"
+    "prettier/@typescript-eslint"
   ],
   "settings": {
     "import/resolver": {
+      "typescript": {},
       "node": {
         "extensions": [".ts", ".tsx"]
       }
@@ -24,20 +23,47 @@
   "rules": {
     "no-unused-vars": "off",
     "@typescript-eslint/no-unused-vars": "error",
+
     "no-use-before-define": "off",
     "@typescript-eslint/no-use-before-define": [
       "error",
       { "variables": false }
     ],
-    "@typescript-eslint/explicit-member-accessibility": "off",
+
     "react/jsx-filename-extension": ["error", { "extensions": [".tsx"] }],
+
+    "react/jsx-props-no-spreading": "off",
+    "react/require-default-props": "off",
+    "react/no-unused-prop-types": "off",
+    "react/prop-types": "off",
+
     "react-native/no-unused-styles": "error",
     "react-native/no-color-literals": "error",
     "react-native/no-inline-styles": "warn",
-    "react/jsx-curly-newline": "off",
-    "react/jsx-props-no-spreading": "off",
-    "react/prop-types": "off",
-    "react/require-default-props": "off",
+
+    "import/order": [
+      "error",
+      {
+        "newlines-between": "always",
+        "groups": [
+          "builtin",
+          "external",
+          "internal",
+          "parent",
+          "sibling",
+          "index",
+          "object"
+        ],
+        "pathGroups": [
+          {
+            "pattern": "@cocorico/**",
+            "group": "internal",
+            "position": "after"
+          }
+        ]
+      }
+    ],
+
     "prettier/prettier": "error"
   }
 }

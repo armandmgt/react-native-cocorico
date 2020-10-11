@@ -1,15 +1,15 @@
 import React, { FunctionComponent, useState } from 'react';
-import { StackNavigationProp } from '@react-navigation/stack';
 import { StyleSheet, View, Text } from 'react-native';
+import { StackNavigationProp } from '@react-navigation/stack';
 import { connect } from 'react-redux';
 import { firestore } from 'firebase';
-import Title from '../../../Components/Texts/Title';
-import CCRCTextInput from '../../../Components/Inputs/Text';
-import CCRCButton from '../../../Components/Inputs/Button';
-import FullScreenContainer from '../../../Components/FullScreenContainer';
-import { Dispatch } from '../../../Services/Store';
 
-import type { AuthStackParamList } from '../../../Components/Navigator';
+import Title from '@cocorico/Components/Texts/Title';
+import CCRCTextInput from '@cocorico/Components/Inputs/Text';
+import CCRCButton from '@cocorico/Components/Inputs/Button';
+import FullScreenContainer from '@cocorico/Components/FullScreenContainer';
+import { Dispatch } from '@cocorico/Services/Store';
+import type { AuthStackParamList } from '@cocorico/Components/Navigator/types';
 
 const isValidEmail = (email: string) =>
   !!email.match(

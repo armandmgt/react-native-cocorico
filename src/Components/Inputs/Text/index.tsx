@@ -1,6 +1,7 @@
 import React, { FunctionComponent } from 'react';
 import { StyleSheet, TextInput, TextInputProps, View } from 'react-native';
-import colors from '../../../Constants/colors';
+
+import colors from '@cocorico/Constants/colors';
 
 interface CustomTextInputProps extends TextInputProps {
   outline?: boolean;

@@ -1,5 +1,7 @@
 import { createModel } from '@rematch/core';
-import { AuthStatus } from '../../../Constants/types';
+
+import { AuthStatus } from '@cocorico/Constants/types';
+
 import { RootModel } from './types';
 
 interface AuthState {

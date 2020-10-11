@@ -1,17 +1,18 @@
 import React, { FunctionComponent, useCallback, useState } from 'react';
-// import { StackNavigationProp } from '@react-navigation/stack';
+import { StackNavigationProp } from '@react-navigation/stack';
 import { StyleSheet, View, Text } from 'react-native';
 import { connect } from 'react-redux';
 import { auth } from 'firebase';
-// import type { LoginStackParamList } from '../../../../Components/Navigator';
-import FullScreenContainer from '../../../../Components/FullScreenContainer';
-import Title from '../../../../Components/Texts/Title';
-import CCRCTextInput from '../../../../Components/Inputs/Text';
-import CCRCButton from '../../../../Components/Inputs/Button';
-import { Dispatch } from '../../../../Services/Store';
+
+import FullScreenContainer from '@cocorico/Components/FullScreenContainer';
+import Title from '@cocorico/Components/Texts/Title';
+import CCRCTextInput from '@cocorico/Components/Inputs/Text';
+import CCRCButton from '@cocorico/Components/Inputs/Button';
+import type { Dispatch } from '@cocorico/Services/Store';
+import type { LoginStackParamList } from '@cocorico/Components/Navigator/types';
 
 interface Props extends DispatchProps {
-  // navigation: StackNavigationProp<LoginStackParamList, 'EnterPassword'>;
+  navigation: StackNavigationProp<LoginStackParamList, 'EnterPassword'>;
 }
 
 type State = string;

@@ -1,5 +1,9 @@
 {
   "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@cocorico/*": ["./src/*"]
+    },
     "allowSyntheticDefaultImports": true,
     "jsx": "react-native",
     "lib": ["dom", "esnext"],
