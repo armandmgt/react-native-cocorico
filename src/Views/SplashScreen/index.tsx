@@ -16,8 +16,9 @@ import {
 } from '@expo-google-fonts/roboto';
 import { AppLoading } from 'expo';
 import * as Font from 'expo-font';
-import initializeApp from '../../firebase';
-import { Dispatch } from '../../Services/Store';
+
+import { Dispatch } from '@cocorico/Services/Store';
+import initializeApp from '@cocorico/Services/Firebase';
 
 const customFonts = {
   Roboto_100Thin,
@@ -40,8 +41,6 @@ const SplashScreen = ({ setAuthStatus }: Props) => {
   const startupAsync = async () => {
     await Font.loadAsync(customFonts);
     initializeApp();
-
-    console.log('Loaded');
 
     setAuthStatus('LOGGED_OUT');
   };

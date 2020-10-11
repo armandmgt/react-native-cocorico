@@ -8,7 +8,8 @@ import {
   TouchableOpacity,
   ViewStyle,
 } from 'react-native';
-import colors from '../../../Constants/colors';
+
+import colors from '@cocorico/Constants/colors';
 
 interface CustomButtonProps extends ButtonProps {
   style: StyleProp<ViewStyle>;

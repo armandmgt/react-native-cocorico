@@ -1,6 +1,8 @@
 import { createModel } from '@rematch/core';
+
+import { AuthStatus } from '@cocorico/Constants/types';
+
 import { RootModel } from './types';
-import { AuthStatus } from '../../../Constants/types';
 
 interface SessionState {
   authStatus: AuthStatus;

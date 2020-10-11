@@ -1,4 +1,5 @@
 import { Models } from '@rematch/core';
+
 import type { AuthModelType } from './authModel';
 import type { ProfileModelType } from './profileModel';
 

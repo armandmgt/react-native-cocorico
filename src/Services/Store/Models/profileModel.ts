@@ -1,5 +1,6 @@
 import { createModel } from '@rematch/core';
 import { auth, firestore } from 'firebase';
+
 import { RootModel } from './types';
 
 interface ProfileState {
