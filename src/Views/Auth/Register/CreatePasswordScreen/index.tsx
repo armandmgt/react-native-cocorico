@@ -8,6 +8,7 @@ import FullScreenContainer from '@cocorico/Components/FullScreenContainer';
 import Title from '@cocorico/Components/Texts/Title';
 import CCRCTextInput from '@cocorico/Components/Inputs/Text';
 import CCRCButton from '@cocorico/Components/Inputs/Button';
+import { Roboto } from '@cocorico/Constants/fonts';
 import type { Dispatch } from '@cocorico/Services/Store';
 import type { LoginStackParamList } from '@cocorico/Components/Navigator/types';
 
@@ -83,7 +84,7 @@ const styles = StyleSheet.create({
     fontSize: 46,
   },
   helperText: {
-    fontFamily: 'Roboto',
+    fontFamily: Roboto[500],
     fontSize: 16,
     marginBottom: 32,
   },
