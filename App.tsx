@@ -4,8 +4,8 @@ import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, View } from 'react-native';
 import { Provider } from 'react-redux';
 
-import store from './src/Services/Store';
-import Navigator from './src/Components/Navigator';
+import store from './src/services/store';
+import Navigator from './src/components/Navigator';
 
 export default function App() {
   return (

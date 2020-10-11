@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import {
   Roboto_100Thin,
@@ -17,8 +17,8 @@ import {
 import { AppLoading } from 'expo';
 import * as Font from 'expo-font';
 
-import { Dispatch } from '@cocorico/Services/Store';
-import initializeApp from '@cocorico/Services/Firebase';
+import { auth } from '@cocorico/services/firebase';
+import type { Dispatch } from '@cocorico/services/store';
 
 const customFonts = {
   Roboto_100Thin,
@@ -38,9 +38,20 @@ const customFonts = {
 interface Props extends DispatchProps {}
 
 const SplashScreen = ({ setAuthStatus }: Props) => {
+  useEffect(() => {
+    const unsubscribeAuth = auth.onAuthStateChanged(async (authUser) => {
+      try {
+        console.log('Auth User :', authUser);
+        // await (authUser ? setUser(authUser) : setUser(null));
+      } catch (error) {
+        console.log(error);
+      }
+    });
+    return unsubscribeAuth;
+  }, []);
+
   const startupAsync = async () => {
     await Font.loadAsync(customFonts);
-    initializeApp();
 
     setAuthStatus('LOGGED_OUT');
   };

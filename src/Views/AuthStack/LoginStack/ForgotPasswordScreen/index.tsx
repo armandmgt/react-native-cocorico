@@ -2,7 +2,7 @@ import React from 'react';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { StyleSheet, Button, View, Text } from 'react-native';
 
-import type { LoginStackParamList } from '@cocorico/Components/Navigator/types';
+import type { LoginStackParamList } from '@cocorico/components/Navigator/types';
 
 interface Props {
   navigation: StackNavigationProp<LoginStackParamList, 'ForgotPassword'>;

@@ -1,8 +1,8 @@
 import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 
-import EnterPasswordScreen from '@cocorico/Views/Auth/Login/EnterPasswordScreen';
-import ForgotPasswordScreen from '@cocorico/Views/Auth/Login/ForgotPasswordScreen';
+import EnterPasswordScreen from '@cocorico/views/AuthStack/LoginStack/EnterPasswordScreen';
+import ForgotPasswordScreen from '@cocorico/views/AuthStack/LoginStack/ForgotPasswordScreen';
 
 export type LoginStackParamList = {
   EnterPassword: undefined;

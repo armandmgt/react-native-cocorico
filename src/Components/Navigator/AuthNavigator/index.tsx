@@ -1,8 +1,8 @@
 import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 
-import type { NestedNavigatorParams } from '@cocorico/Constants/types';
-import AccountScreen from '@cocorico/Views/Auth/AccountScreen';
+import type { NestedNavigatorParams } from '@cocorico/constants/types';
+import AccountScreen from '@cocorico/views/AuthStack/AccountScreen';
 
 import LoginStackNavigator, { LoginStackParamList } from './LoginNavigator';
 import RegisterStackNavigator, {
