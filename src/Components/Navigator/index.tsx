@@ -2,9 +2,9 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { NavigationContainer } from '@react-navigation/native';
 
-import SplashScreen from '@cocorico/Views/SplashScreen';
-import type { AuthStatus } from '@cocorico/Constants/types';
-import type { RootState } from '@cocorico/Services/Store';
+import SplashScreen from '@cocorico/views/SplashScreen';
+import type { AuthStatus } from '@cocorico/constants/types';
+import type { RootState } from '@cocorico/services/store';
 
 import AuthStackNavigator from './AuthNavigator';
 

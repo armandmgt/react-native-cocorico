@@ -1,8 +1,8 @@
 import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 
-import CreatePasswordScreen from '@cocorico/Views/Auth/Register/CreatePasswordScreen';
-import CreateProfileScreen from '@cocorico/Views/Auth/Register/CreateProfileScreen';
+import CreatePasswordScreen from '@cocorico/views/AuthStack/RegisterStack/CreatePasswordScreen';
+import CreateProfileScreen from '@cocorico/views/AuthStack/RegisterStack/CreateProfileScreen';
 
 export type RegisterStackParamList = {
   CreatePassword: undefined;

@@ -9,7 +9,7 @@ import {
   ViewStyle,
 } from 'react-native';
 
-import colors from '@cocorico/Constants/colors';
+import colors from '@cocorico/constants/colors';
 
 interface CustomButtonProps extends ButtonProps {
   style: StyleProp<ViewStyle>;

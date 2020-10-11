@@ -4,12 +4,12 @@ import { StyleSheet, View, Text } from 'react-native';
 import { connect } from 'react-redux';
 import { auth } from 'firebase';
 
-import FullScreenContainer from '@cocorico/Components/FullScreenContainer';
-import Title from '@cocorico/Components/Texts/Title';
-import CCRCTextInput from '@cocorico/Components/Inputs/Text';
-import CCRCButton from '@cocorico/Components/Inputs/Button';
-import type { Dispatch } from '@cocorico/Services/Store';
-import type { LoginStackParamList } from '@cocorico/Components/Navigator/types';
+import FullScreenContainer from '@cocorico/components/FullScreenContainer';
+import Title from '@cocorico/components/Texts/Title';
+import CCRCTextInput from '@cocorico/components/Inputs/Text';
+import CCRCButton from '@cocorico/components/Inputs/Button';
+import type { Dispatch } from '@cocorico/services/store';
+import type { LoginStackParamList } from '@cocorico/components/Navigator/types';
 
 interface Props extends DispatchProps {
   navigation: StackNavigationProp<LoginStackParamList, 'EnterPassword'>;

@@ -3,12 +3,12 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import { StyleSheet, View, Text } from 'react-native';
 import { connect } from 'react-redux';
 
-import Title from '@cocorico/Components/Texts/Title';
-import CCRCTextInput from '@cocorico/Components/Inputs/Text';
-import CCRCButton from '@cocorico/Components/Inputs/Button';
-import FullScreenContainer from '@cocorico/Components/FullScreenContainer';
-import type { Dispatch } from '@cocorico/Services/Store';
-import type { AuthStackParamList } from '@cocorico/Components/Navigator/types';
+import Title from '@cocorico/components/Texts/Title';
+import CCRCTextInput from '@cocorico/components/Inputs/Text';
+import CCRCButton from '@cocorico/components/Inputs/Button';
+import FullScreenContainer from '@cocorico/components/FullScreenContainer';
+import type { Dispatch } from '@cocorico/services/store';
+import type { AuthStackParamList } from '@cocorico/components/Navigator/types';
 
 const isValidName = (name: string) =>
   !!name.match(/^([A-zÀ-ú]+-?)+([A-zÀ-ú]+)$/);
