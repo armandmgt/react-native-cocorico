@@ -1,103 +1,90 @@
 import React, { FunctionComponent, useState } from 'react';
-import { StyleSheet, View, Text } from 'react-native';
+import { View, Text, Keyboard } from 'react-native';
 
+import { RouteProp } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
-import { connect } from 'react-redux';
 
 import CCRCButton from '@cocorico/components/CCRC/Button';
 import CCRCTextInput from '@cocorico/components/CCRC/TextInput';
-import FullScreenContainer from '@cocorico/components/FullScreenContainer';
-import type { RegisterStackParamList } from '@cocorico/components/Navigator/types';
-import Title from '@cocorico/components/Texts/Title';
+import type { TypedNavigatorParams } from '@cocorico/components/Navigator/types';
 
-import type { Dispatch } from '@cocorico/services/store';
+import { isValidPassword } from '@cocorico/services/utils';
+import { useValues } from '@cocorico/services/utils/hooks';
 
-import { Roboto } from '@cocorico/constants/fonts';
+import spacing from '@cocorico/constants/spacing';
 
-interface Props extends DispatchProps {
-  navigation: StackNavigationProp<RegisterStackParamList, 'CreatePassword'>;
+import styles from './index.styles';
+
+interface Props {
+  navigation: StackNavigationProp<TypedNavigatorParams<'RegisterNavigator'>>;
+  route: RouteProp<TypedNavigatorParams<'RegisterNavigator'>, 'CreatePassword'>;
 }
 
-type State = string;
-
 const CreatePasswordScreen: FunctionComponent<Props> = ({
-  createUser,
+  navigation,
+  route: {
+    params: { email },
+  },
 }: Props) => {
-  const [loading, setLoading] = useState<boolean>(false);
-  const [password, setPassword] = useState<State>('');
   const [error, setError] = useState<string>('');
 
-  const handleSubmit = async () => {
-    try {
-      if (password) {
-        setLoading(true);
-        createUser({ password });
-      }
-    } catch (err) {
-      setLoading(false);
-      setError(err.message);
-    }
+  const [{ password }, updateValue] = useValues<{
+    password: string;
+  }>({
+    password: '',
+  });
+
+  const handleTextChange = (value: string) => {
+    setError('');
+    updateValue('password')(value);
   };
 
+  const handleSubmit = async () => {
+    Keyboard.dismiss();
+
+    if (!canSubmit) return;
+
+    navigation.push('CreateAccount', { email, password });
+  };
+
+  const canSubmit = !!password && isValidPassword(password);
+
   return (
-    <FullScreenContainer>
+    <View style={styles.container}>
       <View style={styles.content}>
-        <Title style={styles.title}>Hop ! Plus qu&apos;un mot de passe.</Title>
-        <Text style={styles.helperText}>
-          Renseignez un mot de passe afin de créer votre compte.
+        <Text style={[styles.text, { ...spacing.mgb1 }]}>
+          C&apos;est votre première fois ici
+          <Text style={styles.coloredText}>.</Text>
+        </Text>
+        <Text style={[styles.helperText, { ...spacing.mgb4 }]}>
+          Veuillez chosisir le mot de passe qui vous permettra de vous
+          connecter.
         </Text>
         <CCRCTextInput
           outline
-          style={styles.input}
+          valid={!error && (!password || canSubmit)}
+          error={error}
           autoFocus
           value={password}
           secureTextEntry
-          onChangeText={(value: string) => {
-            setPassword(value);
-          }}
+          onChangeText={handleTextChange}
           placeholder="Votre mot de passe"
           keyboardType="default"
-          textContentType="newPassword"
+          textContentType="password"
           autoCompleteType="password"
+          returnKeyType="next"
+          onSubmitEditing={handleSubmit}
         />
-        <Text>{error}</Text>
       </View>
       <CCRCButton
-        style={styles.button}
-        title="Continuer"
+        variant="gradient"
+        disabled={!canSubmit}
+        style={{ ...spacing.mgb4 }}
+        title="Choisir le mot de passe"
         onPress={handleSubmit}
-        disabled={loading}
       />
-    </FullScreenContainer>
+    </View>
   );
 };
 
-const styles = StyleSheet.create({
-  content: {
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'center',
-    flexGrow: 1,
-  },
-  title: {
-    fontSize: 46,
-  },
-  helperText: {
-    fontFamily: Roboto[400],
-    fontSize: 16,
-    marginBottom: 32,
-  },
-  input: {
-    height: 66,
-  },
-  button: {
-    marginVertical: 40,
-  },
-});
-
-const mapDispatch = ({ profile: { createUser } }: Dispatch) => ({
-  createUser,
-});
-type DispatchProps = ReturnType<typeof mapDispatch>;
-
-export default connect(null, mapDispatch)(CreatePasswordScreen);
+export default CreatePasswordScreen;

@@ -21,9 +21,16 @@ export default StyleSheet.create({
     fontSize: 40,
     lineHeight: 40,
   },
+  helperTextContainer: {
+    flexDirection: 'row',
+    alignItems: 'baseline',
+  },
   helperText: {
     fontFamily: Roboto[400],
     fontSize: 16,
+  },
+  helperTextEmail: {
+    fontFamily: Roboto[700],
   },
   coloredText: {
     color: colors.gradient2,

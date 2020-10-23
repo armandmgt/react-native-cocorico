@@ -5,7 +5,7 @@ import { StackNavigationProp } from '@react-navigation/stack';
 
 import CCRCButton from '@cocorico/components/CCRC/Button';
 import CCRCTextInput from '@cocorico/components/CCRC/TextInput';
-import CCRCExpandedText from '@cocorico/components/ExpandedText';
+import ExpandedText from '@cocorico/components/ExpandedText';
 import type { TypedNavigatorParams } from '@cocorico/components/Navigator/types';
 
 import Firebase from '@cocorico/services/firebase';
@@ -24,13 +24,13 @@ const AccountScreen: FunctionComponent<Props> = ({ navigation }: Props) => {
   const [{ email }, updateValue] = useValues<{
     email: string;
   }>({
-    email: 'maxime.blanchard2@free.fr',
+    email: '',
   });
 
   const handleSubmit = async () => {
     Keyboard.dismiss();
 
-    if (!isValidEmail(email)) return;
+    if (!canSubmit) return;
 
     const userDoesExist = await Firebase.doesUserExist(email);
 
@@ -41,11 +41,13 @@ const AccountScreen: FunctionComponent<Props> = ({ navigation }: Props) => {
       });
     } else {
       navigation.navigate('RegisterNavigator', {
-        screen: 'CreateProfile',
+        screen: 'CreatePassword',
         params: { email },
       });
     }
   };
+
+  const canSubmit = isValidEmail(email);
 
   return (
     <View style={styles.container}>
@@ -53,7 +55,7 @@ const AccountScreen: FunctionComponent<Props> = ({ navigation }: Props) => {
         <Text style={styles.text}>Bienvenue</Text>
         <View style={styles.titleContainer}>
           <Text style={[styles.text, { ...spacing.pgr1 }]}>sur</Text>
-          <CCRCExpandedText
+          <ExpandedText
             start="Cocoric"
             fill="o"
             end="o"
@@ -69,7 +71,7 @@ const AccountScreen: FunctionComponent<Props> = ({ navigation }: Props) => {
         </Text>
         <CCRCTextInput
           outline
-          valid={!email || isValidEmail(email)}
+          valid={!email || canSubmit}
           value={email}
           onChangeText={updateValue('email')}
           placeholder="Adresse email"
@@ -83,8 +85,8 @@ const AccountScreen: FunctionComponent<Props> = ({ navigation }: Props) => {
       </View>
       <CCRCButton
         variant="gradient"
-        disabled={!isValidEmail(email)}
-        style={styles.button}
+        disabled={!canSubmit}
+        style={{ ...spacing.mgb4 }}
         title="Continuer"
         onPress={handleSubmit}
       />

@@ -2,6 +2,16 @@ export type SwitchNavigatorKey = 'SPLASH' | 'AUTH' | 'APP';
 export type AuthStatus = 'LOADING' | 'LOGGED_IN' | 'LOGGED_OUT';
 export type AppStatus = 'LOADING' | 'LOADED';
 
+export interface Profile {
+  firstName: string;
+  lastName: string;
+}
+
+
+
+
+
+
 export type Writeable<T> = { -readonly [P in keyof T]: T[P] };
 
 export type FormatKeywordsValue<Keys, Multipliers> = {

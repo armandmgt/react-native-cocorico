@@ -3,10 +3,10 @@ import { View, Text } from 'react-native';
 
 import { StackNavigationProp } from '@react-navigation/stack';
 
-import type { HomeStackParamList } from '@cocorico/components/Navigator';
+import type { TypedNavigatorParams } from '@cocorico/components/Navigator/types';
 
 interface Props {
-  navigation: StackNavigationProp<HomeStackParamList, 'Account'>;
+  navigation: StackNavigationProp<TypedNavigatorParams<'HomeNavigator'>>;
 }
 
 const HomeScreen: FunctionComponent<Props> = () => {

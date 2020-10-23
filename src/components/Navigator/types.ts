@@ -2,16 +2,27 @@ export type Screens = {
   Account: undefined;
   EnterPassword: { email: string };
   ForgotPassword: { email: string };
+  ForgotPasswordConfirmation: { email: string };
   CreatePassword: { email: string };
-  CreateProfile: { email: string };
+  CreateAccount: { email: string; password: string };
+  Home: undefined;
+  Details: undefined;
+  Mailbox: undefined;
+  Profile: undefined;
+  Settings: undefined;
 };
 
 export type Navigators = {
   AuthNavigator: Navigatable<
     'Account' | 'LoginNavigator' | 'RegisterNavigator'
   >;
-  LoginNavigator: Navigatable<'EnterPassword' | 'ForgotPassword'>;
-  RegisterNavigator: Navigatable<'CreatePassword' | 'CreateProfile'>;
+  LoginNavigator: Navigatable<
+    'EnterPassword' | 'ForgotPassword' | 'ForgotPasswordConfirmation'
+  >;
+  RegisterNavigator: Navigatable<'CreatePassword' | 'CreateAccount'>;
+  AppNavigator: Navigatable<'HomeNavigator' | 'Mailbox' | 'ProfileNavigator'>;
+  HomeNavigator: Navigatable<'Home' | 'Details'>;
+  ProfileNavigator: Navigatable<'Profile' | 'Settings'>;
 };
 
 type Navigatable<T> = T extends keyof Screens

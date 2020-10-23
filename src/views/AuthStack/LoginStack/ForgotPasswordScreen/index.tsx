@@ -1,11 +1,11 @@
 import React, { FunctionComponent } from 'react';
 import { View, Text, Keyboard } from 'react-native';
 
+import { RouteProp } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 
 import CCRCButton from '@cocorico/components/CCRC/Button';
 import CCRCTextInput from '@cocorico/components/CCRC/TextInput';
-import CCRCExpandedText from '@cocorico/components/ExpandedText';
 import type { TypedNavigatorParams } from '@cocorico/components/Navigator/types';
 
 import Firebase from '@cocorico/services/firebase';
@@ -17,16 +17,20 @@ import spacing from '@cocorico/constants/spacing';
 import styles from './index.styles';
 
 interface Props {
-  navigation: StackNavigationProp<TypedNavigatorParams<'AuthNavigator'>>;
+  navigation: StackNavigationProp<TypedNavigatorParams<'LoginNavigator'>>;
+  route: RouteProp<TypedNavigatorParams<'LoginNavigator'>, 'ForgotPassword'>;
 }
 
 const ForgotPasswordScreen: FunctionComponent<Props> = ({
   navigation,
+  route: {
+    params: { email: defaultEmail },
+  },
 }: Props) => {
   const [{ email }, updateValue] = useValues<{
     email: string;
   }>({
-    email: 'maxime.blanchard2@free.fr',
+    email: defaultEmail,
   });
 
   const handleSubmit = async () => {
@@ -34,19 +38,12 @@ const ForgotPasswordScreen: FunctionComponent<Props> = ({
 
     if (!isValidEmail(email)) return;
 
-    const userDoesExist = await Firebase.doesUserExist(email);
+    await Firebase.askResetPassword(email);
+    navigation.push('ForgotPasswordConfirmation', { email });
+  };
 
-    if (userDoesExist) {
-      navigation.navigate('LoginNavigator', {
-        screen: 'EnterPassword',
-        params: { email },
-      });
-    } else {
-      navigation.navigate('RegisterNavigator', {
-        screen: 'CreateProfile',
-        params: { email },
-      });
-    }
+  const handleGoBack = () => {
+    navigation.goBack();
   };
 
   return (
@@ -75,17 +72,17 @@ const ForgotPasswordScreen: FunctionComponent<Props> = ({
         />
       </View>
       <CCRCButton
+        variant="gradient"
         disabled={!isValidEmail(email)}
-        style={styles.button}
-        title="Confirmer l'adresse mail"
+        style={{ ...spacing.mgb2 }}
+        title="Confirmer l'adresse email"
         onPress={handleSubmit}
       />
       <CCRCButton
         variant="outline"
-        disabled={!isValidEmail(email)}
-        style={styles.button}
-        title="Continuer"
-        onPress={handleSubmit}
+        style={{ ...spacing.mgb4 }}
+        title="Retour"
+        onPress={handleGoBack}
       />
     </View>
   );

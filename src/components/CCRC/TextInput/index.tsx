@@ -58,6 +58,7 @@ const CustomTextInput: FunctionComponent<Props> = ({
         {showVisibility && (
           <TouchableWithoutFeedback onPress={toggleVisibility}>
             <Feather
+              style={styles.icon}
               name={passwordVisible ? 'eye-off' : 'eye'}
               size={24}
               color={colors.BLACK}

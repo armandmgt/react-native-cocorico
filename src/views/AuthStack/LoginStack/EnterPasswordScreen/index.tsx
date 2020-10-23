@@ -1,5 +1,5 @@
 import React, { FunctionComponent, useState } from 'react';
-import { View, Text } from 'react-native';
+import { View, Text, Keyboard } from 'react-native';
 
 import { RouteProp } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
@@ -46,13 +46,14 @@ const EnterPasswordScreen: FunctionComponent<Props> = ({
   };
 
   const handleSubmit = async () => {
+    Keyboard.dismiss();
     setLoading(true);
 
     const result = await Firebase.login(email, password);
 
-    setLoading(false);
     if (!result.success) {
       if (result.error?.message) setError(result.error.message);
+      setLoading(false);
     }
   };
 
@@ -90,7 +91,7 @@ const EnterPasswordScreen: FunctionComponent<Props> = ({
       <CCRCButton
         variant="gradient"
         disabled={loading}
-        style={styles.button}
+        style={{ ...spacing.mgb4 }}
         title="Connexion"
         onPress={handleSubmit}
       />

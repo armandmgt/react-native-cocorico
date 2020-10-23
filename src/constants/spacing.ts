@@ -26,9 +26,8 @@ type Keywords = keyof KeywordType;
 type MultipliersArray = typeof multipliers;
 type MultipliersString = FormatMultipliers<Writeable<MultipliersArray>>[number];
 
-
 type KeywordsValue = FormatKeywordsValue<KeywordType, MultipliersString>;
-type KeywordValueAt<T extends Keywords> = KeywordsValue[T]
+type KeywordValueAt<T extends keyof KeywordsValue> = KeywordsValue[T]
 
 type SpacingLabel = `${Keywords}${MultipliersString}`;
 type Spacings = {[k1 in SpacingLabel]: {[k2 in KeywordValueAt<k1>] : number}}

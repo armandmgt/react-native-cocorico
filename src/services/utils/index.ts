@@ -5,3 +5,6 @@ export const validate = (value: string, validator: string) =>
 
 export const isValidEmail = (email: string) =>
   validate(email, validators.email);
+
+export const isValidPassword = (password: string) =>
+  validate(password, validators.password);

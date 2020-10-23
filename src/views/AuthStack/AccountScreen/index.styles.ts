@@ -38,7 +38,4 @@ export default StyleSheet.create({
   coloredText: {
     color: colors.gradient2,
   },
-  button: {
-    ...spacing.mgb4,
-  },
 });

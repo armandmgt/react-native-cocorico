@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 
 import SplashScreen from '@cocorico/views/SplashScreen';
 
-import Firebase, { auth } from '@cocorico/services/firebase';
+import { auth } from '@cocorico/services/firebase';
 import type { RootState, Dispatch } from '@cocorico/services/store';
 
 import type {
@@ -14,6 +14,7 @@ import type {
   SwitchNavigatorKey,
 } from '@cocorico/constants/types';
 
+import AppStackNavigator from './AppNavigator';
 import AuthStackNavigator from './AuthNavigator';
 
 interface Props extends StateProps, DispatchProps {}
@@ -22,13 +23,12 @@ const Navigator = ({ appStatus, authStatus, setAuthStatus }: Props) => {
   const SwitchNavigator: { [key in SwitchNavigatorKey]: React.ReactNode } = {
     SPLASH: <SplashScreen />,
     AUTH: <AuthStackNavigator />,
-    APP: null,
+    APP: <AppStackNavigator />,
   };
 
   useEffect(() => {
     const unsubscribeAuth = auth.onAuthStateChanged(async (authUser) => {
       try {
-        console.log('Auth User :', authUser);
         await (authUser
           ? setAuthStatus('LOGGED_IN')
           : setAuthStatus('LOGGED_OUT'));
@@ -50,7 +50,6 @@ const Navigator = ({ appStatus, authStatus, setAuthStatus }: Props) => {
       case 'LOADING':
         return 'SPLASH';
       case 'LOGGED_IN':
-        Firebase.logout();
         return 'APP';
       case 'LOGGED_OUT':
         return 'AUTH';

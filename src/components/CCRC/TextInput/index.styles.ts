@@ -26,6 +26,9 @@ export default StyleSheet.create({
     fontSize: 15,
     fontWeight: 'normal',
   },
+  icon: {
+    marginVertical: -5,
+  },
   errorText: {
     fontFamily: Roboto[300],
     fontSize: 13,
