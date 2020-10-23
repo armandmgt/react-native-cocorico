@@ -7,17 +7,17 @@ import SettingsScreen from '@cocorico/views/AppStack/ProfileStack/SettingsScreen
 
 import type { TypedNavigatorParams } from '@cocorico/components/Navigator/types';
 
-const LoginStackNavigator = () => {
-  const LoginStack = createStackNavigator<
+const ProfileStackNavigator = () => {
+  const ProfileStack = createStackNavigator<
     TypedNavigatorParams<'ProfileNavigator'>
   >();
 
   return (
-    <LoginStack.Navigator screenOptions={{ headerShown: false }}>
-      <LoginStack.Screen name="Profile" component={ProfileScreen} />
-      <LoginStack.Screen name="Settings" component={SettingsScreen} />
-    </LoginStack.Navigator>
+    <ProfileStack.Navigator screenOptions={{ headerShown: true }}>
+      <ProfileStack.Screen name="Profile" component={ProfileScreen} />
+      <ProfileStack.Screen name="Settings" component={SettingsScreen} />
+    </ProfileStack.Navigator>
   );
 };
 
-export default LoginStackNavigator;
+export default ProfileStackNavigator;

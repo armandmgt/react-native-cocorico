@@ -1,13 +1,10 @@
 import { StyleSheet } from 'react-native';
 
-import colors from '@cocorico/constants/colors';
+import spacing from '@cocorico/constants/spacing';
 
 export default StyleSheet.create({
   field: {
-    marginVertical: 14,
+    ...spacing.mgv2,
   },
   input: {},
-  error: {
-    color: colors.RED,
-  },
 });

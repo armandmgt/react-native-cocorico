@@ -10,19 +10,17 @@ import HomeStackNavigator from './HomeNavigator';
 import ProfileStackNavigator from './ProfileNavigator';
 
 const AppStackNavigator = () => {
-  const AuthStack = createStackNavigator<
-    TypedNavigatorParams<'AppNavigator'>
-  >();
+  const AppStack = createStackNavigator<TypedNavigatorParams<'AppNavigator'>>();
 
   return (
-    <AuthStack.Navigator screenOptions={{ headerShown: false }}>
-      <AuthStack.Screen name="HomeNavigator" component={HomeStackNavigator} />
-      <AuthStack.Screen name="Mailbox" component={MailboxScreen} />
-      <AuthStack.Screen
+    <AppStack.Navigator screenOptions={{ headerShown: false }}>
+      <AppStack.Screen name="HomeNavigator" component={HomeStackNavigator} />
+      <AppStack.Screen name="Mailbox" component={MailboxScreen} />
+      <AppStack.Screen
         name="ProfileNavigator"
         component={ProfileStackNavigator}
       />
-    </AuthStack.Navigator>
+    </AppStack.Navigator>
   );
 };
 

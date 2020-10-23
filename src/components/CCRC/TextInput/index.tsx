@@ -19,6 +19,7 @@ interface Props extends TextInputProps {
   outline?: boolean;
   valid?: boolean;
   error?: string;
+  errorPosition?: 'absolute' | 'relative';
   style?: ViewStyle;
   inputStyle?: TextStyle;
 }
@@ -27,6 +28,7 @@ const CustomTextInput: FunctionComponent<Props> = ({
   outline,
   valid,
   error,
+  errorPosition = 'relative',
   style,
   inputStyle,
   secureTextEntry,
@@ -68,7 +70,9 @@ const CustomTextInput: FunctionComponent<Props> = ({
       </View>
       <View style={styles.anchor}>
         {error !== undefined && (
-          <Text style={[styles.errorText, styles.anchorItem]}>{error}</Text>
+          <Text style={[styles.errorText, { position: errorPosition }]}>
+            {error}
+          </Text>
         )}
       </View>
     </>

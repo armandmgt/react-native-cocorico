@@ -2,7 +2,7 @@ import React, { FunctionComponent } from 'react';
 import { View, Text } from 'react-native';
 
 import { StackNavigationProp } from '@react-navigation/stack';
-import { ErrorMessage, Formik, FormikHelpers } from 'formik';
+import { Formik, FormikHelpers } from 'formik';
 import * as Yup from 'yup';
 
 import CCRCButton from '@cocorico/components/CCRC/Button';
@@ -39,10 +39,6 @@ const ProfileScreen: FunctionComponent<Props> = () => {
     actions.setSubmitting(false);
   };
 
-  const renderError = (message: string) => (
-    <Text style={styles.error}>{message}</Text>
-  );
-
   return (
     <FullScreenContainer>
       <Formik
@@ -57,36 +53,43 @@ const ProfileScreen: FunctionComponent<Props> = () => {
           isValid,
           isSubmitting,
           values,
-        }) => (
-          <View>
-            <View style={styles.field}>
-              <Text>Prénom</Text>
-              <CCRCTextInput
-                onChangeText={handleChange('firstName')}
-                onBlur={handleBlur('firstName')}
-                value={values.firstName}
-                style={styles.input}
+          touched,
+          errors,
+        }) => {
+          const errorIfPresent = (field: keyof FormValues) =>
+            touched[field] && errors[field] ? errors[field] : undefined;
+
+          return (
+            <View>
+              <View style={styles.field}>
+                <Text>Prénom</Text>
+                <CCRCTextInput
+                  onChangeText={handleChange('firstName')}
+                  onBlur={handleBlur('firstName')}
+                  value={values.firstName}
+                  style={styles.input}
+                  error={errorIfPresent('firstName')}
+                />
+              </View>
+              <View style={styles.field}>
+                <Text>Nom de famille</Text>
+                <CCRCTextInput
+                  onChangeText={handleChange('lastName')}
+                  onBlur={handleBlur('lastName')}
+                  value={values.lastName}
+                  style={styles.input}
+                  error={errorIfPresent('lastName')}
+                />
+              </View>
+              <CCRCButton
+                onPress={() => handleSubmit()}
+                title="Enregistrer"
+                disabled={!isValid || isSubmitting}
+                variant="gradient"
               />
-              <ErrorMessage render={renderError} name="firstName" />
             </View>
-            <View style={styles.field}>
-              <Text>Nom de famille</Text>
-              <CCRCTextInput
-                onChangeText={handleChange('lastName')}
-                onBlur={handleBlur('lastName')}
-                value={values.lastName}
-                style={styles.input}
-              />
-              <ErrorMessage render={renderError} name="lastName" />
-            </View>
-            <CCRCButton
-              onPress={() => handleSubmit()}
-              title="Enregistrer"
-              disabled={!isValid || isSubmitting}
-              variant="gradient"
-            />
-          </View>
-        )}
+          );
+        }}
       </Formik>
     </FullScreenContainer>
   );

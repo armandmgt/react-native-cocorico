@@ -7,17 +7,17 @@ import HomeScreen from '@cocorico/views/AppStack/HomeStack/HomeScreen';
 
 import type { TypedNavigatorParams } from '@cocorico/components/Navigator/types';
 
-const LoginStackNavigator = () => {
-  const LoginStack = createStackNavigator<
+const HomeStackNavigator = () => {
+  const HomeStack = createStackNavigator<
     TypedNavigatorParams<'HomeNavigator'>
   >();
 
   return (
-    <LoginStack.Navigator screenOptions={{ headerShown: false }}>
-      <LoginStack.Screen name="Home" component={HomeScreen} />
-      <LoginStack.Screen name="Details" component={DetailsScreen} />
-    </LoginStack.Navigator>
+    <HomeStack.Navigator screenOptions={{ headerShown: false }}>
+      <HomeStack.Screen name="Home" component={HomeScreen} />
+      <HomeStack.Screen name="Details" component={DetailsScreen} />
+    </HomeStack.Navigator>
   );
 };
 
-export default LoginStackNavigator;
+export default HomeStackNavigator;

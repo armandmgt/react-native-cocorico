@@ -40,7 +40,4 @@ export default StyleSheet.create({
     position: 'relative',
     alignItems: 'center',
   },
-  anchorItem: {
-    position: 'absolute',
-  },
 });
