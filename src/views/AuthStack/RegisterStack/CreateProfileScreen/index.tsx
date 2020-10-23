@@ -1,15 +1,18 @@
 import React, { FunctionComponent, useState } from 'react';
-import { StackNavigationProp } from '@react-navigation/stack';
 import { StyleSheet, View, Text } from 'react-native';
+
+import { StackNavigationProp } from '@react-navigation/stack';
 import { connect } from 'react-redux';
 
-import Title from '@cocorico/components/Texts/Title';
-import CCRCTextInput from '@cocorico/components/Inputs/Text';
-import CCRCButton from '@cocorico/components/Inputs/Button';
+import CCRCButton from '@cocorico/components/CCRC/Button';
+import CCRCTextInput from '@cocorico/components/CCRC/TextInput';
 import FullScreenContainer from '@cocorico/components/FullScreenContainer';
-import { Roboto } from '@cocorico/constants/fonts';
-import type { Dispatch } from '@cocorico/services/store';
 import type { RegisterStackParamList } from '@cocorico/components/Navigator/types';
+import Title from '@cocorico/components/Texts/Title';
+
+import type { Dispatch } from '@cocorico/services/store';
+
+import { Roboto } from '@cocorico/constants/fonts';
 
 const isValidName = (name: string) =>
   !!name.match(/^([A-zÀ-ú]+-?)+([A-zÀ-ú]+)$/);

@@ -1,5 +1,6 @@
 import React, { FunctionComponent } from 'react';
-import { View } from 'react-native';
+import { View, Text } from 'react-native';
+
 import { StackNavigationProp } from '@react-navigation/stack';
 
 import type { HomeStackParamList } from '@cocorico/components/Navigator';
@@ -9,7 +10,11 @@ interface Props {
 }
 
 const HomeScreen: FunctionComponent<Props> = () => {
-  return <View>Home Screen</View>;
+  return (
+    <View>
+      <Text>Home Screen</Text>
+    </View>
+  );
 };
 
 export default HomeScreen;

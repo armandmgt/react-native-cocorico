@@ -12,7 +12,6 @@ const styles = StyleSheet.create({
   root: {
     paddingHorizontal: 35,
     flex: 1,
-    display: 'flex',
     flexDirection: 'column',
     justifyContent: 'center',
   },

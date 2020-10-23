@@ -1,32 +1,94 @@
-import React from 'react';
-import { StackNavigationProp } from '@react-navigation/stack';
-import { StyleSheet, Button, View, Text } from 'react-native';
+import React, { FunctionComponent } from 'react';
+import { View, Text, Keyboard } from 'react-native';
 
-import type { LoginStackParamList } from '@cocorico/components/Navigator/types';
+import { StackNavigationProp } from '@react-navigation/stack';
+
+import CCRCButton from '@cocorico/components/CCRC/Button';
+import CCRCTextInput from '@cocorico/components/CCRC/TextInput';
+import CCRCExpandedText from '@cocorico/components/ExpandedText';
+import type { TypedNavigatorParams } from '@cocorico/components/Navigator/types';
+
+import Firebase from '@cocorico/services/firebase';
+import { isValidEmail } from '@cocorico/services/utils';
+import { useValues } from '@cocorico/services/utils/hooks';
+
+import spacing from '@cocorico/constants/spacing';
+
+import styles from './index.styles';
 
 interface Props {
-  navigation: StackNavigationProp<LoginStackParamList, 'ForgotPassword'>;
+  navigation: StackNavigationProp<TypedNavigatorParams<'AuthNavigator'>>;
 }
 
-const ForgotPasswordScreen = ({ navigation }: Props) => {
+const ForgotPasswordScreen: FunctionComponent<Props> = ({
+  navigation,
+}: Props) => {
+  const [{ email }, updateValue] = useValues<{
+    email: string;
+  }>({
+    email: 'maxime.blanchard2@free.fr',
+  });
+
+  const handleSubmit = async () => {
+    Keyboard.dismiss();
+
+    if (!isValidEmail(email)) return;
+
+    const userDoesExist = await Firebase.doesUserExist(email);
+
+    if (userDoesExist) {
+      navigation.navigate('LoginNavigator', {
+        screen: 'EnterPassword',
+        params: { email },
+      });
+    } else {
+      navigation.navigate('RegisterNavigator', {
+        screen: 'CreateProfile',
+        params: { email },
+      });
+    }
+  };
+
   return (
     <View style={styles.container}>
-      <Text>ForgotPassword Screen</Text>
-      <Button
-        title="pushEnterPassword"
-        onPress={() => navigation.push('EnterPassword')}
+      <View style={styles.content}>
+        <Text style={[styles.text, { ...spacing.mgb1 }]}>
+          Ça arrive a tout le monde
+          <Text style={styles.coloredText}>.</Text>
+        </Text>
+        <Text style={[styles.helperText, { ...spacing.mgb4 }]}>
+          Vérifiez l&apos;adresse mail à laquelle nous allons vous envoyer un
+          lien de réinitialisation de votre mot de passe
+        </Text>
+        <CCRCTextInput
+          outline
+          valid={!email || isValidEmail(email)}
+          value={email}
+          onChangeText={updateValue('email')}
+          placeholder="Adresse email"
+          keyboardType="email-address"
+          textContentType="emailAddress"
+          autoCompleteType="email"
+          autoCapitalize="none"
+          returnKeyType="next"
+          onSubmitEditing={handleSubmit}
+        />
+      </View>
+      <CCRCButton
+        disabled={!isValidEmail(email)}
+        style={styles.button}
+        title="Confirmer l'adresse mail"
+        onPress={handleSubmit}
       />
-      <Button title="goBack" onPress={() => navigation.goBack()} />
+      <CCRCButton
+        variant="outline"
+        disabled={!isValidEmail(email)}
+        style={styles.button}
+        title="Continuer"
+        onPress={handleSubmit}
+      />
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
 
 export default ForgotPasswordScreen;

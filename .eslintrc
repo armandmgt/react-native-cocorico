@@ -31,6 +31,10 @@
     ],
 
     "react/jsx-filename-extension": ["error", { "extensions": [".tsx"] }],
+    "react/jsx-wrap-multilines": [
+      "error",
+      { "declaration": false, "assignment": false }
+    ],
 
     "react/jsx-props-no-spreading": "off",
     "react/require-default-props": "off",
@@ -44,23 +48,37 @@
     "import/order": [
       "error",
       {
-        "newlines-between": "always",
-        "groups": [
-          "builtin",
-          "external",
-          "internal",
-          "parent",
-          "sibling",
-          "index",
-          "object"
-        ],
+        "groups": ["builtin", "external", "internal", ["parent", "sibling"]],
         "pathGroups": [
           {
-            "pattern": "@cocorico/**",
+            "pattern": "react+(|-native)",
+            "group": "external",
+            "position": "before"
+          },
+          {
+            "pattern": "@cocorico/views/**",
             "group": "internal",
-            "position": "after"
+            "position": "before"
+          },
+          {
+            "pattern": "@cocorico/components/**",
+            "group": "internal",
+            "position": "before"
+          },
+          {
+            "pattern": "@cocorico/services/**",
+            "group": "internal",
+            "position": "before"
+          },
+          {
+            "pattern": "@cocorico/constants/**",
+            "group": "internal",
+            "position": "before"
           }
-        ]
+        ],
+        "pathGroupsExcludedImportTypes": ["builtin"],
+        "newlines-between": "always",
+        "alphabetize": { "order": "asc", "caseInsensitive": true }
       }
     ],
 

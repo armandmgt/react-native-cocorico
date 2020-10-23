@@ -1,110 +1,95 @@
-import React, { FunctionComponent, useState } from 'react';
-import { StyleSheet, View, Text } from 'react-native';
+import React, { FunctionComponent } from 'react';
+import { View, Text, Keyboard } from 'react-native';
+
 import { StackNavigationProp } from '@react-navigation/stack';
-import { connect } from 'react-redux';
 
-import { firestore } from '@cocorico/services/firebase';
-import Title from '@cocorico/components/Texts/Title';
-import CCRCTextInput from '@cocorico/components/Inputs/Text';
-import CCRCButton from '@cocorico/components/Inputs/Button';
-import FullScreenContainer from '@cocorico/components/FullScreenContainer';
-import { Roboto } from '@cocorico/constants/fonts';
-import type { Dispatch } from '@cocorico/services/store';
-import type { AuthStackParamList } from '@cocorico/components/Navigator/types';
+import CCRCButton from '@cocorico/components/CCRC/Button';
+import CCRCTextInput from '@cocorico/components/CCRC/TextInput';
+import CCRCExpandedText from '@cocorico/components/ExpandedText';
+import type { TypedNavigatorParams } from '@cocorico/components/Navigator/types';
 
-const isValidEmail = (email: string) =>
-  !!email.match(
-    /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
-  );
+import Firebase from '@cocorico/services/firebase';
+import { isValidEmail } from '@cocorico/services/utils';
+import { useValues } from '@cocorico/services/utils/hooks';
 
-interface Props extends DispatchProps {
-  navigation: StackNavigationProp<AuthStackParamList, 'Account'>;
+import spacing from '@cocorico/constants/spacing';
+
+import styles from './index.styles';
+
+interface Props {
+  navigation: StackNavigationProp<TypedNavigatorParams<'AuthNavigator'>>;
 }
 
-interface State {
-  email: string;
-  dirty: boolean;
-}
-
-const AccountScreen: FunctionComponent<Props> = ({
-  navigation,
-  storeEmail,
-}: Props) => {
-  const [{ email, dirty }, setEmail] = useState<State>({
-    email: '',
-    dirty: false,
+const AccountScreen: FunctionComponent<Props> = ({ navigation }: Props) => {
+  const [{ email }, updateValue] = useValues<{
+    email: string;
+  }>({
+    email: 'maxime.blanchard2@free.fr',
   });
 
   const handleSubmit = async () => {
-    if (isValidEmail(email)) {
-      try {
-        storeEmail(email);
-        const doc = await firestore.collection('users').doc(email).get();
-        if (doc.exists) {
-          navigation.navigate('Login', { screen: 'EnterPassword' });
-        } else {
-          navigation.navigate('Register', { screen: 'CreateProfile' });
-        }
-      } catch (err) {
-        // Show error somehow
-      }
+    Keyboard.dismiss();
+
+    if (!isValidEmail(email)) return;
+
+    const userDoesExist = await Firebase.doesUserExist(email);
+
+    if (userDoesExist) {
+      navigation.navigate('LoginNavigator', {
+        screen: 'EnterPassword',
+        params: { email },
+      });
+    } else {
+      navigation.navigate('RegisterNavigator', {
+        screen: 'CreateProfile',
+        params: { email },
+      });
     }
   };
 
   return (
-    <FullScreenContainer>
+    <View style={styles.container}>
       <View style={styles.content}>
-        <Title>Cocoricooo !</Title>
-        <Text style={styles.helperText}>
+        <Text style={styles.text}>Bienvenue</Text>
+        <View style={styles.titleContainer}>
+          <Text style={[styles.text, { ...spacing.pgr1 }]}>sur</Text>
+          <CCRCExpandedText
+            start="Cocoric"
+            fill="o"
+            end="o"
+            characterWidth={27}
+            style={[styles.textImpact, { ...spacing.pgr1 }]}
+            after={
+              <Text style={[styles.textImpact, styles.coloredText]}>!</Text>
+            }
+          />
+        </View>
+        <Text style={[styles.helperText, { ...spacing.mgb4 }]}>
           Pour commencer, entrez votre adresse email.
         </Text>
         <CCRCTextInput
           outline
-          style={styles.input}
-          valid={dirty ? isValidEmail(email) : undefined}
+          valid={!email || isValidEmail(email)}
           value={email}
-          onChangeText={(value: string) => {
-            setEmail({ email: value, dirty: true });
-          }}
+          onChangeText={updateValue('email')}
           placeholder="Adresse email"
           keyboardType="email-address"
           textContentType="emailAddress"
           autoCompleteType="email"
           autoCapitalize="none"
+          returnKeyType="next"
+          onSubmitEditing={handleSubmit}
         />
       </View>
       <CCRCButton
+        variant="gradient"
+        disabled={!isValidEmail(email)}
         style={styles.button}
         title="Continuer"
         onPress={handleSubmit}
       />
-    </FullScreenContainer>
+    </View>
   );
 };
 
-const styles = StyleSheet.create({
-  content: {
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'center',
-    flexGrow: 1,
-  },
-  helperText: {
-    fontFamily: Roboto[400],
-    fontSize: 16,
-    marginBottom: 32,
-  },
-  input: {
-    height: 66,
-  },
-  button: {
-    marginVertical: 40,
-  },
-});
-
-const mapDispatch = (dispatch: Dispatch) => ({
-  storeEmail: (email: string) => dispatch.auth.setEmail(email),
-});
-type DispatchProps = ReturnType<typeof mapDispatch>;
-
-export default connect(null, mapDispatch)(AccountScreen);
+export default AccountScreen;

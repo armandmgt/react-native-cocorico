@@ -1,96 +1,101 @@
 import React, { FunctionComponent, useState } from 'react';
+import { View, Text } from 'react-native';
+
+import { RouteProp } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
-import { StyleSheet, View, Text } from 'react-native';
-import { connect } from 'react-redux';
 
-import { auth } from '@cocorico/services/firebase';
-import FullScreenContainer from '@cocorico/components/FullScreenContainer';
-import Title from '@cocorico/components/Texts/Title';
-import CCRCTextInput from '@cocorico/components/Inputs/Text';
-import CCRCButton from '@cocorico/components/Inputs/Button';
-import { Roboto } from '@cocorico/constants/fonts';
-import type { RootState } from '@cocorico/services/store';
-import type { LoginStackParamList } from '@cocorico/components/Navigator/types';
+import CCRCButton from '@cocorico/components/CCRC/Button';
+import CCRCTextButton from '@cocorico/components/CCRC/TextButton';
+import CCRCTextInput from '@cocorico/components/CCRC/TextInput';
+import type { TypedNavigatorParams } from '@cocorico/components/Navigator/types';
 
-interface Props extends StateProps {
-  navigation: StackNavigationProp<LoginStackParamList, 'EnterPassword'>;
+import Firebase from '@cocorico/services/firebase';
+import { useValues } from '@cocorico/services/utils/hooks';
+
+import spacing from '@cocorico/constants/spacing';
+
+import styles from './index.styles';
+
+interface Props {
+  navigation: StackNavigationProp<TypedNavigatorParams<'LoginNavigator'>>;
+  route: RouteProp<TypedNavigatorParams<'LoginNavigator'>, 'EnterPassword'>;
 }
 
-type State = string;
-
-const EnterPasswordScreen: FunctionComponent<Props> = ({ email }: Props) => {
+const EnterPasswordScreen: FunctionComponent<Props> = ({
+  navigation,
+  route: {
+    params: { email },
+  },
+}: Props) => {
   const [loading, setLoading] = useState<boolean>(false);
-  const [password, setPassword] = useState<State>('');
   const [error, setError] = useState<string>('');
 
+  const [{ password }, updateValue] = useValues<{
+    password: string;
+  }>({
+    password: '',
+  });
+
+  const handleTextChange = (value: string) => {
+    setError('');
+    updateValue('password')(value);
+  };
+
+  const handleForgotPassword = () => {
+    navigation.push('ForgotPassword', { email });
+  };
+
   const handleSubmit = async () => {
-    try {
-      if (email) {
-        setLoading(true);
-        await auth.signInWithEmailAndPassword(email, password);
-      }
-    } catch (err) {
-      setLoading(false);
-      setError(err.message);
+    setLoading(true);
+
+    const result = await Firebase.login(email, password);
+
+    setLoading(false);
+    if (!result.success) {
+      if (result.error?.message) setError(result.error.message);
     }
   };
 
   return (
-    <FullScreenContainer>
+    <View style={styles.container}>
       <View style={styles.content}>
-        <Title>C&apos;est chouette de vous revoir.</Title>
-        <Text style={styles.helperText}>
+        <Text style={[styles.text, { ...spacing.mgb1 }]}>
+          C&apos;est chouette de vous revoir
+          <Text style={styles.coloredText}>.</Text>
+        </Text>
+        <Text style={[styles.helperText, { ...spacing.mgb4 }]}>
           Renseignez votre mot de passe afin de vous connecter.
         </Text>
         <CCRCTextInput
           outline
-          style={styles.input}
+          valid={!error}
+          error={error}
           autoFocus
           value={password}
           secureTextEntry
-          onChangeText={(value: string) => {
-            setPassword(value);
-          }}
+          onChangeText={handleTextChange}
           placeholder="Votre mot de passe"
           keyboardType="default"
           textContentType="password"
           autoCompleteType="password"
+          returnKeyType="next"
+          onSubmitEditing={handleSubmit}
         />
-        <Text>{error}</Text>
       </View>
-      <CCRCButton
-        style={styles.button}
-        title="Continuer"
-        onPress={handleSubmit}
-        disabled={loading}
+      <CCRCTextButton
+        style={{ ...spacing.mgb2 }}
+        title="Mot de passe oublié ?"
+        onPress={handleForgotPassword}
       />
-    </FullScreenContainer>
+      <CCRCButton
+        variant="gradient"
+        disabled={loading}
+        style={styles.button}
+        title="Connexion"
+        onPress={handleSubmit}
+      />
+    </View>
   );
 };
 
-const styles = StyleSheet.create({
-  content: {
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'center',
-    flexGrow: 1,
-  },
-  helperText: {
-    fontFamily: Roboto[400],
-    fontSize: 16,
-    marginBottom: 32,
-  },
-  input: {
-    height: 66,
-  },
-  button: {
-    marginVertical: 40,
-  },
-});
-
-const mapState = (state: RootState) => ({
-  email: state.auth.email,
-});
-type StateProps = ReturnType<typeof mapState>;
-
-export default connect(mapState, null)(EnterPasswordScreen);
+export default EnterPasswordScreen;

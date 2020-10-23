@@ -1,5 +1,6 @@
-import { createModel } from '@rematch/core';
 import { Alert } from 'react-native';
+
+import { createModel } from '@rematch/core';
 
 import { auth, firestore } from '@cocorico/services/firebase';
 

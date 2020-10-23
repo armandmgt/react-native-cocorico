@@ -1,43 +1,29 @@
 import React from 'react';
+
 import { createStackNavigator } from '@react-navigation/stack';
 
-import type { NestedNavigatorParams } from '@cocorico/constants/types';
 import AccountScreen from '@cocorico/views/AuthStack/AccountScreen';
 
-import LoginStackNavigator, { LoginStackParamList } from './LoginNavigator';
-import RegisterStackNavigator, {
-  RegisterStackParamList,
-} from './RegisterNavigator';
+import type { TypedNavigatorParams } from '@cocorico/components/Navigator/types';
 
-type AuthStackParamList = {
-  Account: undefined;
-  Login: NestedNavigatorParams<LoginStackParamList>;
-  Register: NestedNavigatorParams<RegisterStackParamList>;
-};
+import LoginStackNavigator from './LoginNavigator';
+import RegisterStackNavigator from './RegisterNavigator';
 
 const AuthStackNavigator = () => {
-  const AuthStack = createStackNavigator<AuthStackParamList>();
+  const AuthStack = createStackNavigator<
+    TypedNavigatorParams<'AuthNavigator'>
+  >();
 
   return (
-    <AuthStack.Navigator initialRouteName="Account">
+    <AuthStack.Navigator screenOptions={{ headerShown: false }}>
+      <AuthStack.Screen name="Account" component={AccountScreen} />
+      <AuthStack.Screen name="LoginNavigator" component={LoginStackNavigator} />
       <AuthStack.Screen
-        name="Account"
-        component={AccountScreen}
-        options={{ headerShown: false }}
-      />
-      <AuthStack.Screen
-        name="Login"
-        options={{ headerShown: false }}
-        component={LoginStackNavigator}
-      />
-      <AuthStack.Screen
-        name="Register"
-        options={{ headerShown: false }}
+        name="RegisterNavigator"
         component={RegisterStackNavigator}
       />
     </AuthStack.Navigator>
   );
 };
 
-export type { LoginStackParamList, RegisterStackParamList, AuthStackParamList };
 export default AuthStackNavigator;

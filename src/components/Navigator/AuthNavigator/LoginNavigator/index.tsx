@@ -1,24 +1,20 @@
 import React from 'react';
+
 import { createStackNavigator } from '@react-navigation/stack';
 
 import EnterPasswordScreen from '@cocorico/views/AuthStack/LoginStack/EnterPasswordScreen';
 import ForgotPasswordScreen from '@cocorico/views/AuthStack/LoginStack/ForgotPasswordScreen';
 
-export type LoginStackParamList = {
-  EnterPassword: undefined;
-  ForgotPassword: undefined;
-};
+import type { TypedNavigatorParams } from '@cocorico/components/Navigator/types';
 
 const LoginStackNavigator = () => {
-  const LoginStack = createStackNavigator<LoginStackParamList>();
+  const LoginStack = createStackNavigator<
+    TypedNavigatorParams<'LoginNavigator'>
+  >();
 
   return (
-    <LoginStack.Navigator>
-      <LoginStack.Screen
-        name="EnterPassword"
-        options={{ headerShown: false }}
-        component={EnterPasswordScreen}
-      />
+    <LoginStack.Navigator screenOptions={{ headerShown: false }}>
+      <LoginStack.Screen name="EnterPassword" component={EnterPasswordScreen} />
       <LoginStack.Screen
         name="ForgotPassword"
         component={ForgotPasswordScreen}

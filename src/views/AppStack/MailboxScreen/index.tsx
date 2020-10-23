@@ -1,5 +1,6 @@
 import React, { FunctionComponent } from 'react';
 import { View } from 'react-native';
+
 import { StackNavigationProp } from '@react-navigation/stack';
 
 import type { MailboxStackParamList } from '@cocorico/components/Navigator';
