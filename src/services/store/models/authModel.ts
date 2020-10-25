@@ -1,16 +1,17 @@
 import { createModel } from '@rematch/core';
 
-import { AuthStatus } from '@cocorico/constants/types';
+import { AuthStatus, UserData } from '@cocorico/constants/types';
 
 import { RootModel } from './types';
 
 interface AuthState {
-  email?: string;
   authStatus: AuthStatus;
+  user: UserData | null;
 }
 
 const INITIAL_STATE: AuthState = {
   authStatus: 'LOADING',
+  user: null,
 };
 
 const authModel = createModel<RootModel>()({
@@ -19,8 +20,8 @@ const authModel = createModel<RootModel>()({
     setAuthStatus(state, payload: AuthStatus) {
       return { ...state, authStatus: payload };
     },
-    setEmail(state, email: string) {
-      return { ...state, email };
+    setUser(state, payload: UserData) {
+      return { ...state, user: payload };
     },
   },
 });

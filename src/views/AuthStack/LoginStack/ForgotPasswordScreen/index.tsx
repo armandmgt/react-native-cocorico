@@ -32,6 +32,7 @@ interface FormValues {
 const ForgotPasswordSchema = Yup.object().shape({
   email: Yup.string()
     .email("C'est une adresse email ça ?!")
+    .trim()
     .required('Il nous manque une adresse email...'),
 });
 
@@ -45,9 +46,10 @@ const ForgotPasswordScreen: FunctionComponent<Props> = ({
 
   const handleFormikSubmit = async ({ email }: FormValues) => {
     Keyboard.dismiss();
+    const emailSafe = email.trim();
 
-    await Firebase.askResetPassword(email);
-    navigation.push('ForgotPasswordConfirmation', { email });
+    await Firebase.askResetPassword(emailSafe);
+    navigation.push('ForgotPasswordConfirmation', { email: emailSafe });
   };
 
   const handleGoBack = () => {
@@ -73,7 +75,7 @@ const ForgotPasswordScreen: FunctionComponent<Props> = ({
             Ça arrive a tout le monde
             <Text style={styles.coloredText}>.</Text>
           </TextView>
-          <TextView style={[styles.helperText, { ...spacing.mgb4 }]}>
+          <TextView style={[styles.helperText, { ...spacing.mgb3 }]}>
             Vérifiez l&apos;adresse mail à laquelle nous allons vous envoyer un
             lien de réinitialisation de votre mot de passe
           </TextView>
@@ -86,6 +88,7 @@ const ForgotPasswordScreen: FunctionComponent<Props> = ({
             keyboardType="email-address"
             placeholder="Adresse email"
             returnKeyType="done"
+            style={{ ...spacing.mgb1 }}
             textContentType="emailAddress"
             valid={!getError('email')}
             value={email}
@@ -102,7 +105,7 @@ const ForgotPasswordScreen: FunctionComponent<Props> = ({
           onPress={() => handleSubmit()}
         />
         <CCRCButton
-          style={{ ...spacing.mgb4 }}
+          style={{ ...spacing.mgb2 }}
           title="Retour"
           variant="outline"
           onPress={handleGoBack}

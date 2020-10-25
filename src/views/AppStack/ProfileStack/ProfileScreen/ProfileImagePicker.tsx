@@ -1,4 +1,4 @@
-import React, { FunctionComponent, useState } from 'react';
+import React, { FunctionComponent, useState, useEffect } from 'react';
 import {
   Button,
   Image,
@@ -10,14 +10,15 @@ import {
   TouchableWithoutFeedback,
   Pressable,
 } from 'react-native';
-import { StatusBar } from 'expo-status-bar';
 
 import * as ImagePicker from 'expo-image-picker';
+import { StatusBar } from 'expo-status-bar';
 
 import CCRCButton from '@cocorico/components/CCRC/Button';
 
-import styles from './ProfileImagePicker.styles';
 import colors from '@cocorico/constants/colors';
+
+import styles from './ProfileImagePicker.styles';
 
 type State = string | undefined;
 
@@ -30,6 +31,23 @@ const ProfileImagePicker: FunctionComponent<Props> = ({ onValueChange }) => {
   const [pickerModalVisible, setPickerModalVisible] = useState<boolean>(false);
 
   const closeModal = () => setPickerModalVisible(false);
+
+  useEffect(() => {
+    const getPermission = async (
+      permissionFnc:
+        | 'requestCameraPermissionsAsync'
+        | 'requestCameraRollPermissionsAsync',
+    ) => {
+      if (Platform.OS !== 'web') {
+        const { status } = await ImagePicker[permissionFnc]();
+        if (status !== 'granted') {
+          alert('Sorry, we need camera roll permissions to make this work!');
+        }
+      }
+    };
+    getPermission('requestCameraPermissionsAsync');
+    getPermission('requestCameraRollPermissionsAsync');
+  }, []);
 
   const pickImage = async (fromCamera: boolean = false) => {
     const options: ImagePicker.ImagePickerOptions = {
@@ -87,11 +105,11 @@ const ProfileImagePicker: FunctionComponent<Props> = ({ onValueChange }) => {
   return (
     <View style={styles.panel}>
       <Modal
-        animationType="slide"
+        statusBarTranslucent
         transparent
+        animationType="slide"
         visible={pickerModalVisible}
         onRequestClose={closeModal}
-        statusBarTranslucent
       >
         <>
           <TouchableWithoutFeedback onPress={closeModal}>

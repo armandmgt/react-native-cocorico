@@ -93,11 +93,17 @@ const CreateAccountScreen: FunctionComponent<Props> = ({
     return (
       <>
         <View style={styles.content}>
-          <TextView style={[styles.text, { ...spacing.mgb1 }]}>
+          <TextView
+            shrinkable
+            containerStyle={styles.titleContainer}
+            lineHeight={40}
+            numberOfLines={2}
+            style={styles.text}
+          >
             Une dernière petite chose
             <Text style={styles.coloredText}>.</Text>
           </TextView>
-          <TextView style={[styles.helperText, { ...spacing.mgb4 }]}>
+          <TextView style={[styles.helperText, { ...spacing.mgb3 }]}>
             Afin de mieux vous connaître, veuillez renseigner ces champs.
           </TextView>
           <CCRCTextInput
@@ -123,6 +129,7 @@ const CreateAccountScreen: FunctionComponent<Props> = ({
             placeholder="Nom"
             ref={lastNameRef}
             returnKeyType="done"
+            style={{ ...spacing.mgb3 }}
             textContentType="familyName"
             valid={!getError('lastName')}
             value={lastName}
@@ -133,7 +140,7 @@ const CreateAccountScreen: FunctionComponent<Props> = ({
         </View>
         <CCRCButton
           disabled={!isValid || isSubmitting}
-          style={{ ...spacing.mgb4 }}
+          style={{ ...spacing.mgb2 }}
           title="C'est parti !"
           variant="gradient"
           onPress={() => handleSubmit()}
@@ -144,7 +151,7 @@ const CreateAccountScreen: FunctionComponent<Props> = ({
 
   return (
     <AuthContainer hasBackButton>
-      <CCRCKeyboardAvoindingView>
+      <CCRCKeyboardAvoindingView offset={36}>
         <Formik
           initialValues={initialValues}
           validationSchema={CreateAccountSchema}

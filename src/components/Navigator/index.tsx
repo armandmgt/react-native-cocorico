@@ -27,15 +27,13 @@ const Navigator = ({ appStatus, authStatus, setAuthStatus }: Props) => {
   };
 
   useEffect(() => {
-    const unsubscribeAuth = auth.onAuthStateChanged(async (authUser) => {
-      try {
-        await (authUser
-          ? setAuthStatus('LOGGED_IN')
-          : setAuthStatus('LOGGED_OUT'));
-      } catch (error) {
-        throw Error(error);
-      }
+    const unsubscribeAuth = auth.onAuthStateChanged((authUser) => {
+      if (authUser) {
+        console.log('authUser :', auth.currentUser);
+        setAuthStatus('LOGGED_IN');
+      } else setAuthStatus('LOGGED_OUT');
     });
+
     return unsubscribeAuth;
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

@@ -78,7 +78,7 @@ const EnterPasswordScreen: FunctionComponent<Props> = ({
             C&apos;est chouette de vous revoir
             <Text style={styles.coloredText}>.</Text>
           </TextView>
-          <TextView style={[styles.helperText, { ...spacing.mgb4 }]}>
+          <TextView style={[styles.helperText, { ...spacing.mgb3 }]}>
             Renseignez votre mot de passe afin de vous connecter.
           </TextView>
           <CCRCTextInput
@@ -117,7 +117,7 @@ const EnterPasswordScreen: FunctionComponent<Props> = ({
 
   return (
     <AuthContainer hasBackButton>
-      <CCRCKeyboardAvoindingView>
+      <CCRCKeyboardAvoindingView offset={36}>
         <Formik
           initialValues={initialValues}
           validationSchema={EnterPasswordSchema}

@@ -1,12 +1,37 @@
 import React, { FunctionComponent } from 'react';
-import { View, Text, TextProps } from 'react-native';
+import { View, Text, TextProps, ViewStyle } from 'react-native';
 
-interface Props extends TextProps {}
+import styles from './textView.styles';
 
-const TextView: FunctionComponent<Props> = (props) => {
+interface Props extends TextProps {
+  shrinkable?: boolean;
+  lineHeight?: number;
+  containerStyle?: ViewStyle;
+}
+
+const TextView: FunctionComponent<Props> = ({
+  shrinkable,
+  lineHeight,
+  containerStyle,
+  numberOfLines,
+  ...other
+}) => {
+  const getShrinkableStyle = () => {
+    const safeNumberOfLines = numberOfLines || 0;
+    const safeLineHeight = lineHeight || 20;
+
+    return [
+      styles.shrinkable,
+      {
+        minHeight: safeLineHeight,
+        maxHeight: safeNumberOfLines * safeLineHeight,
+      },
+    ];
+  };
+
   return (
-    <View>
-      <Text {...props} />
+    <View style={[shrinkable && getShrinkableStyle(), containerStyle]}>
+      <Text numberOfLines={numberOfLines} {...other} />
     </View>
   );
 };

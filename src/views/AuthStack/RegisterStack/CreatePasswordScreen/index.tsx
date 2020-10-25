@@ -76,16 +76,21 @@ const CreatePasswordScreen: FunctionComponent<Props> = ({
     return (
       <>
         <View style={styles.content}>
-          <TextView style={[styles.text, { ...spacing.mgb1 }]}>
+          <TextView
+            shrinkable
+            containerStyle={styles.titleContainer}
+            lineHeight={40}
+            numberOfLines={2}
+            style={styles.text}
+          >
             C&apos;est votre première fois ici
             <Text style={styles.coloredText}>.</Text>
           </TextView>
-          <TextView style={[styles.helperText, { ...spacing.mgb4 }]}>
+          <TextView style={[styles.helperText, { ...spacing.mgb3 }]}>
             Veuillez chosisir le mot de passe qui vous permettra de vous
             connecter.
           </TextView>
           <CCRCTextInput
-            autoFocus
             outline
             secureTextEntry
             anchorStyle={styles.errorContainer}
@@ -114,6 +119,7 @@ const CreatePasswordScreen: FunctionComponent<Props> = ({
             placeholder="Confirmation de votre mot de passe"
             ref={passwordConfirmationRef}
             returnKeyType="done"
+            style={{ ...spacing.mgb3 }}
             textContentType="password"
             valid={!getError('passwordConfirmation')}
             value={passwordConfirmation}
@@ -124,7 +130,7 @@ const CreatePasswordScreen: FunctionComponent<Props> = ({
         </View>
         <CCRCButton
           disabled={!isValid || isSubmitting}
-          style={{ ...spacing.mgb4 }}
+          style={{ ...spacing.mgb2 }}
           title="Choisir le mot de passe"
           variant="gradient"
           onPress={() => handleSubmit()}
@@ -135,7 +141,7 @@ const CreatePasswordScreen: FunctionComponent<Props> = ({
 
   return (
     <AuthContainer hasBackButton>
-      <CCRCKeyboardAvoindingView>
+      <CCRCKeyboardAvoindingView offset={36}>
         <Formik
           initialValues={initialValues}
           validationSchema={CreatePasswordSchema}

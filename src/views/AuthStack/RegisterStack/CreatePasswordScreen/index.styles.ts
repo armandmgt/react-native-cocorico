@@ -10,6 +10,10 @@ export default StyleSheet.create({
     justifyContent: 'center',
     flexGrow: 1,
   },
+  titleContainer: {
+    ...spacing.mgt2,
+    ...spacing.mgb1,
+  },
   text: {
     fontFamily: Roboto[700],
     fontSize: 40,

@@ -24,11 +24,13 @@ const AuthContainer: FunctionComponent<Props> = ({
 
   return (
     <SafeAreaView style={styles.safeContainer}>
-      <TouchableWithoutFeedback accessible={false} onPress={handleScreenPress}>
-        <View style={styles.container}>
-          {!!hasBackButton && <BackButton style={styles.backButton} />}
-          {children}
-        </View>
+      <View style={styles.header}>{!!hasBackButton && <BackButton />}</View>
+      <TouchableWithoutFeedback
+        touchSoundDisabled
+        accessible={false}
+        onPress={handleScreenPress}
+      >
+        <View style={styles.container}>{children}</View>
       </TouchableWithoutFeedback>
     </SafeAreaView>
   );

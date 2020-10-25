@@ -30,6 +30,7 @@ interface FormValues {
 const AccountSchema = Yup.object().shape({
   email: Yup.string()
     .email("C'est une adresse email ça ?!")
+    .trim()
     .required('Il nous manque ton adresse email...'),
 });
 
@@ -38,18 +39,19 @@ const AccountScreen: FunctionComponent<Props> = ({ navigation }: Props) => {
 
   const handleFormikSubmit = async ({ email }: FormValues) => {
     Keyboard.dismiss();
+    const emailSafe = email.trim();
 
-    const userExists = await Firebase.doesUserExist(email);
+    const userExists = await Firebase.doesUserExist(emailSafe);
 
     if (userExists) {
       navigation.navigate('LoginNavigator', {
         screen: 'EnterPassword',
-        params: { email },
+        params: { email: emailSafe },
       });
     } else {
       navigation.navigate('RegisterNavigator', {
         screen: 'CreatePassword',
-        params: { email },
+        params: { email: emailSafe },
       });
     }
   };
@@ -83,7 +85,7 @@ const AccountScreen: FunctionComponent<Props> = ({ navigation }: Props) => {
               style={[styles.textImpact, { ...spacing.pgr1 }]}
             />
           </View>
-          <TextView style={[styles.helperText, { ...spacing.mgb4 }]}>
+          <TextView style={[styles.helperText, { ...spacing.mgb3 }]}>
             Pour commencer, entrez votre adresse email.
           </TextView>
           <CCRCTextInput
@@ -96,6 +98,7 @@ const AccountScreen: FunctionComponent<Props> = ({ navigation }: Props) => {
             keyboardType="email-address"
             placeholder="Adresse email"
             returnKeyType="done"
+            style={{ ...spacing.mgb1 }}
             textContentType="emailAddress"
             valid={!getError('email')}
             value={email}

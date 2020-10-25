@@ -5,16 +5,14 @@ import { Roboto } from '@cocorico/constants/fonts';
 import spacing from '@cocorico/constants/spacing';
 
 export default StyleSheet.create({
-  container: {
-    flex: 1,
-    flexDirection: 'column',
-    justifyContent: 'center',
-    ...spacing.pgh4,
-  },
   content: {
     flexDirection: 'column',
     justifyContent: 'center',
     flexGrow: 1,
+  },
+  titleContainer: {
+    ...spacing.mgt2,
+    ...spacing.mgb1,
   },
   text: {
     fontFamily: Roboto[700],

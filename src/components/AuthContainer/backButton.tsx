@@ -9,7 +9,7 @@ import colors from '@cocorico/constants/colors';
 import styles from './backButton.styles';
 
 interface Props {
-  style: TextStyle;
+  style?: TextStyle;
 }
 
 const BackButton: FunctionComponent<Props> = ({ style }) => {

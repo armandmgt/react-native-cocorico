@@ -7,10 +7,10 @@ export interface Profile {
   lastName: string;
 }
 
-
-
-
-
+export interface UserData {
+  firstName: string;
+  lastName: string;
+}
 
 export type Writeable<T> = { -readonly [P in keyof T]: T[P] };
 

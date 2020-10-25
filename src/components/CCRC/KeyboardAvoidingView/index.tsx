@@ -13,11 +13,13 @@ import styles from './index.styles';
 interface Props {
   children: React.ReactElement | React.ReactElement[];
   behavior?: KeyboardAvoidingViewProps['behavior'];
+  offset?: number;
 }
 
 const CustomKeyboardAvoindingView: FunctionComponent<Props> = ({
   children,
   behavior = Platform.select({ ios: 'padding' }),
+  offset = 0,
 }) => {
   const headerHeight = useHeaderHeight();
   const keyboardVerticalOffset =
@@ -26,7 +28,7 @@ const CustomKeyboardAvoindingView: FunctionComponent<Props> = ({
   return (
     <KeyboardAvoidingView
       behavior={behavior}
-      keyboardVerticalOffset={keyboardVerticalOffset}
+      keyboardVerticalOffset={keyboardVerticalOffset + offset}
       style={styles.container}
     >
       {children}

@@ -48,7 +48,7 @@ const ForgotPasswordConfirmationScreen: FunctionComponent<Props> = ({
         </Text>
       </View>
       <CCRCButton
-        style={{ ...spacing.mgb4 }}
+        style={{ ...spacing.mgb2 }}
         title="Retour à la connexion"
         variant="gradient"
         onPress={handleConfirm}
