@@ -5,9 +5,9 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import { Formik, FormikHelpers } from 'formik';
 import * as Yup from 'yup';
 
+import FullScreenContainer from '@cocorico/components/AuthContainer';
 import CCRCButton from '@cocorico/components/CCRC/Button';
 import CCRCTextInput from '@cocorico/components/CCRC/TextInput';
-import FullScreenContainer from '@cocorico/components/FullScreenContainer';
 import type { TypedNavigatorParams } from '@cocorico/components/Navigator/types';
 
 import styles from './index.styles';
@@ -64,28 +64,28 @@ const ProfileScreen: FunctionComponent<Props> = () => {
               <View style={styles.field}>
                 <Text>Prénom</Text>
                 <CCRCTextInput
-                  onChangeText={handleChange('firstName')}
-                  onBlur={handleBlur('firstName')}
-                  value={values.firstName}
-                  style={styles.input}
                   error={errorIfPresent('firstName')}
+                  style={styles.input}
+                  value={values.firstName}
+                  onBlur={handleBlur('firstName')}
+                  onChangeText={handleChange('firstName')}
                 />
               </View>
               <View style={styles.field}>
                 <Text>Nom de famille</Text>
                 <CCRCTextInput
-                  onChangeText={handleChange('lastName')}
-                  onBlur={handleBlur('lastName')}
-                  value={values.lastName}
-                  style={styles.input}
                   error={errorIfPresent('lastName')}
+                  style={styles.input}
+                  value={values.lastName}
+                  onBlur={handleBlur('lastName')}
+                  onChangeText={handleChange('lastName')}
                 />
               </View>
               <CCRCButton
-                onPress={() => handleSubmit()}
-                title="Enregistrer"
                 disabled={!isValid || isSubmitting}
+                title="Enregistrer"
                 variant="gradient"
+                onPress={() => handleSubmit()}
               />
             </View>
           );

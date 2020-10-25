@@ -35,6 +35,10 @@
       "error",
       { "declaration": false, "assignment": false }
     ],
+    "react/jsx-sort-props": [
+      "error",
+      { "callbacksLast": true, "shorthandFirst": true, "ignoreCase": true }
+    ],
 
     "react/jsx-props-no-spreading": "off",
     "react/require-default-props": "off",

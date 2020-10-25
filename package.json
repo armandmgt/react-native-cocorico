@@ -1,16 +1,17 @@
 {
   "main": "node_modules/expo/AppEntry.js",
   "scripts": {
-    "start": "expo start",
-    "android": "expo start --android",
-    "ios": "expo start --ios",
-    "web": "expo start --web",
-    "eject": "expo eject",
+    "start": "npx expo start",
+    "android": "npx expo start --android",
+    "ios": "npx expo start --ios",
+    "web": "npx expo start --web",
+    "eject": "npx expo eject",
     "lint": "eslint . --ext .ts,.tsx,.js,.jsx",
     "lint:fix": "yarn lint --fix",
     "typecheck": "tsc --project . --noEmit --pretty --skipLibCheck"
   },
   "dependencies": {
+    "@babel/core": "^7.12.3",
     "@expo-google-fonts/roboto": "^0.1.0",
     "@expo/vector-icons": "^10.2.1",
     "@react-native-community/masked-view": "0.1.10",
@@ -19,6 +20,7 @@
     "@rematch/core": "^2.0.0-next.5",
     "@types/yup": "^0.29.8",
     "expo": "~39.0.2",
+    "expo-constants": "~9.2.0",
     "expo-font": "~8.3.0",
     "expo-linear-gradient": "~8.3.0",
     "expo-status-bar": "~1.0.2",
@@ -32,6 +34,7 @@
     "react-native-safe-area-context": "3.1.4",
     "react-native-screens": "~2.10.1",
     "react-redux": "^7.2.1",
+    "redux": "^4.0.5",
     "yup": "^0.29.3"
   },
   "devDependencies": {

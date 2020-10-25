@@ -1,15 +1,19 @@
-import React, { FunctionComponent, useState } from 'react';
+import React, { FunctionComponent, useRef } from 'react';
 import { View, Text, Keyboard } from 'react-native';
 
 import { RouteProp } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
+import { Formik, FormikProps } from 'formik';
+import * as Yup from 'yup';
 
+import AuthContainer from '@cocorico/components/AuthContainer';
 import CCRCButton from '@cocorico/components/CCRC/Button';
-import CCRCTextInput from '@cocorico/components/CCRC/TextInput';
+import CCRCKeyboardAvoindingView from '@cocorico/components/CCRC/KeyboardAvoidingView';
+import TextView from '@cocorico/components/CCRC/KeyboardAvoidingView/textView';
+import CCRCTextInput, {
+  CustomTextInputHandle,
+} from '@cocorico/components/CCRC/TextInput';
 import type { TypedNavigatorParams } from '@cocorico/components/Navigator/types';
-
-import { isValidPassword } from '@cocorico/services/utils';
-import { useValues } from '@cocorico/services/utils/hooks';
 
 import spacing from '@cocorico/constants/spacing';
 
@@ -20,70 +24,127 @@ interface Props {
   route: RouteProp<TypedNavigatorParams<'RegisterNavigator'>, 'CreatePassword'>;
 }
 
+interface FormValues {
+  password: string;
+  passwordConfirmation: string;
+}
+
+const CreatePasswordSchema = Yup.object().shape({
+  password: Yup.string()
+    .min(8, 'Il est un peu faiblard ce mot de passe.')
+    .required('Il nous manque un mot de passe...'),
+  passwordConfirmation: Yup.string()
+    .oneOf(
+      [Yup.ref('password'), ''],
+      'Les deux mots de passes ne sont pas identiques.',
+    )
+    .required('Il faut confirmer votre mot de passe...'),
+});
+
 const CreatePasswordScreen: FunctionComponent<Props> = ({
   navigation,
   route: {
     params: { email },
   },
 }: Props) => {
-  const [error, setError] = useState<string>('');
+  const initialValues: FormValues = { password: '', passwordConfirmation: '' };
+  const passwordConfirmationRef = useRef<CustomTextInputHandle>(null);
 
-  const [{ password }, updateValue] = useValues<{
-    password: string;
-  }>({
-    password: '',
-  });
-
-  const handleTextChange = (value: string) => {
-    setError('');
-    updateValue('password')(value);
-  };
-
-  const handleSubmit = async () => {
+  const handleFormikSubmit = async ({ password }: FormValues) => {
     Keyboard.dismiss();
-
-    if (!canSubmit) return;
 
     navigation.push('CreateAccount', { email, password });
   };
 
-  const canSubmit = !!password && isValidPassword(password);
+  const focusPasswordConfirmation = () => {
+    passwordConfirmationRef.current?.focus();
+  };
+
+  const renderFormikContent = ({
+    handleChange,
+    handleBlur,
+    handleSubmit,
+    isValid,
+    isSubmitting,
+    values: { password, passwordConfirmation },
+    errors,
+    touched,
+  }: FormikProps<FormValues>) => {
+    const getError = (field: keyof FormValues) =>
+      touched[field] && errors[field] ? errors[field] : undefined;
+
+    return (
+      <>
+        <View style={styles.content}>
+          <TextView style={[styles.text, { ...spacing.mgb1 }]}>
+            C&apos;est votre première fois ici
+            <Text style={styles.coloredText}>.</Text>
+          </TextView>
+          <TextView style={[styles.helperText, { ...spacing.mgb4 }]}>
+            Veuillez chosisir le mot de passe qui vous permettra de vous
+            connecter.
+          </TextView>
+          <CCRCTextInput
+            autoFocus
+            outline
+            secureTextEntry
+            anchorStyle={styles.errorContainer}
+            autoCompleteType="password"
+            error={getError('password')}
+            key="password"
+            keyboardType="default"
+            placeholder="Votre mot de passe"
+            returnKeyType="next"
+            style={{ ...spacing.mgb1 }}
+            textContentType="newPassword"
+            valid={!getError('password')}
+            value={password}
+            onBlur={handleBlur('password')}
+            onChangeText={handleChange('password')}
+            onSubmitEditing={focusPasswordConfirmation}
+          />
+          <CCRCTextInput
+            outline
+            secureTextEntry
+            anchorStyle={styles.errorContainer}
+            autoCompleteType="password"
+            error={getError('passwordConfirmation')}
+            key="passwordConfirmation"
+            keyboardType="default"
+            placeholder="Confirmation de votre mot de passe"
+            ref={passwordConfirmationRef}
+            returnKeyType="done"
+            textContentType="password"
+            valid={!getError('passwordConfirmation')}
+            value={passwordConfirmation}
+            onBlur={handleBlur('passwordConfirmation')}
+            onChangeText={handleChange('passwordConfirmation')}
+            onSubmitEditing={() => handleSubmit()}
+          />
+        </View>
+        <CCRCButton
+          disabled={!isValid || isSubmitting}
+          style={{ ...spacing.mgb4 }}
+          title="Choisir le mot de passe"
+          variant="gradient"
+          onPress={() => handleSubmit()}
+        />
+      </>
+    );
+  };
 
   return (
-    <View style={styles.container}>
-      <View style={styles.content}>
-        <Text style={[styles.text, { ...spacing.mgb1 }]}>
-          C&apos;est votre première fois ici
-          <Text style={styles.coloredText}>.</Text>
-        </Text>
-        <Text style={[styles.helperText, { ...spacing.mgb4 }]}>
-          Veuillez chosisir le mot de passe qui vous permettra de vous
-          connecter.
-        </Text>
-        <CCRCTextInput
-          outline
-          valid={!error && (!password || canSubmit)}
-          error={error}
-          autoFocus
-          value={password}
-          secureTextEntry
-          onChangeText={handleTextChange}
-          placeholder="Votre mot de passe"
-          keyboardType="default"
-          textContentType="password"
-          autoCompleteType="password"
-          returnKeyType="next"
-          onSubmitEditing={handleSubmit}
-        />
-      </View>
-      <CCRCButton
-        variant="gradient"
-        disabled={!canSubmit}
-        style={{ ...spacing.mgb4 }}
-        title="Choisir le mot de passe"
-        onPress={handleSubmit}
-      />
-    </View>
+    <AuthContainer hasBackButton>
+      <CCRCKeyboardAvoindingView>
+        <Formik
+          initialValues={initialValues}
+          validationSchema={CreatePasswordSchema}
+          onSubmit={handleFormikSubmit}
+        >
+          {renderFormikContent}
+        </Formik>
+      </CCRCKeyboardAvoindingView>
+    </AuthContainer>
   );
 };
 

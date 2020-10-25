@@ -1,17 +1,24 @@
-import React, { FunctionComponent, useState } from 'react';
+import React, { FunctionComponent, useRef } from 'react';
 import { View, Text, Keyboard } from 'react-native';
 
 import { RouteProp } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
+import { Formik, FormikProps, FormikHelpers } from 'formik';
+import * as Yup from 'yup';
 
+import AuthContainer from '@cocorico/components/AuthContainer';
 import CCRCButton from '@cocorico/components/CCRC/Button';
-import CCRCTextInput from '@cocorico/components/CCRC/TextInput';
+import CCRCKeyboardAvoindingView from '@cocorico/components/CCRC/KeyboardAvoidingView';
+import TextView from '@cocorico/components/CCRC/KeyboardAvoidingView/textView';
+import CCRCTextInput, {
+  CustomTextInputHandle,
+} from '@cocorico/components/CCRC/TextInput';
 import type { TypedNavigatorParams } from '@cocorico/components/Navigator/types';
 
 import Firebase from '@cocorico/services/firebase';
-import { useValues } from '@cocorico/services/utils/hooks';
 
 import spacing from '@cocorico/constants/spacing';
+import validators from '@cocorico/constants/validators';
 
 import styles from './index.styles';
 
@@ -20,25 +27,41 @@ interface Props {
   route: RouteProp<TypedNavigatorParams<'RegisterNavigator'>, 'CreateAccount'>;
 }
 
+interface FormValues {
+  firstName: string;
+  lastName: string;
+}
+
+const CreateAccountSchema = Yup.object().shape({
+  firstName: Yup.string()
+    .min(2, 'Votre prénom est trop court')
+    .matches(
+      RegExp(validators.name),
+      'Votre prénom contient des caractères non-autorisés.',
+    )
+    .required('Il nous manque ton prénom...'),
+  lastName: Yup.string()
+    .min(2, 'Votre nom est trop court')
+    .matches(
+      RegExp(validators.name),
+      'Votre nom contient des caractères non-autorisés.',
+    )
+    .required('Il nous manque ton nom...'),
+});
+
 const CreateAccountScreen: FunctionComponent<Props> = ({
-  navigation,
   route: {
     params: { email, password },
   },
 }: Props) => {
-  const [loading, setLoading] = useState<boolean>(false);
+  const initialValues: FormValues = { firstName: '', lastName: '' };
+  const lastNameRef = useRef<CustomTextInputHandle>(null);
 
-  const [{ firstName, lastName }, updateValue] = useValues<{
-    firstName: string;
-    lastName: string;
-  }>({
-    firstName: '',
-    lastName: '',
-  });
-
-  const handleSubmit = async () => {
+  const handleFormikSubmit = async (
+    { firstName, lastName }: FormValues,
+    actions: FormikHelpers<FormValues>,
+  ) => {
     Keyboard.dismiss();
-    setLoading(true);
 
     const result = await Firebase.register(email, password, {
       firstName,
@@ -46,53 +69,91 @@ const CreateAccountScreen: FunctionComponent<Props> = ({
     });
 
     if (!result.success) {
-      setLoading(false);
+      actions.setSubmitting(true);
     }
   };
 
-  const handleGoBack = () => {
-    navigation.goBack();
+  const focusLastName = () => {
+    lastNameRef.current?.focus();
+  };
+
+  const renderFormikContent = ({
+    handleChange,
+    handleBlur,
+    handleSubmit,
+    isValid,
+    isSubmitting,
+    values: { firstName, lastName },
+    errors,
+    touched,
+  }: FormikProps<FormValues>) => {
+    const getError = (field: keyof FormValues) =>
+      touched[field] && errors[field] ? errors[field] : undefined;
+
+    return (
+      <>
+        <View style={styles.content}>
+          <TextView style={[styles.text, { ...spacing.mgb1 }]}>
+            Une dernière petite chose
+            <Text style={styles.coloredText}>.</Text>
+          </TextView>
+          <TextView style={[styles.helperText, { ...spacing.mgb4 }]}>
+            Afin de mieux vous connaître, veuillez renseigner ces champs.
+          </TextView>
+          <CCRCTextInput
+            outline
+            autoCapitalize="words"
+            autoCompleteType="name"
+            error={getError('firstName')}
+            placeholder="Prénom"
+            returnKeyType="next"
+            style={{ ...spacing.mgb1 }}
+            textContentType="name"
+            valid={!getError('firstName')}
+            value={firstName}
+            onBlur={handleBlur('firstName')}
+            onChangeText={handleChange('firstName')}
+            onSubmitEditing={focusLastName}
+          />
+          <CCRCTextInput
+            outline
+            autoCapitalize="words"
+            autoCompleteType="name"
+            error={getError('lastName')}
+            placeholder="Nom"
+            ref={lastNameRef}
+            returnKeyType="done"
+            textContentType="familyName"
+            valid={!getError('lastName')}
+            value={lastName}
+            onBlur={handleBlur('lastName')}
+            onChangeText={handleChange('lastName')}
+            onSubmitEditing={() => handleSubmit()}
+          />
+        </View>
+        <CCRCButton
+          disabled={!isValid || isSubmitting}
+          style={{ ...spacing.mgb4 }}
+          title="C'est parti !"
+          variant="gradient"
+          onPress={() => handleSubmit()}
+        />
+      </>
+    );
   };
 
   return (
-    <View style={styles.container}>
-      <View style={styles.content}>
-        <Text style={[styles.text, { ...spacing.mgb1 }]}>
-          Une dernière petite chose
-          <Text style={styles.coloredText}>.</Text>
-        </Text>
-        <Text style={[styles.helperText, { ...spacing.mgb4 }]}>
-          Afin de mieux vous connaître, veuillez renseigner ces champs.
-        </Text>
-        <CCRCTextInput
-          outline
-          value={firstName}
-          onChangeText={updateValue('firstName')}
-          placeholder="Prénom"
-          textContentType="name"
-          autoCompleteType="name"
-          autoCapitalize="words"
-          returnKeyType="next"
-        />
-        <CCRCTextInput
-          outline
-          value={lastName}
-          onChangeText={updateValue('lastName')}
-          placeholder="Nom"
-          textContentType="familyName"
-          autoCompleteType="name"
-          autoCapitalize="words"
-          returnKeyType="next"
-        />
-      </View>
-      <CCRCButton
-        variant="gradient"
-        disabled={loading || !(firstName && lastName)}
-        style={{ ...spacing.mgb4 }}
-        title="C'est parti !"
-        onPress={handleSubmit}
-      />
-    </View>
+    <AuthContainer hasBackButton>
+      <CCRCKeyboardAvoindingView>
+        <Formik
+          initialValues={initialValues}
+          validationSchema={CreateAccountSchema}
+          onSubmit={handleFormikSubmit}
+        >
+          {renderFormikContent}
+        </Formik>
+      </CCRCKeyboardAvoindingView>
+    </AuthContainer>
   );
 };
 

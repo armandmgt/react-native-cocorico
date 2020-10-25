@@ -24,7 +24,7 @@ const CustomTextButton: FunctionComponent<Props> = ({
   ...other
 }) => {
   return (
-    <TouchableOpacity style={style} disabled={disabled} {...other}>
+    <TouchableOpacity disabled={disabled} style={style} {...other}>
       <Text style={[styles.title, titleStyle]}>{title}</Text>
     </TouchableOpacity>
   );

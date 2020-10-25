@@ -11,7 +11,6 @@ import {
 import { LinearGradient } from 'expo-linear-gradient';
 
 import colors from '@cocorico/constants/colors';
-import spacing from '@cocorico/constants/spacing';
 
 import styles from './index.styles';
 
@@ -49,10 +48,10 @@ const CustomButton: FunctionComponent<Props> = ({
 
   const renderButtonGradient = () => (
     <LinearGradient
-      start={[0, 1]}
-      end={[1, 0]}
-      style={[styles.button, disabled && styles.rootDisabled]}
       colors={[colors.gradient1, colors.gradient2, colors.gradient3]}
+      end={[1, 0]}
+      start={[0, 1]}
+      style={[styles.button, disabled && styles.rootDisabled]}
     >
       <Text style={[styles.title, titleStyle]}>{title}</Text>
     </LinearGradient>
@@ -71,7 +70,7 @@ const CustomButton: FunctionComponent<Props> = ({
   };
 
   return (
-    <TouchableOpacity style={style} disabled={disabled} {...other}>
+    <TouchableOpacity disabled={disabled} style={style} {...other}>
       {renderButton()}
     </TouchableOpacity>
   );

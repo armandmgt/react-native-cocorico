@@ -16,11 +16,11 @@ const AuthStackNavigator = () => {
 
   return (
     <AuthStack.Navigator screenOptions={{ headerShown: false }}>
-      <AuthStack.Screen name="Account" component={AccountScreen} />
-      <AuthStack.Screen name="LoginNavigator" component={LoginStackNavigator} />
+      <AuthStack.Screen component={AccountScreen} name="Account" />
+      <AuthStack.Screen component={LoginStackNavigator} name="LoginNavigator" />
       <AuthStack.Screen
-        name="RegisterNavigator"
         component={RegisterStackNavigator}
+        name="RegisterNavigator"
       />
     </AuthStack.Navigator>
   );

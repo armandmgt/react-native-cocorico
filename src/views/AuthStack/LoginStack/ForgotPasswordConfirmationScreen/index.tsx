@@ -4,6 +4,7 @@ import { View, Text } from 'react-native';
 import { RouteProp } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 
+import AuthContainer from '@cocorico/components/AuthContainer';
 import CCRCButton from '@cocorico/components/CCRC/Button';
 import type { TypedNavigatorParams } from '@cocorico/components/Navigator/types';
 
@@ -30,7 +31,7 @@ const ForgotPasswordConfirmationScreen: FunctionComponent<Props> = ({
   };
 
   return (
-    <View style={styles.container}>
+    <AuthContainer>
       <View style={styles.content}>
         <Text style={[styles.text, { ...spacing.mgb1 }]}>
           La suite se passe par email
@@ -47,12 +48,12 @@ const ForgotPasswordConfirmationScreen: FunctionComponent<Props> = ({
         </Text>
       </View>
       <CCRCButton
-        variant="gradient"
         style={{ ...spacing.mgb4 }}
         title="Retour à la connexion"
+        variant="gradient"
         onPress={handleConfirm}
       />
-    </View>
+    </AuthContainer>
   );
 };
 

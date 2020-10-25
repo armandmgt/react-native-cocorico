@@ -5,12 +5,6 @@ import { Roboto } from '@cocorico/constants/fonts';
 import spacing from '@cocorico/constants/spacing';
 
 export default StyleSheet.create({
-  container: {
-    flex: 1,
-    flexDirection: 'column',
-    justifyContent: 'center',
-    ...spacing.pgh4,
-  },
   content: {
     flexDirection: 'column',
     justifyContent: 'center',
@@ -37,5 +31,8 @@ export default StyleSheet.create({
   },
   coloredText: {
     color: colors.gradient2,
+  },
+  errorContainer: {
+    minHeight: 16,
   },
 });

@@ -14,8 +14,8 @@ const ProfileStackNavigator = () => {
 
   return (
     <ProfileStack.Navigator screenOptions={{ headerShown: true }}>
-      <ProfileStack.Screen name="Profile" component={ProfileScreen} />
-      <ProfileStack.Screen name="Settings" component={SettingsScreen} />
+      <ProfileStack.Screen component={ProfileScreen} name="Profile" />
+      <ProfileStack.Screen component={SettingsScreen} name="Settings" />
     </ProfileStack.Navigator>
   );
 };

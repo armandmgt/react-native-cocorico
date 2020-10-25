@@ -13,6 +13,7 @@ export default StyleSheet.create({
     borderRadius: 10,
   },
   outline: {
+    paddingHorizontal: spacing.pgh4.paddingHorizontal - 4,
     paddingVertical: spacing.pgv2.paddingVertical - 4,
     borderColor: colors.BLACK,
     borderWidth: 4,

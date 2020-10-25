@@ -6,8 +6,6 @@ import spacing from '@cocorico/constants/spacing';
 
 export default StyleSheet.create({
   root: {
-    ...spacing.pgv2,
-    ...spacing.pgh2,
     flexDirection: 'row',
     alignItems: 'center',
     borderBottomWidth: 2,
@@ -25,8 +23,13 @@ export default StyleSheet.create({
     flex: 1,
     fontSize: 15,
     fontWeight: 'normal',
+    ...spacing.pgv2,
+    ...spacing.pgh2,
   },
-  icon: {
+  visibilityContainer: {
+    ...spacing.pgr2,
+  },
+  visibilityIcon: {
     marginVertical: -5,
   },
   errorText: {

@@ -2,8 +2,8 @@ import React from 'react';
 
 import { createStackNavigator } from '@react-navigation/stack';
 
-import CreatePasswordScreen from '@cocorico/views/AuthStack/RegisterStack/CreatePasswordScreen';
 import CreateAccountScreen from '@cocorico/views/AuthStack/RegisterStack/CreateAccountScreen';
+import CreatePasswordScreen from '@cocorico/views/AuthStack/RegisterStack/CreatePasswordScreen';
 
 import type { TypedNavigatorParams } from '@cocorico/components/Navigator/types';
 
@@ -15,12 +15,12 @@ const RegisterStackNavigator = () => {
   return (
     <RegisterStack.Navigator screenOptions={{ headerShown: false }}>
       <RegisterStack.Screen
-        name="CreatePassword"
         component={CreatePasswordScreen}
+        name="CreatePassword"
       />
       <RegisterStack.Screen
-        name="CreateAccount"
         component={CreateAccountScreen}
+        name="CreateAccount"
       />
     </RegisterStack.Navigator>
   );

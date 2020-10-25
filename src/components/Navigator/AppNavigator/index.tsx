@@ -14,11 +14,11 @@ const AppStackNavigator = () => {
 
   return (
     <AppStack.Navigator screenOptions={{ headerShown: false }}>
-      <AppStack.Screen name="HomeNavigator" component={HomeStackNavigator} />
-      <AppStack.Screen name="Mailbox" component={MailboxScreen} />
+      <AppStack.Screen component={HomeStackNavigator} name="HomeNavigator" />
+      <AppStack.Screen component={MailboxScreen} name="Mailbox" />
       <AppStack.Screen
-        name="ProfileNavigator"
         component={ProfileStackNavigator}
+        name="ProfileNavigator"
       />
     </AppStack.Navigator>
   );

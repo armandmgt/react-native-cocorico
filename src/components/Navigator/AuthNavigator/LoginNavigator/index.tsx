@@ -15,14 +15,14 @@ const LoginStackNavigator = () => {
 
   return (
     <LoginStack.Navigator screenOptions={{ headerShown: false }}>
-      <LoginStack.Screen name="EnterPassword" component={EnterPasswordScreen} />
+      <LoginStack.Screen component={EnterPasswordScreen} name="EnterPassword" />
       <LoginStack.Screen
-        name="ForgotPassword"
         component={ForgotPasswordScreen}
+        name="ForgotPassword"
       />
       <LoginStack.Screen
-        name="ForgotPasswordConfirmation"
         component={ForgotPasswordConfirmationScreen}
+        name="ForgotPasswordConfirmation"
       />
     </LoginStack.Navigator>
   );
