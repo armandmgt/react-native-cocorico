@@ -11,11 +11,13 @@ import CCRCTextInput from '@cocorico/components/CCRC/TextInput';
 import type { TypedNavigatorParams } from '@cocorico/components/Navigator/types';
 
 import styles from './index.styles';
+import ProfileImagePicker from './ProfileImagePicker';
 
 interface FormValues {
   firstName: string;
   lastName: string;
   genre: string;
+  image?: string;
 }
 
 interface Props {
@@ -34,7 +36,11 @@ const ProfileSchema = Yup.object().shape({
 });
 
 const ProfileScreen: FunctionComponent<Props> = () => {
-  const initialValues: FormValues = { firstName: '', lastName: '', genre: '' };
+  const initialValues: FormValues = {
+    firstName: '',
+    lastName: '',
+    genre: '',
+  };
   const onSubmit = (values: FormValues, actions: FormikHelpers<FormValues>) => {
     actions.setSubmitting(false);
   };
@@ -58,9 +64,9 @@ const ProfileScreen: FunctionComponent<Props> = () => {
         }) => {
           const errorIfPresent = (field: keyof FormValues) =>
             touched[field] && errors[field] ? errors[field] : undefined;
-
           return (
-            <View>
+            <>
+              <ProfileImagePicker onValueChange={handleChange('image')} />
               <View style={styles.field}>
                 <Text>Prénom</Text>
                 <CCRCTextInput
@@ -87,7 +93,7 @@ const ProfileScreen: FunctionComponent<Props> = () => {
                 variant="gradient"
                 onPress={() => handleSubmit()}
               />
-            </View>
+            </>
           );
         }}
       </Formik>
