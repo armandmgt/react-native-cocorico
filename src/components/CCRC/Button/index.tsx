@@ -21,6 +21,7 @@ interface Props extends ButtonProps {
   variant?: 'outline' | 'fill' | 'gradient';
   style?: ViewStyle;
   titleStyle?: TextStyle;
+  buttonStyle?: ViewStyle;
 }
 
 const CustomButton: FunctionComponent<Props> = ({
@@ -29,11 +30,17 @@ const CustomButton: FunctionComponent<Props> = ({
   variant = 'fill',
   style,
   titleStyle,
+  buttonStyle,
   ...other
 }) => {
   const renderButtonOutline = () => (
     <View
-      style={[styles.button, styles.outline, disabled && styles.rootDisabled]}
+      style={[
+        styles.button,
+        styles.outline,
+        disabled && styles.rootDisabled,
+        buttonStyle,
+      ]}
     >
       <Text style={[styles.title, styles.titleOutline, titleStyle]}>
         {title}
@@ -42,7 +49,14 @@ const CustomButton: FunctionComponent<Props> = ({
   );
 
   const renderButtonFill = () => (
-    <View style={[styles.button, styles.fill, disabled && styles.rootDisabled]}>
+    <View
+      style={[
+        styles.button,
+        styles.fill,
+        disabled && styles.rootDisabled,
+        buttonStyle,
+      ]}
+    >
       <Text style={[styles.title, titleStyle]}>{title}</Text>
     </View>
   );
@@ -51,7 +65,7 @@ const CustomButton: FunctionComponent<Props> = ({
     <LinearGradient
       start={[0, 1]}
       end={[1, 0]}
-      style={[styles.button, disabled && styles.rootDisabled]}
+      style={[styles.button, disabled && styles.rootDisabled, buttonStyle]}
       colors={[colors.gradient1, colors.gradient2, colors.gradient3]}
     >
       <Text style={[styles.title, titleStyle]}>{title}</Text>

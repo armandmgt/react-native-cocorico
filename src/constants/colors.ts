@@ -1,5 +1,6 @@
 const colors = Object.freeze({
   BLACK: '#1e272e',
+  BLACK_06: '#1e272e99',
   BLACK_ACCENT: '#485460',
   WHITE: '#ffffff',
   WHITE_ACCENT: '#f1f2f6',

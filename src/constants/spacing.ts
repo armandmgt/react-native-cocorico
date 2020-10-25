@@ -18,7 +18,7 @@ const keywords = {
   pgl: 'paddingLeft',
 } as const;
 
-const multipliers = [0.25, 0.5, 1, 1.5, 1.75, 2, 2.5, 3, 4, 4.5, 5, 8] as const;
+const multipliers = [0.25, 0.5, 0.75, 1, 1.5, 1.75, 2, 2.5, 3, 4, 4.5, 5, 8] as const;
 
 type KeywordType = typeof keywords;
 type Keywords = keyof KeywordType;
