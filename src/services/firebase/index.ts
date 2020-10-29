@@ -1,9 +1,10 @@
 /* eslint-disable import/no-duplicates */
 import * as firebase from 'firebase';
 
-import type { Profile } from '@cocorico/constants/types';
+import type { AuthStatus, Profile, UserData } from '@cocorico/constants/types';
 
 import firebaseConfig from './firebaseConfig';
+import { normalizeUser } from './firebaseUtils';
 
 import 'firebase/auth';
 import 'firebase/firestore';
@@ -91,6 +92,28 @@ const Firebase = Object.freeze({
         error,
       };
     }
+  },
+  subscribeAuth: (callback: (status: AuthStatus) => void): (() => void) => {
+    return auth.onAuthStateChanged((authUser) => {
+      if (authUser) callback('LOGGED_IN');
+      else callback('LOGGED_OUT');
+    });
+  },
+  subscribeCurrentUser: (callback: (user: UserData) => void): (() => void) => {
+    const { currentUser } = auth;
+
+    if (!currentUser || !currentUser.email) {
+      throw new Error('currentUser.email missing');
+    }
+
+    const doc = firestore.collection('users').doc(currentUser.email);
+
+    return doc.onSnapshot((snapshot) => {
+      const data = snapshot.data()!;
+      const normalizedUser = normalizeUser(data);
+
+      callback(normalizedUser);
+    });
   },
 });
 

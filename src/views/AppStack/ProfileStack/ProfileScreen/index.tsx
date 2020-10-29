@@ -3,6 +3,7 @@ import { View, Text } from 'react-native';
 
 import { StackNavigationProp } from '@react-navigation/stack';
 import { Formik, FormikHelpers } from 'formik';
+import { connect } from 'react-redux';
 import * as Yup from 'yup';
 
 import FullScreenContainer from '@cocorico/components/AuthContainer';
@@ -10,17 +11,18 @@ import CCRCButton from '@cocorico/components/CCRC/Button';
 import CCRCTextInput from '@cocorico/components/CCRC/TextInput';
 import type { TypedNavigatorParams } from '@cocorico/components/Navigator/types';
 
+import type { RootState } from '@cocorico/services/store';
+
 import styles from './index.styles';
 import ProfileImagePicker from './ProfileImagePicker';
 
 interface FormValues {
-  firstName: string;
-  lastName: string;
-  genre: string;
+  firstName: string | undefined;
+  lastName: string | undefined;
   image?: string;
 }
 
-interface Props {
+interface Props extends StateProps {
   navigation: StackNavigationProp<TypedNavigatorParams<'ProfileNavigator'>>;
 }
 
@@ -35,11 +37,10 @@ const ProfileSchema = Yup.object().shape({
     .required('Champ obligatoire.'),
 });
 
-const ProfileScreen: FunctionComponent<Props> = () => {
+const ProfileScreen: FunctionComponent<Props> = ({ user }) => {
   const initialValues: FormValues = {
-    firstName: '',
-    lastName: '',
-    genre: '',
+    firstName: user?.firstName,
+    lastName: user?.lastName,
   };
   const onSubmit = (values: FormValues, actions: FormikHelpers<FormValues>) => {
     actions.setSubmitting(false);
@@ -101,4 +102,9 @@ const ProfileScreen: FunctionComponent<Props> = () => {
   );
 };
 
-export default ProfileScreen;
+const mapState = ({ auth: { user } }: RootState) => ({
+  user,
+});
+type StateProps = ReturnType<typeof mapState>;
+
+export default connect(mapState)(ProfileScreen);

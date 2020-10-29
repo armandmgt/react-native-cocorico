@@ -13,7 +13,7 @@ import {
   ViewStyle,
 } from 'react-native';
 
-import { Feather } from '@expo/vector-icons';
+import { Feather as Icon } from '@expo/vector-icons';
 
 import colors from '@cocorico/constants/colors';
 
@@ -85,7 +85,7 @@ const CustomTextInput = forwardRef<CustomTextInputHandle, Props>(
           />
           {showVisibility && (
             <View style={styles.visibilityContainer}>
-              <Feather
+              <Icon
                 color={colors.BLACK}
                 name={passwordVisible ? 'eye-off' : 'eye'}
                 size={24}

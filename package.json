@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@babel/core": "^7.12.3",
+    "@expo-google-fonts/pacifico": "^0.1.0",
     "@expo-google-fonts/roboto": "^0.1.0",
     "@expo/vector-icons": "^10.2.1",
     "@react-native-community/masked-view": "0.1.10",

@@ -1,5 +1,6 @@
 import React from 'react';
 
+import { Pacifico_400Regular } from '@expo-google-fonts/pacifico';
 import {
   Roboto_100Thin,
   Roboto_100Thin_Italic,
@@ -33,6 +34,8 @@ const customFonts = {
   Roboto_700Bold_Italic,
   Roboto_900Black,
   Roboto_900Black_Italic,
+
+  Pacifico_400Regular,
 };
 
 interface Props extends DispatchProps {}
@@ -43,7 +46,7 @@ const SplashScreen = ({ setAppStatus }: Props) => {
     setAppStatus('LOADED');
   };
 
-  setTimeout(startupAsync, 500);
+  startupAsync();
 
   return <AppLoading />;
 };
