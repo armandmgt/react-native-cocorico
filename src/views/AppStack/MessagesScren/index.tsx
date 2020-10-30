@@ -40,13 +40,12 @@ const MessagesScreen = () => {
   );
 
   return (
-    <SafeAreaView style={styles.container}>
-      <FlatList
-        data={DATA}
-        renderItem={renderConversations}
-        keyExtractor={(item: any) => item.id}
-      />
-    </SafeAreaView>
+    <FlatList
+      data={DATA}
+      renderItem={renderConversations}
+      keyExtractor={(item: any) => item.id}
+      style={styles.container}
+    />
   );
 };
 
