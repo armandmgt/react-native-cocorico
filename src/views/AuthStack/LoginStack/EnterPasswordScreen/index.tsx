@@ -1,96 +1,133 @@
-import React, { FunctionComponent, useState } from 'react';
+import React, { FunctionComponent } from 'react';
+import { View, Text, Keyboard } from 'react-native';
+
+import { RouteProp } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
-import { StyleSheet, View, Text } from 'react-native';
-import { connect } from 'react-redux';
+import { Formik, FormikProps, FormikHelpers } from 'formik';
+import * as Yup from 'yup';
 
-import { auth } from '@cocorico/services/firebase';
-import FullScreenContainer from '@cocorico/components/FullScreenContainer';
-import Title from '@cocorico/components/Texts/Title';
-import CCRCTextInput from '@cocorico/components/Inputs/Text';
-import CCRCButton from '@cocorico/components/Inputs/Button';
-import { Roboto } from '@cocorico/constants/fonts';
-import type { RootState } from '@cocorico/services/store';
-import type { LoginStackParamList } from '@cocorico/components/Navigator/types';
+import AuthContainer from '@cocorico/components/AuthContainer';
+import CCRCButton from '@cocorico/components/CCRC/Button';
+import CCRCKeyboardAvoindingView from '@cocorico/components/CCRC/KeyboardAvoidingView';
+import TextView from '@cocorico/components/CCRC/KeyboardAvoidingView/textView';
+import CCRCTextButton from '@cocorico/components/CCRC/TextButton';
+import CCRCTextInput from '@cocorico/components/CCRC/TextInput';
+import type { TypedNavigatorParams } from '@cocorico/components/Navigator/types';
 
-interface Props extends StateProps {
-  navigation: StackNavigationProp<LoginStackParamList, 'EnterPassword'>;
+import Firebase from '@cocorico/services/firebase';
+
+import spacing from '@cocorico/constants/spacing';
+
+import styles from './index.styles';
+
+interface Props {
+  navigation: StackNavigationProp<TypedNavigatorParams<'LoginNavigator'>>;
+  route: RouteProp<TypedNavigatorParams<'LoginNavigator'>, 'EnterPassword'>;
 }
 
-type State = string;
+interface FormValues {
+  password: string;
+}
 
-const EnterPasswordScreen: FunctionComponent<Props> = ({ email }: Props) => {
-  const [loading, setLoading] = useState<boolean>(false);
-  const [password, setPassword] = useState<State>('');
-  const [error, setError] = useState<string>('');
+const EnterPasswordSchema = Yup.object().shape({
+  password: Yup.string().required('Il nous manque ton mot de passe...'),
+});
 
-  const handleSubmit = async () => {
-    try {
-      if (email) {
-        setLoading(true);
-        await auth.signInWithEmailAndPassword(email, password);
-      }
-    } catch (err) {
-      setLoading(false);
-      setError(err.message);
+const EnterPasswordScreen: FunctionComponent<Props> = ({
+  navigation,
+  route: {
+    params: { email },
+  },
+}: Props) => {
+  const initialValues: FormValues = { password: '' };
+
+  const handleForgotPassword = () => {
+    navigation.push('ForgotPassword', { email });
+  };
+
+  const handleFormikSubmit = async (
+    { password }: FormValues,
+    actions: FormikHelpers<FormValues>,
+  ) => {
+    Keyboard.dismiss();
+
+    const result = await Firebase.login(email, password);
+
+    if (!result.success) {
+      if (result.error?.message)
+        actions.setFieldError('password', result.error.message);
     }
   };
 
-  return (
-    <FullScreenContainer>
-      <View style={styles.content}>
-        <Title>C&apos;est chouette de vous revoir.</Title>
-        <Text style={styles.helperText}>
-          Renseignez votre mot de passe afin de vous connecter.
-        </Text>
-        <CCRCTextInput
-          outline
-          style={styles.input}
-          autoFocus
-          value={password}
-          secureTextEntry
-          onChangeText={(value: string) => {
-            setPassword(value);
-          }}
-          placeholder="Votre mot de passe"
-          keyboardType="default"
-          textContentType="password"
-          autoCompleteType="password"
+  const renderFormikContent = ({
+    handleChange,
+    handleBlur,
+    handleSubmit,
+    isValid,
+    isSubmitting,
+    values: { password },
+    errors,
+  }: FormikProps<FormValues>) => {
+    const getError = (field: keyof FormValues) =>
+      errors[field] ? errors[field] : undefined;
+
+    return (
+      <>
+        <View style={styles.content}>
+          <TextView style={[styles.text, { ...spacing.mgb1 }]}>
+            C&apos;est chouette de vous revoir
+            <Text style={styles.coloredText}>.</Text>
+          </TextView>
+          <TextView style={[styles.helperText, { ...spacing.mgb3 }]}>
+            Renseignez votre mot de passe afin de vous connecter.
+          </TextView>
+          <CCRCTextInput
+            autoFocus
+            outline
+            secureTextEntry
+            anchorStyle={styles.errorContainer}
+            autoCompleteType="password"
+            error={getError('password')}
+            keyboardType="default"
+            placeholder="Votre mot de passe"
+            returnKeyType="done"
+            textContentType="password"
+            valid={!getError('password')}
+            value={password}
+            onBlur={handleBlur('password')}
+            onChangeText={handleChange('password')}
+            onSubmitEditing={() => handleSubmit()}
+          />
+        </View>
+        <CCRCTextButton
+          style={{ ...spacing.mgb2 }}
+          title="Mot de passe oublié ?"
+          onPress={handleForgotPassword}
         />
-        <Text>{error}</Text>
-      </View>
-      <CCRCButton
-        style={styles.button}
-        title="Continuer"
-        onPress={handleSubmit}
-        disabled={loading}
-      />
-    </FullScreenContainer>
+        <CCRCButton
+          disabled={!isValid || isSubmitting}
+          style={{ ...spacing.mgb2 }}
+          title="Connexion"
+          variant="gradient"
+          onPress={() => handleSubmit()}
+        />
+      </>
+    );
+  };
+
+  return (
+    <AuthContainer hasBackButton>
+      <CCRCKeyboardAvoindingView offset={36}>
+        <Formik
+          initialValues={initialValues}
+          validationSchema={EnterPasswordSchema}
+          onSubmit={handleFormikSubmit}
+        >
+          {renderFormikContent}
+        </Formik>
+      </CCRCKeyboardAvoindingView>
+    </AuthContainer>
   );
 };
 
-const styles = StyleSheet.create({
-  content: {
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'center',
-    flexGrow: 1,
-  },
-  helperText: {
-    fontFamily: Roboto[400],
-    fontSize: 16,
-    marginBottom: 32,
-  },
-  input: {
-    height: 66,
-  },
-  button: {
-    marginVertical: 40,
-  },
-});
-
-const mapState = (state: RootState) => ({
-  email: state.auth.email,
-});
-type StateProps = ReturnType<typeof mapState>;
-
-export default connect(mapState, null)(EnterPasswordScreen);
+export default EnterPasswordScreen;

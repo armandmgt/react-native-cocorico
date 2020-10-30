@@ -1,15 +1,38 @@
 import React, { FunctionComponent } from 'react';
-import { View } from 'react-native';
+import { Button, View, Text } from 'react-native';
+
 import { StackNavigationProp } from '@react-navigation/stack';
 
-import type { HomeStackParamList } from '@cocorico/components/Navigator';
+import type { TypedNavigatorParams } from '@cocorico/components/Navigator/types';
+
+import { auth } from '@cocorico/services/firebase';
 
 interface Props {
-  navigation: StackNavigationProp<HomeStackParamList, 'Account'>;
+  navigation: StackNavigationProp<TypedNavigatorParams<'AppNavigator'>>;
 }
 
-const HomeScreen: FunctionComponent<Props> = () => {
-  return <View>Home Screen</View>;
+const HomeScreen: FunctionComponent<Props> = ({ navigation }) => {
+  return (
+    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+      <Text>Home Screen</Text>
+      <Button
+        title="go to profile"
+        onPress={() => {
+          navigation.push('ProfileNavigator', { screen: 'Profile' });
+        }}
+      />
+      <Button
+        title="disconnect"
+        onPress={async () => {
+          try {
+            await auth.signOut();
+          } catch (err) {
+            console.error(err);
+          }
+        }}
+      />
+    </View>
+  );
 };
 
 export default HomeScreen;

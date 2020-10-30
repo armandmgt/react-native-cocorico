@@ -17,7 +17,8 @@
       "**/*"
     ],
     "android": {
-      "package": "app.cocorico"
+      "package": "app.cocorico",
+      "softwareKeyboardLayoutMode": "pan"
     },
     "ios": {
       "bundleIdentifier": "app.cocorico",
@@ -27,6 +28,7 @@
       "favicon": "./assets/favicon.png"
     },
     "description": "Un clone de tinder pour les poules et les coqs avec caméra, gesture de swipe, localisation et messagerie.",
-    "githubUrl": "https://github.com/armandmgt/react-native-cocorico"
+    "githubUrl": "https://github.com/armandmgt/react-native-cocorico",
+    "privacy": "unlisted"
   }
 }

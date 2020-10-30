@@ -1,5 +1,6 @@
 import React from 'react';
-import { connect } from 'react-redux';
+
+import { Pacifico_400Regular } from '@expo-google-fonts/pacifico';
 import {
   Roboto_100Thin,
   Roboto_100Thin_Italic,
@@ -15,7 +16,8 @@ import {
   Roboto_900Black_Italic,
 } from '@expo-google-fonts/roboto';
 import { AppLoading } from 'expo';
-import * as Font from 'expo-font';
+import { loadAsync as loadFontAsync } from 'expo-font';
+import { connect } from 'react-redux';
 
 import type { Dispatch } from '@cocorico/services/store';
 
@@ -32,20 +34,20 @@ const customFonts = {
   Roboto_700Bold_Italic,
   Roboto_900Black,
   Roboto_900Black_Italic,
+
+  Pacifico_400Regular,
 };
 
 interface Props extends DispatchProps {}
 
 const SplashScreen = ({ setAppStatus }: Props) => {
   const startupAsync = async () => {
-    await Font.loadAsync(customFonts);
-
+    await loadFontAsync(customFonts);
     setAppStatus('LOADED');
   };
 
-  setTimeout(startupAsync, 1000);
+  startupAsync();
 
-  console.log('Splashscreen');
   return <AppLoading />;
 };
 

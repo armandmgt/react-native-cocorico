@@ -1,12 +1,12 @@
-import { RootModel } from './types';
-import sessionModel from './sessionModel';
 import authModel from './authModel';
-import profileModel from './profileModel';
+import firestoreModel from './firestoreModel';
+import sessionModel from './sessionModel';
+import { RootModel } from './types';
 
 const models: RootModel = {
-  session: sessionModel,
+  firestore: firestoreModel,
   auth: authModel,
-  profile: profileModel,
+  session: sessionModel,
 };
 
 export default models;

@@ -1,110 +1,136 @@
-import React, { FunctionComponent, useState } from 'react';
-import { StyleSheet, View, Text } from 'react-native';
+import React, { FunctionComponent } from 'react';
+import { View, Text, Keyboard } from 'react-native';
+
 import { StackNavigationProp } from '@react-navigation/stack';
-import { connect } from 'react-redux';
+import { Formik, FormikProps } from 'formik';
+import * as Yup from 'yup';
 
-import { firestore } from '@cocorico/services/firebase';
-import Title from '@cocorico/components/Texts/Title';
-import CCRCTextInput from '@cocorico/components/Inputs/Text';
-import CCRCButton from '@cocorico/components/Inputs/Button';
-import FullScreenContainer from '@cocorico/components/FullScreenContainer';
-import { Roboto } from '@cocorico/constants/fonts';
-import type { Dispatch } from '@cocorico/services/store';
-import type { AuthStackParamList } from '@cocorico/components/Navigator/types';
+import AuthContainer from '@cocorico/components/AuthContainer';
+import CCRCButton from '@cocorico/components/CCRC/Button';
+import CCRCKeyboardAvoindingView from '@cocorico/components/CCRC/KeyboardAvoidingView';
+import TextView from '@cocorico/components/CCRC/KeyboardAvoidingView/textView';
+import CCRCTextInput from '@cocorico/components/CCRC/TextInput';
+import ExpandedText from '@cocorico/components/ExpandedText';
+import type { TypedNavigatorParams } from '@cocorico/components/Navigator/types';
 
-const isValidEmail = (email: string) =>
-  !!email.match(
-    /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
-  );
+import Firebase from '@cocorico/services/firebase';
 
-interface Props extends DispatchProps {
-  navigation: StackNavigationProp<AuthStackParamList, 'Account'>;
+import spacing from '@cocorico/constants/spacing';
+
+import styles from './index.styles';
+
+interface Props {
+  navigation: StackNavigationProp<TypedNavigatorParams<'AuthNavigator'>>;
 }
 
-interface State {
+interface FormValues {
   email: string;
-  dirty: boolean;
 }
 
-const AccountScreen: FunctionComponent<Props> = ({
-  navigation,
-  storeEmail,
-}: Props) => {
-  const [{ email, dirty }, setEmail] = useState<State>({
-    email: '',
-    dirty: false,
-  });
+const AccountSchema = Yup.object().shape({
+  email: Yup.string()
+    .email("C'est une adresse email ça ?!")
+    .trim()
+    .required('Il nous manque ton adresse email...'),
+});
 
-  const handleSubmit = async () => {
-    if (isValidEmail(email)) {
-      try {
-        storeEmail(email);
-        const doc = await firestore.collection('users').doc(email).get();
-        if (doc.exists) {
-          navigation.navigate('Login', { screen: 'EnterPassword' });
-        } else {
-          navigation.navigate('Register', { screen: 'CreateProfile' });
-        }
-      } catch (err) {
-        // Show error somehow
-      }
+const AccountScreen: FunctionComponent<Props> = ({ navigation }: Props) => {
+  const initialValues: FormValues = { email: '' };
+
+  const handleFormikSubmit = async ({ email }: FormValues) => {
+    Keyboard.dismiss();
+    const emailSafe = email.trim();
+
+    const userExists = await Firebase.doesUserExist(emailSafe);
+
+    if (userExists) {
+      navigation.navigate('LoginNavigator', {
+        screen: 'EnterPassword',
+        params: { email: emailSafe },
+      });
+    } else {
+      navigation.navigate('RegisterNavigator', {
+        screen: 'CreatePassword',
+        params: { email: emailSafe },
+      });
     }
   };
 
-  return (
-    <FullScreenContainer>
-      <View style={styles.content}>
-        <Title>Cocoricooo !</Title>
-        <Text style={styles.helperText}>
-          Pour commencer, entrez votre adresse email.
-        </Text>
-        <CCRCTextInput
-          outline
-          style={styles.input}
-          valid={dirty ? isValidEmail(email) : undefined}
-          value={email}
-          onChangeText={(value: string) => {
-            setEmail({ email: value, dirty: true });
-          }}
-          placeholder="Adresse email"
-          keyboardType="email-address"
-          textContentType="emailAddress"
-          autoCompleteType="email"
-          autoCapitalize="none"
+  const renderFormikContent = ({
+    handleChange,
+    handleBlur,
+    handleSubmit,
+    isValid,
+    isSubmitting,
+    values: { email },
+    errors,
+  }: FormikProps<FormValues>) => {
+    const getError = (field: keyof FormValues) =>
+      errors[field] ? errors[field] : undefined;
+
+    return (
+      <>
+        <View style={styles.content}>
+          <TextView style={styles.text}>Bienvenue</TextView>
+          <View style={styles.titleContainer}>
+            <Text style={[styles.text, { ...spacing.pgr1 }]}>sur</Text>
+            <ExpandedText
+              after={
+                <Text style={[styles.textImpact, styles.coloredText]}>!</Text>
+              }
+              characterWidth={27}
+              end="o"
+              fill="o"
+              start="Cocoric"
+              style={[styles.textImpact, { ...spacing.pgr1 }]}
+            />
+          </View>
+          <TextView style={[styles.helperText, { ...spacing.mgb3 }]}>
+            Pour commencer, entrez votre adresse email.
+          </TextView>
+          <CCRCTextInput
+            outline
+            anchorStyle={styles.errorContainer}
+            autoCapitalize="none"
+            autoCompleteType="email"
+            autoCorrect={false}
+            error={getError('email')}
+            keyboardType="email-address"
+            placeholder="Adresse email"
+            returnKeyType="done"
+            style={{ ...spacing.mgb1 }}
+            textContentType="emailAddress"
+            valid={!getError('email')}
+            value={email}
+            onBlur={handleBlur('email')}
+            onChangeText={handleChange('email')}
+            onSubmitEditing={() => handleSubmit()}
+          />
+        </View>
+        <CCRCButton
+          disabled={!isValid || isSubmitting}
+          style={{ ...spacing.mgb2 }}
+          title="Continuer"
+          variant="gradient"
+          onPress={() => handleSubmit()}
         />
-      </View>
-      <CCRCButton
-        style={styles.button}
-        title="Continuer"
-        onPress={handleSubmit}
-      />
-    </FullScreenContainer>
+      </>
+    );
+  };
+
+  return (
+    <AuthContainer>
+      <CCRCKeyboardAvoindingView>
+        <Formik
+          initialValues={initialValues}
+          validationSchema={AccountSchema}
+          onSubmit={handleFormikSubmit}
+        >
+          {renderFormikContent}
+        </Formik>
+      </CCRCKeyboardAvoindingView>
+    </AuthContainer>
   );
 };
 
-const styles = StyleSheet.create({
-  content: {
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'center',
-    flexGrow: 1,
-  },
-  helperText: {
-    fontFamily: Roboto[400],
-    fontSize: 16,
-    marginBottom: 32,
-  },
-  input: {
-    height: 66,
-  },
-  button: {
-    marginVertical: 40,
-  },
-});
-
-const mapDispatch = (dispatch: Dispatch) => ({
-  storeEmail: (email: string) => dispatch.auth.setEmail(email),
-});
-type DispatchProps = ReturnType<typeof mapDispatch>;
-
-export default connect(null, mapDispatch)(AccountScreen);
+export default AccountScreen;

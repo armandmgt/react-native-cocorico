@@ -1,28 +1,26 @@
 import React from 'react';
+
 import { createStackNavigator } from '@react-navigation/stack';
 
+import CreateAccountScreen from '@cocorico/views/AuthStack/RegisterStack/CreateAccountScreen';
 import CreatePasswordScreen from '@cocorico/views/AuthStack/RegisterStack/CreatePasswordScreen';
-import CreateProfileScreen from '@cocorico/views/AuthStack/RegisterStack/CreateProfileScreen';
 
-export type RegisterStackParamList = {
-  CreatePassword: undefined;
-  CreateProfile: undefined;
-};
+import type { TypedNavigatorParams } from '@cocorico/components/Navigator/types';
 
 const RegisterStackNavigator = () => {
-  const RegisterStack = createStackNavigator<RegisterStackParamList>();
+  const RegisterStack = createStackNavigator<
+    TypedNavigatorParams<'RegisterNavigator'>
+  >();
 
   return (
-    <RegisterStack.Navigator initialRouteName="CreateProfile">
+    <RegisterStack.Navigator screenOptions={{ headerShown: false }}>
       <RegisterStack.Screen
-        name="CreatePassword"
-        options={{ headerShown: false }}
         component={CreatePasswordScreen}
+        name="CreatePassword"
       />
       <RegisterStack.Screen
-        name="CreateProfile"
-        options={{ headerShown: false }}
-        component={CreateProfileScreen}
+        component={CreateAccountScreen}
+        name="CreateAccount"
       />
     </RegisterStack.Navigator>
   );

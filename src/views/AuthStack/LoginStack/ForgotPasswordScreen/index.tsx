@@ -1,32 +1,132 @@
-import React from 'react';
-import { StackNavigationProp } from '@react-navigation/stack';
-import { StyleSheet, Button, View, Text } from 'react-native';
+import React, { FunctionComponent } from 'react';
+import { View, Text, Keyboard } from 'react-native';
 
-import type { LoginStackParamList } from '@cocorico/components/Navigator/types';
+import { RouteProp } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
+import { Formik, FormikProps } from 'formik';
+import * as Yup from 'yup';
+
+import AuthContainer from '@cocorico/components/AuthContainer';
+import CCRCButton from '@cocorico/components/CCRC/Button';
+import CCRCKeyboardAvoindingView from '@cocorico/components/CCRC/KeyboardAvoidingView';
+import TextView from '@cocorico/components/CCRC/KeyboardAvoidingView/textView';
+import CCRCTextInput from '@cocorico/components/CCRC/TextInput';
+import type { TypedNavigatorParams } from '@cocorico/components/Navigator/types';
+
+import Firebase from '@cocorico/services/firebase';
+import { isValidEmail } from '@cocorico/services/utils';
+
+import spacing from '@cocorico/constants/spacing';
+
+import styles from './index.styles';
 
 interface Props {
-  navigation: StackNavigationProp<LoginStackParamList, 'ForgotPassword'>;
+  navigation: StackNavigationProp<TypedNavigatorParams<'LoginNavigator'>>;
+  route: RouteProp<TypedNavigatorParams<'LoginNavigator'>, 'ForgotPassword'>;
 }
 
-const ForgotPasswordScreen = ({ navigation }: Props) => {
+interface FormValues {
+  email: string;
+}
+
+const ForgotPasswordSchema = Yup.object().shape({
+  email: Yup.string()
+    .email("C'est une adresse email ça ?!")
+    .trim()
+    .required('Il nous manque une adresse email...'),
+});
+
+const ForgotPasswordScreen: FunctionComponent<Props> = ({
+  navigation,
+  route: {
+    params: { email: defaultEmail },
+  },
+}: Props) => {
+  const initialValues: FormValues = { email: defaultEmail };
+
+  const handleFormikSubmit = async ({ email }: FormValues) => {
+    Keyboard.dismiss();
+    const emailSafe = email.trim();
+
+    await Firebase.askResetPassword(emailSafe);
+    navigation.push('ForgotPasswordConfirmation', { email: emailSafe });
+  };
+
+  const handleGoBack = () => {
+    navigation.goBack();
+  };
+
+  const renderFormikContent = ({
+    handleChange,
+    handleBlur,
+    handleSubmit,
+    isValid,
+    isSubmitting,
+    values: { email },
+    errors,
+  }: FormikProps<FormValues>) => {
+    const getError = (field: keyof FormValues) =>
+      errors[field] ? errors[field] : undefined;
+
+    return (
+      <>
+        <View style={styles.content}>
+          <TextView style={[styles.text, { ...spacing.mgb1 }]}>
+            Ça arrive a tout le monde
+            <Text style={styles.coloredText}>.</Text>
+          </TextView>
+          <TextView style={[styles.helperText, { ...spacing.mgb3 }]}>
+            Vérifiez l&apos;adresse mail à laquelle nous allons vous envoyer un
+            lien de réinitialisation de votre mot de passe
+          </TextView>
+          <CCRCTextInput
+            outline
+            anchorStyle={styles.errorContainer}
+            autoCapitalize="none"
+            autoCompleteType="email"
+            error={getError('email')}
+            keyboardType="email-address"
+            placeholder="Adresse email"
+            returnKeyType="done"
+            style={{ ...spacing.mgb1 }}
+            textContentType="emailAddress"
+            valid={!getError('email')}
+            value={email}
+            onBlur={handleBlur('email')}
+            onChangeText={handleChange('email')}
+            onSubmitEditing={() => handleSubmit()}
+          />
+        </View>
+        <CCRCButton
+          disabled={!isValid || isSubmitting}
+          style={{ ...spacing.mgb2 }}
+          title="Confirmer l'adresse email"
+          variant="gradient"
+          onPress={() => handleSubmit()}
+        />
+        <CCRCButton
+          style={{ ...spacing.mgb2 }}
+          title="Retour"
+          variant="outline"
+          onPress={handleGoBack}
+        />
+      </>
+    );
+  };
+
   return (
-    <View style={styles.container}>
-      <Text>ForgotPassword Screen</Text>
-      <Button
-        title="pushEnterPassword"
-        onPress={() => navigation.push('EnterPassword')}
-      />
-      <Button title="goBack" onPress={() => navigation.goBack()} />
-    </View>
+    <AuthContainer>
+      <CCRCKeyboardAvoindingView>
+        <Formik
+          initialValues={initialValues}
+          validationSchema={ForgotPasswordSchema}
+          onSubmit={handleFormikSubmit}
+        >
+          {renderFormikContent}
+        </Formik>
+      </CCRCKeyboardAvoindingView>
+    </AuthContainer>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
 
 export default ForgotPasswordScreen;

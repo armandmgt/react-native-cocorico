@@ -1,13 +1,14 @@
 /* eslint-disable react/style-prop-object */
 import React from 'react';
-import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, View } from 'react-native';
+
+import { StatusBar } from 'expo-status-bar';
 import { Provider } from 'react-redux';
 
-import store from './src/services/store';
 import Navigator from './src/components/Navigator';
+import store from './src/services/store';
 
-export default function App() {
+const App = () => {
   return (
     <Provider store={store}>
       <View style={styles.container}>
@@ -16,10 +17,12 @@ export default function App() {
       </View>
     </Provider>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    flexGrow: 1,
   },
 });
+
+export default App;

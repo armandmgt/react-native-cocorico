@@ -1,100 +1,157 @@
-import React, { FunctionComponent, useState } from 'react';
+import React, { FunctionComponent, useRef } from 'react';
+import { View, Text, Keyboard } from 'react-native';
+
+import { RouteProp } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
-import { StyleSheet, View, Text } from 'react-native';
-import { connect } from 'react-redux';
+import { Formik, FormikProps } from 'formik';
+import * as Yup from 'yup';
 
-import FullScreenContainer from '@cocorico/components/FullScreenContainer';
-import Title from '@cocorico/components/Texts/Title';
-import CCRCTextInput from '@cocorico/components/Inputs/Text';
-import CCRCButton from '@cocorico/components/Inputs/Button';
-import { Roboto } from '@cocorico/constants/fonts';
-import type { Dispatch } from '@cocorico/services/store';
-import type { RegisterStackParamList } from '@cocorico/components/Navigator/types';
+import AuthContainer from '@cocorico/components/AuthContainer';
+import CCRCButton from '@cocorico/components/CCRC/Button';
+import CCRCKeyboardAvoindingView from '@cocorico/components/CCRC/KeyboardAvoidingView';
+import TextView from '@cocorico/components/CCRC/KeyboardAvoidingView/textView';
+import CCRCTextInput, {
+  CustomTextInputHandle,
+} from '@cocorico/components/CCRC/TextInput';
+import type { TypedNavigatorParams } from '@cocorico/components/Navigator/types';
 
-interface Props extends DispatchProps {
-  navigation: StackNavigationProp<RegisterStackParamList, 'CreatePassword'>;
+import spacing from '@cocorico/constants/spacing';
+
+import styles from './index.styles';
+
+interface Props {
+  navigation: StackNavigationProp<TypedNavigatorParams<'RegisterNavigator'>>;
+  route: RouteProp<TypedNavigatorParams<'RegisterNavigator'>, 'CreatePassword'>;
 }
 
-type State = string;
+interface FormValues {
+  password: string;
+  passwordConfirmation: string;
+}
+
+const CreatePasswordSchema = Yup.object().shape({
+  password: Yup.string()
+    .min(8, 'Il est un peu faiblard ce mot de passe.')
+    .required('Il nous manque un mot de passe...'),
+  passwordConfirmation: Yup.string()
+    .oneOf(
+      [Yup.ref('password'), ''],
+      'Les deux mots de passes ne sont pas identiques.',
+    )
+    .required('Il faut confirmer votre mot de passe...'),
+});
 
 const CreatePasswordScreen: FunctionComponent<Props> = ({
-  createUser,
+  navigation,
+  route: {
+    params: { email },
+  },
 }: Props) => {
-  const [loading, setLoading] = useState<boolean>(false);
-  const [password, setPassword] = useState<State>('');
-  const [error, setError] = useState<string>('');
+  const initialValues: FormValues = { password: '', passwordConfirmation: '' };
+  const passwordConfirmationRef = useRef<CustomTextInputHandle>(null);
 
-  const handleSubmit = async () => {
-    try {
-      if (password) {
-        setLoading(true);
-        createUser({ password });
-      }
-    } catch (err) {
-      setLoading(false);
-      setError(err.message);
-    }
+  const handleFormikSubmit = async ({ password }: FormValues) => {
+    Keyboard.dismiss();
+
+    navigation.push('CreateAccount', { email, password });
+  };
+
+  const focusPasswordConfirmation = () => {
+    passwordConfirmationRef.current?.focus();
+  };
+
+  const renderFormikContent = ({
+    handleChange,
+    handleBlur,
+    handleSubmit,
+    isValid,
+    isSubmitting,
+    values: { password, passwordConfirmation },
+    errors,
+    touched,
+  }: FormikProps<FormValues>) => {
+    const getError = (field: keyof FormValues) =>
+      touched[field] && errors[field] ? errors[field] : undefined;
+
+    return (
+      <>
+        <View style={styles.content}>
+          <TextView
+            shrinkable
+            containerStyle={styles.titleContainer}
+            lineHeight={40}
+            numberOfLines={2}
+            style={styles.text}
+          >
+            C&apos;est votre première fois ici
+            <Text style={styles.coloredText}>.</Text>
+          </TextView>
+          <TextView style={[styles.helperText, { ...spacing.mgb3 }]}>
+            Veuillez chosisir le mot de passe qui vous permettra de vous
+            connecter.
+          </TextView>
+          <CCRCTextInput
+            outline
+            secureTextEntry
+            anchorStyle={styles.errorContainer}
+            autoCompleteType="password"
+            error={getError('password')}
+            key="password"
+            keyboardType="default"
+            placeholder="Votre mot de passe"
+            returnKeyType="next"
+            style={{ ...spacing.mgb1 }}
+            textContentType="newPassword"
+            valid={!getError('password')}
+            value={password}
+            onBlur={handleBlur('password')}
+            onChangeText={handleChange('password')}
+            onSubmitEditing={focusPasswordConfirmation}
+          />
+          <CCRCTextInput
+            outline
+            secureTextEntry
+            anchorStyle={styles.errorContainer}
+            autoCompleteType="password"
+            error={getError('passwordConfirmation')}
+            key="passwordConfirmation"
+            keyboardType="default"
+            placeholder="Confirmation de votre mot de passe"
+            ref={passwordConfirmationRef}
+            returnKeyType="done"
+            style={{ ...spacing.mgb3 }}
+            textContentType="password"
+            valid={!getError('passwordConfirmation')}
+            value={passwordConfirmation}
+            onBlur={handleBlur('passwordConfirmation')}
+            onChangeText={handleChange('passwordConfirmation')}
+            onSubmitEditing={() => handleSubmit()}
+          />
+        </View>
+        <CCRCButton
+          disabled={!isValid || isSubmitting}
+          style={{ ...spacing.mgb2 }}
+          title="Choisir le mot de passe"
+          variant="gradient"
+          onPress={() => handleSubmit()}
+        />
+      </>
+    );
   };
 
   return (
-    <FullScreenContainer>
-      <View style={styles.content}>
-        <Title style={styles.title}>Hop ! Plus qu&apos;un mot de passe.</Title>
-        <Text style={styles.helperText}>
-          Renseignez un mot de passe afin de créer votre compte.
-        </Text>
-        <CCRCTextInput
-          outline
-          style={styles.input}
-          autoFocus
-          value={password}
-          secureTextEntry
-          onChangeText={(value: string) => {
-            setPassword(value);
-          }}
-          placeholder="Votre mot de passe"
-          keyboardType="default"
-          textContentType="newPassword"
-          autoCompleteType="password"
-        />
-        <Text>{error}</Text>
-      </View>
-      <CCRCButton
-        style={styles.button}
-        title="Continuer"
-        onPress={handleSubmit}
-        disabled={loading}
-      />
-    </FullScreenContainer>
+    <AuthContainer hasBackButton>
+      <CCRCKeyboardAvoindingView offset={36}>
+        <Formik
+          initialValues={initialValues}
+          validationSchema={CreatePasswordSchema}
+          onSubmit={handleFormikSubmit}
+        >
+          {renderFormikContent}
+        </Formik>
+      </CCRCKeyboardAvoindingView>
+    </AuthContainer>
   );
 };
 
-const styles = StyleSheet.create({
-  content: {
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'center',
-    flexGrow: 1,
-  },
-  title: {
-    fontSize: 46,
-  },
-  helperText: {
-    fontFamily: Roboto[400],
-    fontSize: 16,
-    marginBottom: 32,
-  },
-  input: {
-    height: 66,
-  },
-  button: {
-    marginVertical: 40,
-  },
-});
-
-const mapDispatch = ({ profile: { createUser } }: Dispatch) => ({
-  createUser,
-});
-type DispatchProps = ReturnType<typeof mapDispatch>;
-
-export default connect(null, mapDispatch)(CreatePasswordScreen);
+export default CreatePasswordScreen;

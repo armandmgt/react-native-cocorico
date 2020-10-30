@@ -1,5 +1,4 @@
-/* eslint-disable import/prefer-default-export */
-const Roboto = {
+const Roboto = Object.freeze({
   100: 'Roboto_100Thin',
   105: 'Roboto_100Thin_Italic',
   300: 'Roboto_300Light',
@@ -12,6 +11,8 @@ const Roboto = {
   705: 'Roboto_700Bold_Italic',
   900: 'Roboto_900Black',
   905: 'Roboto_900Black_Italic',
-};
+});
 
-export { Roboto };
+const Pacifico = 'Pacifico_400Regular';
+
+export { Roboto, Pacifico };

@@ -13,8 +13,8 @@ const Title: FunctionComponent<TitleProps> = ({ style, children }) => {
 
 const styles = StyleSheet.create({
   text: {
-    fontFamily: Roboto[700],
-    fontSize: 52,
+    fontFamily: Roboto[900],
+    fontSize: 50,
   },
 });
 
