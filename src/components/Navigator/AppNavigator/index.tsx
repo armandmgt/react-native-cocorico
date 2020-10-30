@@ -8,12 +8,11 @@ import {
   HeaderStyleInterpolators,
 } from '@react-navigation/stack';
 
-import MailboxScreen from '@cocorico/views/AppStack/MailboxScreen';
-
 import type { TypedNavigatorParams } from '@cocorico/components/Navigator/types';
 
 import { HeaderTitle, HeaderMailbox, HeaderProfile } from './headerButtons';
 import HomeStackNavigator from './HomeNavigator';
+import MessagesStackNavigator from './MessagesNavigator';
 import ProfileStackNavigator from './ProfileNavigator';
 
 const getAppStackScreenOptions = ({
@@ -34,7 +33,6 @@ const AppStackNavigator = () => {
   return (
     <AppStack.Navigator screenOptions={getAppStackScreenOptions}>
       <AppStack.Screen component={HomeStackNavigator} name="HomeNavigator" />
-      <AppStack.Screen component={MailboxScreen} name="Mailbox" />
       <AppStack.Screen
         component={ProfileStackNavigator}
         name="ProfileNavigator"
@@ -42,6 +40,10 @@ const AppStackNavigator = () => {
           gestureDirection: 'horizontal-inverted',
           cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
         }}
+      />
+      <AppStack.Screen
+        component={MessagesStackNavigator}
+        name="MessagesNavigator"
       />
     </AppStack.Navigator>
   );

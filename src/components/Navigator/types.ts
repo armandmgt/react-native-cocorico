@@ -10,6 +10,8 @@ export type Screens = {
   Mailbox: undefined;
   Profile: undefined;
   Settings: undefined;
+  Messages: undefined;
+  Message: undefined;
 };
 
 export type Navigators = {
@@ -20,9 +22,12 @@ export type Navigators = {
     'EnterPassword' | 'ForgotPassword' | 'ForgotPasswordConfirmation'
   >;
   RegisterNavigator: Navigatable<'CreatePassword' | 'CreateAccount'>;
-  AppNavigator: Navigatable<'HomeNavigator' | 'Mailbox' | 'ProfileNavigator'>;
+  AppNavigator: Navigatable<
+    'HomeNavigator' | 'MessagesNavigator' | 'ProfileNavigator'
+  >;
   HomeNavigator: Navigatable<'Home' | 'Details'>;
   ProfileNavigator: Navigatable<'Profile' | 'Settings'>;
+  MessagesNavigator: Navigatable<'Messages' | 'Message'>;
 };
 
 type Navigatable<T> = T extends keyof Screens

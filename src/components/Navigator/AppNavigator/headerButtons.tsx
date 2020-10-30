@@ -60,7 +60,8 @@ interface HeaderMailboxProps {
 const HeaderMailbox: FunctionComponent<HeaderMailboxProps> = ({
   navigation,
 }) => {
-  const handlePress = () => navigation.navigate('Mailbox');
+  const handlePress = () =>
+    navigation.navigate('MessagesNavigator', { screen: 'Messages' });
 
   return (
     <Icon

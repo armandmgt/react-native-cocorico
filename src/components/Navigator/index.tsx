@@ -4,6 +4,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { connect } from 'react-redux';
 
 import SplashScreen from '@cocorico/views/SplashScreen';
+
 import type { RootState, Dispatch } from '@cocorico/services/store';
 
 import type {
