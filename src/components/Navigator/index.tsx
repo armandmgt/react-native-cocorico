@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { NavigationContainer } from '@react-navigation/native';
 
 import SplashScreen from '@cocorico/views/SplashScreen';
+import MessagesScreen from '@cocorico/views/AppStack/MessagesScren';
 import { auth } from '@cocorico/services/firebase';
 import type { StackNavigator } from '@cocorico/constants/types';
 import type { RootState, Dispatch } from '@cocorico/services/store';
@@ -15,7 +16,7 @@ const Navigator = ({ appStatus, authStatus, setAuthStatus }: Props) => {
   const SwitchNavigator: { [key in StackNavigator]: React.ReactNode } = {
     SPLASH: <SplashScreen />,
     AUTH: <AuthStackNavigator />,
-    APP: null,
+    APP: <MessagesScreen />,
   };
 
   console.log('Status :', appStatus, authStatus);
