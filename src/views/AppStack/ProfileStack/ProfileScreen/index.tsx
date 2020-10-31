@@ -12,12 +12,13 @@ import type { TypedNavigatorParams } from '@cocorico/components/Navigator/types'
 
 import styles from './index.styles';
 import ProfileImagePicker from './ProfileImagePicker';
+import Firebase, { auth } from '@cocorico/services/firebase';
 
 interface FormValues {
   firstName: string;
   lastName: string;
   genre: string;
-  image?: string;
+  profilePic?: string;
 }
 
 interface Props {
@@ -43,6 +44,8 @@ const ProfileScreen: FunctionComponent<Props> = () => {
   };
   const onSubmit = (values: FormValues, actions: FormikHelpers<FormValues>) => {
     actions.setSubmitting(false);
+    if (auth.currentUser && auth.currentUser.email)
+      Firebase.saveProfile(auth.currentUser.email, { ...values });
   };
 
   return (
@@ -66,7 +69,7 @@ const ProfileScreen: FunctionComponent<Props> = () => {
             touched[field] && errors[field] ? errors[field] : undefined;
           return (
             <>
-              <ProfileImagePicker onValueChange={handleChange('image')} />
+              <ProfileImagePicker onValueChange={handleChange('profilePic')} />
               <View style={styles.field}>
                 <Text>Prénom</Text>
                 <CCRCTextInput

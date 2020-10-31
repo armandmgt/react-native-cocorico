@@ -5,6 +5,9 @@ export type AppStatus = 'LOADING' | 'LOADED';
 export interface Profile {
   firstName: string;
   lastName: string;
+  genre?: string;
+  profilePic?: string;
+  profilePicUrl?: string;
 }
 
 export interface UserData {

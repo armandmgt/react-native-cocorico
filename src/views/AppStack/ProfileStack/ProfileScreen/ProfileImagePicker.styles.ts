@@ -1,16 +1,50 @@
-import { StyleSheet } from 'react-native';
+import { Platform, StyleSheet } from 'react-native';
 
 import colors from '@cocorico/constants/colors';
 import { Roboto } from '@cocorico/constants/fonts';
 import spacing from '@cocorico/constants/spacing';
 
+const elevatedStyles = Platform.select({
+  ios: {
+    shadowColor: colors.BLACK,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.8,
+    shadowRadius: 2,
+  },
+  android: {
+    elevation: 10,
+  },
+});
 export default StyleSheet.create({
   panel: {
-    backgroundColor: colors.RED,
+    ...spacing.mgt0_75,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   image: {
-    width: 200,
-    height: 200,
+    width: '50%',
+    height: undefined,
+    aspectRatio: 1,
+    borderRadius: 1000,
+  },
+  imageView: {
+    position: 'relative',
+    borderRadius: 1000,
+    ...elevatedStyles,
+  },
+  chooseImageButtonView: {
+    position: 'absolute',
+    bottom: 0,
+    right: 0,
+  },
+  chooseImageButton: {
+    ...elevatedStyles,
+    ...spacing.pg1,
+    backgroundColor: colors.WHITE_ACCENT,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 1000,
+    aspectRatio: 1,
   },
   backdrop: {
     backgroundColor: colors.BLACK_06,
@@ -31,7 +65,7 @@ export default StyleSheet.create({
     ...spacing.pgv1_75,
     backgroundColor: colors.WHITE,
     borderRadius: 5,
-    elevation: 1,
+    elevation: 5,
   },
   actionsContainer: {
     ...spacing.mgt2,

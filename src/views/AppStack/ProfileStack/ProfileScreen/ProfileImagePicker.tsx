@@ -1,6 +1,5 @@
 import React, { FunctionComponent, useState, useEffect } from 'react';
 import {
-  Button,
   Image,
   View,
   ActionSheetIOS,
@@ -9,14 +8,15 @@ import {
   Modal,
   TouchableWithoutFeedback,
   Pressable,
+  TouchableNativeFeedback,
 } from 'react-native';
 
+import { Ionicons } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
-import { StatusBar } from 'expo-status-bar';
 
 import CCRCButton from '@cocorico/components/CCRC/Button';
 
-import colors from '@cocorico/constants/colors';
+import DefaultProfileImage from '@cocorico/assets/images/default-profile-image.jpg';
 
 import styles from './ProfileImagePicker.styles';
 
@@ -55,14 +55,15 @@ const ProfileImagePicker: FunctionComponent<Props> = ({ onValueChange }) => {
       allowsEditing: true,
       aspect: [1, 1],
       quality: 1,
+      base64: true,
     };
     const result = await (fromCamera
       ? ImagePicker.launchCameraAsync(options)
       : ImagePicker.launchImageLibraryAsync(options));
 
     if (!result.cancelled) {
-      setImage(result.uri);
-      onValueChange(result.uri);
+      setImage(`data:image/jpeg;base64,${result.base64}`);
+      onValueChange(`data:image/jpeg;base64,${result.base64}`);
       setPickerModalVisible(false);
     }
   };
@@ -135,8 +136,19 @@ const ProfileImagePicker: FunctionComponent<Props> = ({ onValueChange }) => {
           </View>
         </>
       </Modal>
-      <Image source={{ uri: image }} style={styles.image} />
-      <Button title="Pick an image from camera roll" onPress={handlePicker} />
+      <View style={styles.imageView}>
+        <Image
+          source={image ? { uri: image } : DefaultProfileImage}
+          style={styles.image}
+        />
+        <View style={styles.chooseImageButtonView}>
+          <View style={styles.chooseImageButton}>
+            <TouchableNativeFeedback onPress={handlePicker}>
+              <Ionicons name="md-create" size={32} />
+            </TouchableNativeFeedback>
+          </View>
+        </View>
+      </View>
     </View>
   );
 };

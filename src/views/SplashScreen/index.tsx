@@ -15,6 +15,7 @@ import {
   Roboto_900Black_Italic,
 } from '@expo-google-fonts/roboto';
 import { AppLoading } from 'expo';
+import { Asset } from 'expo-asset';
 import { loadAsync as loadFontAsync } from 'expo-font';
 import { connect } from 'react-redux';
 
@@ -40,6 +41,9 @@ interface Props extends DispatchProps {}
 const SplashScreen = ({ setAppStatus }: Props) => {
   const startupAsync = async () => {
     await loadFontAsync(customFonts);
+    // await Asset.loadAsync(
+    //   require('@cocorico/assets/images/default-profile-image.jpg'),
+    // );
     setAppStatus('LOADED');
   };
 
