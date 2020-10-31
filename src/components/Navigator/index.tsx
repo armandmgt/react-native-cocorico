@@ -5,7 +5,6 @@ import { connect } from 'react-redux';
 
 import SplashScreen from '@cocorico/views/SplashScreen';
 
-import { auth } from '@cocorico/services/firebase';
 import type { RootState, Dispatch } from '@cocorico/services/store';
 
 import type {
@@ -19,7 +18,7 @@ import AuthStackNavigator from './AuthNavigator';
 
 interface Props extends StateProps, DispatchProps {}
 
-const Navigator = ({ appStatus, authStatus, setAuthStatus }: Props) => {
+const Navigator = ({ appStatus, authStatus, subscribeAuth }: Props) => {
   const SwitchNavigator: { [key in SwitchNavigatorKey]: React.ReactNode } = {
     SPLASH: <SplashScreen />,
     AUTH: <AuthStackNavigator />,
@@ -27,14 +26,7 @@ const Navigator = ({ appStatus, authStatus, setAuthStatus }: Props) => {
   };
 
   useEffect(() => {
-    const unsubscribeAuth = auth.onAuthStateChanged((authUser) => {
-      if (authUser) {
-        console.log('authUser :', auth.currentUser);
-        setAuthStatus('LOGGED_IN');
-      } else setAuthStatus('LOGGED_OUT');
-    });
-
-    return unsubscribeAuth;
+    subscribeAuth();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -77,8 +69,8 @@ const mapState = ({
 });
 type StateProps = ReturnType<typeof mapState>;
 
-const mapDispatch = ({ auth: { setAuthStatus } }: Dispatch) => ({
-  setAuthStatus,
+const mapDispatch = ({ firestore: { subscribeAuth } }: Dispatch) => ({
+  subscribeAuth,
 });
 type DispatchProps = ReturnType<typeof mapDispatch>;
 

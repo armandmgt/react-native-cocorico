@@ -1015,6 +1015,11 @@
     minimatch "^3.0.4"
     strip-json-comments "^3.1.1"
 
+"@expo-google-fonts/pacifico@^0.1.0":
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/@expo-google-fonts/pacifico/-/pacifico-0.1.0.tgz#f46da10e9eeed7aa3abc2d3e15a1a3b2e4bad6eb"
+  integrity sha512-XA5hJ7aqyi+Uz4hRXD3NGmIHzUpjDoudKrFOQ/lIF+0Niu0D5v+rXV8iODy6WzhhHMmVx+kyWU0foBhG5cCsOg==
+
 "@expo-google-fonts/roboto@^0.1.0":
   version "0.1.0"
   resolved "https://registry.yarnpkg.com/@expo-google-fonts/roboto/-/roboto-0.1.0.tgz#2897dc09db4ceb9f5ba337103090e1d70236e811"

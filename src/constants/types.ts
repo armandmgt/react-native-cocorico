@@ -1,3 +1,5 @@
+/* eslint-disable prettier/prettier */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 export type SwitchNavigatorKey = 'SPLASH' | 'AUTH' | 'APP';
 export type AuthStatus = 'LOADING' | 'LOGGED_IN' | 'LOGGED_OUT';
 export type AppStatus = 'LOADING' | 'LOADED';
@@ -18,7 +20,7 @@ export interface UserData {
 export type Writeable<T> = { -readonly [P in keyof T]: T[P] };
 
 export type FormatKeywordsValue<Keys, Multipliers> = {
-  [Key in keyof Keys as `${Key}${Multipliers}`]: Keys[Key]
+  [Key in (keyof Keys) as `${Key}${Multipliers}`]: Keys[Key]
 };
 
 export type FormatMultipliers<T extends (string | number | boolean | bigint)[]> = 

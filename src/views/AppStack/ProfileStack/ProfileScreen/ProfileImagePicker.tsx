@@ -9,6 +9,7 @@ import {
   TouchableWithoutFeedback,
   Pressable,
   TouchableNativeFeedback,
+  Alert,
 } from 'react-native';
 
 import { Ionicons } from '@expo/vector-icons';
@@ -41,7 +42,9 @@ const ProfileImagePicker: FunctionComponent<Props> = ({ onValueChange }) => {
       if (Platform.OS !== 'web') {
         const { status } = await ImagePicker[permissionFnc]();
         if (status !== 'granted') {
-          alert('Sorry, we need camera roll permissions to make this work!');
+          Alert.alert(
+            'Sorry, we need camera roll permissions to make this work!',
+          );
         }
       }
     };

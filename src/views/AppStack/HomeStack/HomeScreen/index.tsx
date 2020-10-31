@@ -1,36 +1,22 @@
 import React, { FunctionComponent } from 'react';
-import { Button, View, Text } from 'react-native';
+import { View, Text } from 'react-native';
 
 import { StackNavigationProp } from '@react-navigation/stack';
 
+import CCRCButton from '@cocorico/components/CCRC/Button';
 import type { TypedNavigatorParams } from '@cocorico/components/Navigator/types';
 
-import { auth } from '@cocorico/services/firebase';
+import styles from './index.styles';
 
 interface Props {
-  navigation: StackNavigationProp<TypedNavigatorParams<'AppNavigator'>>;
+  navigation: StackNavigationProp<TypedNavigatorParams<'HomeNavigator'>>;
 }
 
 const HomeScreen: FunctionComponent<Props> = ({ navigation }) => {
   return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <Text>Home Screen</Text>
-      <Button
-        title="go to profile"
-        onPress={() => {
-          navigation.push('ProfileNavigator', { screen: 'Profile' });
-        }}
-      />
-      <Button
-        title="disconnect"
-        onPress={async () => {
-          try {
-            await auth.signOut();
-          } catch (err) {
-            console.error(err);
-          }
-        }}
-      />
+    <View style={styles.container}>
+      <Text>Home</Text>
+      <CCRCButton title="details" onPress={() => navigation.push('Details')} />
     </View>
   );
 };

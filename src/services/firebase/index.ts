@@ -3,9 +3,10 @@ import * as firebase from 'firebase';
 import * as Random from 'expo-random';
 import Base64 from 'Base64';
 
-import type { Profile } from '@cocorico/constants/types';
+import type { AuthStatus, Profile, UserData } from '@cocorico/constants/types';
 
 import firebaseConfig from './firebaseConfig';
+import { normalizeUser } from './firebaseUtils';
 
 import 'firebase/auth';
 import 'firebase/firestore';
@@ -131,6 +132,28 @@ const Firebase = Object.freeze({
       console.error(error);
       return { success: false, error };
     }
+  },
+  subscribeAuth: (callback: (status: AuthStatus) => void): (() => void) => {
+    return auth.onAuthStateChanged((authUser) => {
+      if (authUser) callback('LOGGED_IN');
+      else callback('LOGGED_OUT');
+    });
+  },
+  subscribeCurrentUser: (callback: (user: UserData) => void): (() => void) => {
+    const { currentUser } = auth;
+
+    if (!currentUser || !currentUser.email) {
+      throw new Error('currentUser.email missing');
+    }
+
+    const doc = firestore.collection('users').doc(currentUser.email);
+
+    return doc.onSnapshot((snapshot) => {
+      const data = snapshot.data()!;
+      const normalizedUser = normalizeUser(data);
+
+      callback(normalizedUser);
+    });
   },
 });
 

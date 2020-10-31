@@ -1,9 +1,14 @@
 import React, { FunctionComponent } from 'react';
-import { View, Text } from 'react-native';
+import { View } from 'react-native';
 
 import { StackNavigationProp } from '@react-navigation/stack';
 
+import CCRCButton from '@cocorico/components/CCRC/Button';
 import type { TypedNavigatorParams } from '@cocorico/components/Navigator/types';
+
+import Firebase from '@cocorico/services/firebase';
+
+import styles from './index.styles';
 
 interface Props {
   navigation: StackNavigationProp<TypedNavigatorParams<'ProfileNavigator'>>;
@@ -11,8 +16,12 @@ interface Props {
 
 const SettingsScreen: FunctionComponent<Props> = () => {
   return (
-    <View>
-      <Text>Settings Screen</Text>
+    <View style={styles.container}>
+      <CCRCButton
+        buttonStyle={styles.logoutButton}
+        title="logout"
+        onPress={() => Firebase.logout()}
+      />
     </View>
   );
 };
