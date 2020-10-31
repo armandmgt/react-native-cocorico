@@ -18,9 +18,15 @@ import {
 import { AppLoading } from 'expo';
 import { Asset } from 'expo-asset';
 import { loadAsync as loadFontAsync } from 'expo-font';
+import {
+  preventAutoHideAsync as preventAutoHideSplashAsync,
+  hideAsync as hideSplashAsync,
+} from 'expo-splash-screen';
 import { connect } from 'react-redux';
 
 import type { Dispatch } from '@cocorico/services/store';
+
+import ProfilePictures from '@cocorico/assets/images/profiles';
 
 const customFonts = {
   Roboto_100Thin,
@@ -43,11 +49,16 @@ interface Props extends DispatchProps {}
 
 const SplashScreen = ({ setAppStatus }: Props) => {
   const startupAsync = async () => {
+    await preventAutoHideSplashAsync();
     await loadFontAsync(customFonts);
-    // await Asset.loadAsync(
-    //   require('@cocorico/assets/images/default-profile-image.jpg'),
-    // );
+    await Asset.loadAsync([
+      ProfilePictures.profile1,
+      ProfilePictures.profile2,
+      ProfilePictures.profile3,
+      ProfilePictures.profile4,
+    ]);
     setAppStatus('LOADED');
+    await hideSplashAsync();
   };
 
   startupAsync();
