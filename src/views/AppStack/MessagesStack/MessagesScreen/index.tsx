@@ -45,11 +45,11 @@ const MessagesScreen = ({ navigation }: MessagesScreenProps) => {
   const [selectedId, setSelectedId] = useState<string | undefined>(undefined);
 
   const renderConversations = ({ item }: any) => {
-    const backgroundColor = item.id === selectedId && colors.GREY_ACCENT;
+    const selected = item.id === selectedId;
 
     return (
       <Pressable
-        style={{ backgroundColor }}
+        // style={selected && { backgroundColor: colors.GREY_ACCENT }}
         onPress={() => {
           setSelectedId(item.id);
           navigation.navigate('Message');
