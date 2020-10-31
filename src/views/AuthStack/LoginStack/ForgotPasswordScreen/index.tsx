@@ -14,7 +14,6 @@ import CCRCTextInput from '@cocorico/components/CCRC/TextInput';
 import type { TypedNavigatorParams } from '@cocorico/components/Navigator/types';
 
 import Firebase from '@cocorico/services/firebase';
-import { isValidEmail } from '@cocorico/services/utils';
 
 import spacing from '@cocorico/constants/spacing';
 

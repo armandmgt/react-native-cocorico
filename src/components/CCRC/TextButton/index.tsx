@@ -16,7 +16,7 @@ interface Props extends ButtonProps {
   titleStyle?: TextStyle;
 }
 
-const CustomTextButton: FunctionComponent<Props> = ({
+const CCRCTextButton: FunctionComponent<Props> = ({
   title,
   disabled,
   style,
@@ -30,4 +30,4 @@ const CustomTextButton: FunctionComponent<Props> = ({
   );
 };
 
-export default CustomTextButton;
+export default CCRCTextButton;

@@ -23,7 +23,7 @@ interface Props extends ButtonProps {
   buttonStyle?: ViewStyle;
 }
 
-const CustomButton: FunctionComponent<Props> = ({
+const CCRCButton: FunctionComponent<Props> = ({
   title,
   disabled,
   variant = 'fill',
@@ -90,4 +90,4 @@ const CustomButton: FunctionComponent<Props> = ({
   );
 };
 
-export default CustomButton;
+export default CCRCButton;
