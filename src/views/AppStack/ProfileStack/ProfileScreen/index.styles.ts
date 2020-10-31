@@ -5,6 +5,8 @@ import spacing from '@cocorico/constants/spacing';
 
 export default StyleSheet.create({
   container: {
+    ...spacing.pgh4,
+    ...spacing.pgv2,
     flex: 1,
     backgroundColor: colors.WHITE,
   },

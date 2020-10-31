@@ -78,6 +78,11 @@
             "pattern": "@cocorico/constants/**",
             "group": "internal",
             "position": "before"
+          },
+          {
+            "pattern": "@cocorico/assets/**",
+            "group": "internal",
+            "position": "before"
           }
         ],
         "pathGroupsExcludedImportTypes": ["builtin"],

@@ -8,5 +8,6 @@ export const normalizeUser = (user: any) => {
   return {
     firstName: user?.firstName,
     lastName: user?.lastName,
+    profilePicUrl: user?.profilePicUrl,
   };
 };

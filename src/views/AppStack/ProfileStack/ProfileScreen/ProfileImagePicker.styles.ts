@@ -27,6 +27,7 @@ export default StyleSheet.create({
     aspectRatio: 1,
     borderRadius: 1000,
   },
+  overlapImage: { position: 'absolute' },
   imageView: {
     position: 'relative',
     borderRadius: 1000,

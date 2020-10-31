@@ -21,14 +21,15 @@ import DefaultProfileImage from '@cocorico/assets/images/default-profile-image.j
 
 import styles from './ProfileImagePicker.styles';
 
-type State = string | undefined;
-
 interface Props {
-  onValueChange: Function;
+  value?: string;
+  onValueChange: (value: string) => any;
 }
 
-const ProfileImagePicker: FunctionComponent<Props> = ({ onValueChange }) => {
-  const [image, setImage] = useState<State>(undefined);
+const ProfileImagePicker: FunctionComponent<Props> = ({
+  value,
+  onValueChange,
+}) => {
   const [pickerModalVisible, setPickerModalVisible] = useState<boolean>(false);
 
   const closeModal = () => setPickerModalVisible(false);
@@ -58,15 +59,13 @@ const ProfileImagePicker: FunctionComponent<Props> = ({ onValueChange }) => {
       allowsEditing: true,
       aspect: [1, 1],
       quality: 1,
-      base64: true,
     };
     const result = await (fromCamera
       ? ImagePicker.launchCameraAsync(options)
       : ImagePicker.launchImageLibraryAsync(options));
 
     if (!result.cancelled) {
-      setImage(`data:image/jpeg;base64,${result.base64}`);
-      onValueChange(`data:image/jpeg;base64,${result.base64}`);
+      onValueChange(result.uri);
       setPickerModalVisible(false);
     }
   };
@@ -140,10 +139,13 @@ const ProfileImagePicker: FunctionComponent<Props> = ({ onValueChange }) => {
         </>
       </Modal>
       <View style={styles.imageView}>
-        <Image
-          source={image ? { uri: image } : DefaultProfileImage}
-          style={styles.image}
-        />
+        <Image source={DefaultProfileImage} style={styles.image} />
+        {value && (
+          <Image
+            source={{ uri: value }}
+            style={[styles.image, styles.overlapImage]}
+          />
+        )}
         <View style={styles.chooseImageButtonView}>
           <View style={styles.chooseImageButton}>
             <TouchableNativeFeedback onPress={handlePicker}>

@@ -11,19 +11,19 @@ import CCRCTextInput from '@cocorico/components/CCRC/TextInput';
 import type { TypedNavigatorParams } from '@cocorico/components/Navigator/types';
 
 import Firebase, { auth } from '@cocorico/services/firebase';
-import type { RootState } from '@cocorico/services/store';
+import type { Dispatch, RootState } from '@cocorico/services/store';
 
 import styles from './index.styles';
 import ProfileImagePicker from './ProfileImagePicker';
 
 interface FormValues {
-  firstName?: string;
-  lastName?: string;
+  firstName: string;
+  lastName: string;
   genre?: string;
   profilePic?: string;
 }
 
-interface Props extends StateProps {
+interface Props extends StateProps, DispatchProps {
   navigation: StackNavigationProp<TypedNavigatorParams<'ProfileNavigator'>>;
 }
 
@@ -40,13 +40,19 @@ const ProfileSchema = Yup.object().shape({
 
 const ProfileScreen: FunctionComponent<Props> = ({ user }) => {
   const initialValues: FormValues = {
-    firstName: user?.firstName,
-    lastName: user?.lastName,
+    firstName: user?.firstName || '',
+    lastName: user?.lastName || '',
+    profilePic: user?.profilePicUrl,
   };
   const onSubmit = (values: FormValues, actions: FormikHelpers<FormValues>) => {
+    const { profilePic, ...profile } = values;
     actions.setSubmitting(false);
     if (auth.currentUser && auth.currentUser.email)
-      Firebase.saveProfile(auth.currentUser.email, { ...values });
+      Firebase.saveProfile(
+        auth.currentUser.email,
+        { ...user, ...profile },
+        profilePic,
+      );
   };
 
   return (
@@ -70,7 +76,10 @@ const ProfileScreen: FunctionComponent<Props> = ({ user }) => {
             touched[field] && errors[field] ? errors[field] : undefined;
           return (
             <>
-              <ProfileImagePicker onValueChange={handleChange('profilePic')} />
+              <ProfileImagePicker
+                value={values.profilePic}
+                onValueChange={handleChange('profilePic')}
+              />
               <View style={styles.field}>
                 <Text>Prénom</Text>
                 <CCRCTextInput
@@ -109,5 +118,10 @@ const mapState = ({ auth: { user } }: RootState) => ({
   user,
 });
 type StateProps = ReturnType<typeof mapState>;
+
+const mapDispatch = ({ auth: { setUser } }: Dispatch) => ({
+  setUser,
+});
+type DispatchProps = ReturnType<typeof mapDispatch>;
 
 export default connect(mapState)(ProfileScreen);

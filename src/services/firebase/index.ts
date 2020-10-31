@@ -1,7 +1,7 @@
 /* eslint-disable import/no-duplicates */
-import * as firebase from 'firebase';
-import * as Random from 'expo-random';
 import Base64 from 'Base64';
+import * as Random from 'expo-random';
+import * as firebase from 'firebase';
 
 import type { AuthStatus, Profile, UserData } from '@cocorico/constants/types';
 
@@ -98,14 +98,14 @@ const Firebase = Object.freeze({
   },
   saveProfile: async (
     email: string,
-    profile: Profile,
+    profile: UserData,
+    profilePic?: string,
   ): Promise<FirebaseReturn> => {
     try {
-      const { firstName, lastName, genre, profilePic } = profile;
       let { profilePicUrl } = profile;
 
       if (profilePic) {
-        console.log(profilePic.length);
+        console.log(profilePic);
         const response = await fetch(profilePic);
         const blob = await response.blob();
         const ref = storage.ref().child(`profileImages/${email}`);
@@ -113,8 +113,9 @@ const Firebase = Object.freeze({
         uploadTask.on(firebase.storage.TaskEvent.STATE_CHANGED, function (
           snapshot,
         ) {
-          var percent = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-          console.log(percent + '% done');
+          const percent =
+            (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          console.log(`${percent}% done`);
         });
         const snapshot = await uploadTask;
         profilePicUrl = await snapshot.ref.getDownloadURL();
@@ -122,7 +123,7 @@ const Firebase = Object.freeze({
       }
 
       const doc = firestore.collection('users').doc(email);
-      await doc.set({ firstName, lastName, genre, profilePicUrl });
+      await doc.set({ ...profile, profilePicUrl });
 
       return {
         success: true,

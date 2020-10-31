@@ -4,17 +4,11 @@ export type SwitchNavigatorKey = 'SPLASH' | 'AUTH' | 'APP';
 export type AuthStatus = 'LOADING' | 'LOGGED_IN' | 'LOGGED_OUT';
 export type AppStatus = 'LOADING' | 'LOADED';
 
-export interface Profile {
-  firstName: string;
-  lastName: string;
-  genre?: string;
-  profilePic?: string;
-  profilePicUrl?: string;
-}
-
 export interface UserData {
   firstName: string;
   lastName: string;
+  genre?: string;
+  profilePicUrl?: string;
 }
 
 export type Writeable<T> = { -readonly [P in keyof T]: T[P] };

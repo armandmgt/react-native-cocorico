@@ -3,7 +3,7 @@ const colors = Object.freeze({
   BLACK_06: '#1e272e99',
   BLACK_ACCENT: '#485460',
   WHITE: '#ffffff',
-  WHITE_ACCENT: '#f7f1e3',
+  WHITE_ACCENT: '#faf8f8',
   GREY: '#808e9b',
   GREY_ACCENT: '#d2dae2',
   RED: '#ff3f34',
