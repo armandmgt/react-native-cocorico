@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import type { Writeable, FormatKeywordsValue, FormatMultipliers} from './types'
 import variables from './variables';
 

@@ -9,14 +9,12 @@ import {
   Modal,
   TouchableWithoutFeedback,
   Pressable,
+  Alert,
 } from 'react-native';
 
 import * as ImagePicker from 'expo-image-picker';
-import { StatusBar } from 'expo-status-bar';
 
 import CCRCButton from '@cocorico/components/CCRC/Button';
-
-import colors from '@cocorico/constants/colors';
 
 import styles from './ProfileImagePicker.styles';
 
@@ -41,7 +39,9 @@ const ProfileImagePicker: FunctionComponent<Props> = ({ onValueChange }) => {
       if (Platform.OS !== 'web') {
         const { status } = await ImagePicker[permissionFnc]();
         if (status !== 'granted') {
-          alert('Sorry, we need camera roll permissions to make this work!');
+          Alert.alert(
+            'Sorry, we need camera roll permissions to make this work!',
+          );
         }
       }
     };

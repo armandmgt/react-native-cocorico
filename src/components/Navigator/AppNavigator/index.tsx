@@ -4,46 +4,72 @@ import {
   createStackNavigator,
   StackNavigationOptions,
   StackNavigationProp,
-  CardStyleInterpolators,
-  HeaderStyleInterpolators,
 } from '@react-navigation/stack';
 
 import type { TypedNavigatorParams } from '@cocorico/components/Navigator/types';
 
-import { HeaderTitle, HeaderMailbox, HeaderProfile } from './headerButtons';
-import HomeStackNavigator from './HomeNavigator';
-import MessagesStackNavigator from './MessagesNavigator';
-import ProfileStackNavigator from './ProfileNavigator';
+import colors from '@cocorico/constants/colors';
 
-const getAppStackScreenOptions = ({
+import { HeaderHome } from './headerButtons';
+import HomeStackNavigator, { getHomeStackOptions } from './HomeNavigator';
+import MessagesStackNavigator from './MessagesNavigator';
+import ProfileStackNavigator, {
+  getProfileStackOptions,
+} from './ProfileNavigator';
+import { fromRight } from './transitions';
+
+const getMailboxScreenOptions = ({
   navigation,
 }: {
   navigation: StackNavigationProp<TypedNavigatorParams<'AppNavigator'>>;
 }): StackNavigationOptions => ({
-  title: 'Cocorico',
-  headerTitle: (props) => <HeaderTitle navigation={navigation} {...props} />,
-  headerLeft: (props) => <HeaderProfile navigation={navigation} {...props} />,
-  headerRight: (props) => <HeaderMailbox navigation={navigation} {...props} />,
-  headerStyleInterpolator: HeaderStyleInterpolators.forNoAnimation,
+  headerShown: true,
+  headerStyle: {
+    backgroundColor: colors.WHITE_ACCENT,
+  },
+  headerTitleStyle: {
+    fontSize: 18,
+    color: colors.BLACK,
+  },
+  headerTitleAlign: 'center',
+  title: 'Mailbox',
+  headerLeft: () => (
+    <HeaderHome
+      direction="left"
+      side="left"
+      onPress={() => {
+        navigation.goBack();
+      }}
+    />
+  ),
+  headerRight: () => null,
+  ...fromRight,
 });
 
 const AppStackNavigator = () => {
   const AppStack = createStackNavigator<TypedNavigatorParams<'AppNavigator'>>();
 
   return (
-    <AppStack.Navigator screenOptions={getAppStackScreenOptions}>
-      <AppStack.Screen component={HomeStackNavigator} name="HomeNavigator" />
+    <AppStack.Navigator screenOptions={{ headerShown: false }}>
+      <AppStack.Screen
+        component={HomeStackNavigator}
+        name="HomeNavigator"
+        options={getHomeStackOptions}
+      />
       <AppStack.Screen
         component={ProfileStackNavigator}
         name="ProfileNavigator"
-        options={{
-          gestureDirection: 'horizontal-inverted',
-          cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
-        }}
+        options={getProfileStackOptions}
       />
+      {/* <AppStack.Screen
+        component={MailboxScreen}
+        name="Mailbox"
+        options={getMailboxScreenOptions}
+      /> */}
       <AppStack.Screen
         component={MessagesStackNavigator}
         name="MessagesNavigator"
+        options={getMailboxScreenOptions}
       />
     </AppStack.Navigator>
   );

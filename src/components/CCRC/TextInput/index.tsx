@@ -35,7 +35,7 @@ interface Props extends TextInputProps {
   errorStyle?: TextStyle;
 }
 
-const CustomTextInput = forwardRef<CustomTextInputHandle, Props>(
+const CCRCTextInput = forwardRef<CustomTextInputHandle, Props>(
   (
     {
       outline,
@@ -113,4 +113,4 @@ const CustomTextInput = forwardRef<CustomTextInputHandle, Props>(
   },
 );
 
-export default CustomTextInput;
+export default CCRCTextInput;

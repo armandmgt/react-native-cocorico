@@ -6,7 +6,6 @@ import { Formik, FormikHelpers } from 'formik';
 import { connect } from 'react-redux';
 import * as Yup from 'yup';
 
-import FullScreenContainer from '@cocorico/components/AuthContainer';
 import CCRCButton from '@cocorico/components/CCRC/Button';
 import CCRCTextInput from '@cocorico/components/CCRC/TextInput';
 import type { TypedNavigatorParams } from '@cocorico/components/Navigator/types';
@@ -47,7 +46,7 @@ const ProfileScreen: FunctionComponent<Props> = ({ user }) => {
   };
 
   return (
-    <FullScreenContainer>
+    <View style={styles.container}>
       <Formik
         initialValues={initialValues}
         validationSchema={ProfileSchema}
@@ -98,7 +97,7 @@ const ProfileScreen: FunctionComponent<Props> = ({ user }) => {
           );
         }}
       </Formik>
-    </FullScreenContainer>
+    </View>
   );
 };
 
