@@ -49,7 +49,7 @@ export const getHomeStackOptions = ({
       <HeaderMailbox
         side="right"
         onPress={() => {
-          navigation.navigate('Mailbox');
+          navigation.navigate('MessagesNavigator', { screen: 'Messages' });
         }}
       />
     ),
