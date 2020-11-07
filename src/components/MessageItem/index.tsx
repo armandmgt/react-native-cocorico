@@ -10,17 +10,21 @@ import styles from './styles';
 
 interface MessageItemProps {
   title: string;
+  subtitle: string;
 }
 
-const MessageItem = ({ title }: MessageItemProps) => {
+const MessageItem = ({ title, subtitle }: MessageItemProps) => {
   return (
     <View style={styles.container}>
       <View style={styles.avatar}>
         <FontAwesomeIcon color={colors.GREY} icon={faUserCircle} size={40} />
       </View>
       <View style={styles.details}>
-        <Text allowFontScaling={false} style={styles.title}>
+        <Text adjustsFontSizeToFit style={styles.title}>
           {title}
+        </Text>
+        <Text adjustsFontSizeToFit style={styles.subtitle}>
+          {subtitle}
         </Text>
       </View>
     </View>

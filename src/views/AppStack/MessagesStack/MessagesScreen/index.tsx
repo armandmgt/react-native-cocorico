@@ -1,73 +1,77 @@
-import React, { useState } from 'react';
+import React, { useEffect } from 'react';
 import { Pressable, FlatList } from 'react-native';
 
 import { StackNavigationProp } from '@react-navigation/stack';
+import { connect } from 'react-redux';
 
 import MessageItem from '@cocorico/components/MessageItem';
 import type { TypedNavigatorParams } from '@cocorico/components/Navigator/types';
 
-import colors from '@cocorico/constants/colors';
+import { RootState, Dispatch } from '@cocorico/services/store';
 
 import styles from './styles';
 
-const DATA: any = [
-  {
-    id: 'czo761978612oi8789h',
-    title: 'Paulo le gigolo',
-  },
-  {
-    id: 'czo761978789h',
-    title: 'Michel la plus belle',
-  },
-  {
-    id: 'czo8612oi8789h',
-    title: 'Didier le cocotier',
-  },
-  {
-    id: '61978612oi8789h',
-    title: 'Louise la promise',
-  },
-  {
-    id: 'czo761978612oi87',
-    title: 'Marcus le gus',
-  },
-  {
-    id: 'czo7',
-    title: 'Ramirez chaud comme la braise',
-  },
-];
-
-interface MessagesScreenProps {
+interface MessagesScreenProps extends StateProps, DispatchProps {
   navigation: StackNavigationProp<TypedNavigatorParams<'MessagesNavigator'>>;
 }
 
-const MessagesScreen = ({ navigation }: MessagesScreenProps) => {
-  const [selectedId, setSelectedId] = useState<string | undefined>(undefined);
+const MessagesScreen = ({
+  myFirstName,
+  myLastName,
+  navigation,
+  messagesFetched,
+  messages,
+  getMessages,
+}: MessagesScreenProps) => {
+  const getConv = async () => {
+    await getMessages();
+  };
+
+  useEffect(() => {
+    if (!messagesFetched) getConv();
+  });
 
   const renderConversations = ({ item }: any) => {
-    const selected = item.id === selectedId;
+    const {
+      lastMessage: { content },
+      participants,
+    } = item;
+
+    const { firstName, lastName } = participants.find(
+      (user: any) =>
+        myFirstName !== user.firstName && myLastName !== user.lastName,
+    );
 
     return (
-      <Pressable
-        // style={selected && { backgroundColor: colors.GREY_ACCENT }}
-        onPress={() => {
-          setSelectedId(item.id);
-          navigation.navigate('Message');
-        }}
-      >
-        <MessageItem title={item.title} />
+      <Pressable onPress={() => navigation.navigate('Message')}>
+        <MessageItem subtitle={content} title={`${firstName} ${lastName}`} />
       </Pressable>
     );
   };
 
+  if (!messages || !messages.length) return null;
+
   return (
     <FlatList
-      data={DATA}
-      keyExtractor={(item: any) => item.id}
+      data={messages}
+      keyExtractor={(item: any) => item.lastMessage.id}
       renderItem={renderConversations}
       style={styles.container}
     />
   );
 };
 
-export default MessagesScreen;
+const mapState = (state: RootState) => ({
+  myFirstName: state.auth.user?.firstName,
+  myLastName: state.auth.user?.lastName,
+  messagesFetched: state.messages.fetched,
+  messages: state.messages.conversations,
+});
+type StateProps = ReturnType<typeof mapState>;
+
+const mapDispatch = (dispatch: Dispatch) => ({
+  getMessages: dispatch.firestore.getMessages,
+});
+type DispatchProps = ReturnType<typeof mapDispatch>;
+
+export default connect(mapState, mapDispatch)(MessagesScreen);

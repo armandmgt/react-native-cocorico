@@ -8,6 +8,7 @@ type MessageItemStylesProps = {
   avatar: ViewProps;
   details: ViewProps;
   title: TextProps;
+  subtitle: TextProps;
 };
 
 export default StyleSheet.create<MessageItemStylesProps>({
@@ -34,7 +35,11 @@ export default StyleSheet.create<MessageItemStylesProps>({
     ...spacing.pgr2,
   },
   title: {
-    fontSize: 14,
+    fontSize: 16,
     fontWeight: '500',
+  },
+  subtitle: {
+    fontSize: 13,
+    color: colors.GREY,
   },
 });
