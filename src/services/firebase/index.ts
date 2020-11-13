@@ -1,9 +1,7 @@
 /* eslint-disable import/no-duplicates */
-import Base64 from 'Base64';
-import * as Random from 'expo-random';
 import * as firebase from 'firebase';
 
-import type { AuthStatus, Profile, UserData } from '@cocorico/constants/types';
+import type { AuthStatus, UserData } from '@cocorico/constants/types';
 
 import firebaseConfig from './firebaseConfig';
 import { normalizeUser } from './firebaseUtils';
