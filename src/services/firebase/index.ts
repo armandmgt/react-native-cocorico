@@ -156,6 +156,31 @@ const Firebase = Object.freeze({
       callback(normalizedUser);
     });
   },
+  getMessages: async (): Promise<FirebaseReturn> => {
+    const { currentUser } = auth;
+
+    if (!currentUser || !currentUser.email) {
+      throw new Error('currentUser.email missing');
+    }
+
+    try {
+      const userDoc = await firestore
+        .collection('users')
+        .doc(currentUser.email)
+        .get();
+      const convRefs = await userDoc.data()?.conversations;
+      let conversations;
+
+      if (convRefs && convRefs.length !== 0) {
+        conversations = await Promise.all(
+          convRefs.map(async (convRef: any) => (await convRef.get()).data()),
+        );
+      }
+      return { success: true, payload: conversations };
+    } catch (error) {
+      return { success: false, error };
+    }
+  },
 });
 
 export default Firebase;

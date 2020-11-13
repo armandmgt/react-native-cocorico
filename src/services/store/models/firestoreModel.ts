@@ -69,6 +69,27 @@ const firestoreModel = createModel<RootModel>()({
         if (cleaner) cleaner();
       });
     },
+    async getMessages() {
+      const {
+        messages: { setConversationsList },
+      } = dispatch;
+
+      const response = await Firebase.getMessages();
+
+      if (response.success) {
+        const { payload } = response;
+
+        if (payload) {
+          setConversationsList(
+            payload.map((conv: any) => {
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              const { last_message, participants } = conv;
+              return { lastMessage: last_message, participants };
+            }),
+          );
+        }
+      }
+    },
   }),
 });
 

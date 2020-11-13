@@ -11,3 +11,12 @@ export const normalizeUser = (user: any) => {
     profilePicUrl: user?.profilePicUrl,
   };
 };
+
+export const getDocFromReference = async (
+  collection: any,
+  references: Array<any>,
+) => {
+  const output = references.map((ref) => collection.doc(ref).get());
+  const result = await Promise.all(output);
+  return result.map((elem) => elem.data());
+};
