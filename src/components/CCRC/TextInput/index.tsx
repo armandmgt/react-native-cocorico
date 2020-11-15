@@ -26,7 +26,7 @@ export interface CustomTextInputHandle {
 interface Props extends TextInputProps {
   outline?: boolean;
   valid?: boolean;
-  error?: string;
+  error?: string | string[];
   errorPosition?: 'absolute' | 'relative';
   style?: ViewStyle;
   containerStyle?: ViewStyle;
@@ -104,7 +104,7 @@ const CCRCTextInput = forwardRef<CustomTextInputHandle, Props>(
                 { position: errorPosition },
               ]}
             >
-              {error}
+              {typeof error === 'string' ? error : error.join('\n')}
             </Text>
           )}
         </View>

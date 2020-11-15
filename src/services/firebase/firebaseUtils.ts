@@ -1,14 +1,16 @@
+import { UserData } from '@cocorico/constants/types';
+
 export const assert = (value: any, error?: string) => {
   if (!value) {
     throw new Error(error);
   }
 };
 
-export const normalizeUser = (user: any) => {
+export const normalizeUser = (user: any): UserData => {
   return {
     firstName: user?.firstName,
     lastName: user?.lastName,
-    profilePicUrl: user?.profilePicUrl,
+    images: user?.images,
   };
 };
 

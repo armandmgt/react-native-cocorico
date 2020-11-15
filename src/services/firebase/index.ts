@@ -1,7 +1,12 @@
 /* eslint-disable import/no-duplicates */
 import * as firebase from 'firebase';
 
-import type { AuthStatus, UserData } from '@cocorico/constants/types';
+import type {
+  AuthStatus,
+  Profile,
+  UserData,
+  UserImages,
+} from '@cocorico/constants/types';
 
 import firebaseConfig from './firebaseConfig';
 import { normalizeUser } from './firebaseUtils';
@@ -96,39 +101,48 @@ const Firebase = Object.freeze({
   },
   saveProfile: async (
     email: string,
-    profile: UserData,
-    profilePic?: string,
+    profile: Profile,
   ): Promise<FirebaseReturn> => {
     try {
-      let { profilePicUrl } = profile;
-
-      if (profilePic) {
-        console.log(profilePic);
-        const response = await fetch(profilePic);
-        const blob = await response.blob();
-        const ref = storage.ref().child(`profileImages/${email}`);
-        const uploadTask = ref.put(blob, { contentType: 'image/jpeg' });
-        uploadTask.on(firebase.storage.TaskEvent.STATE_CHANGED, function (
-          snapshot,
-        ) {
-          const percent =
-            (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-          console.log(`${percent}% done`);
-        });
-        const snapshot = await uploadTask;
-        profilePicUrl = await snapshot.ref.getDownloadURL();
-        console.log(profilePicUrl);
-      }
-
-      const doc = firestore.collection('users').doc(email);
-      await doc.set({ ...profile, profilePicUrl });
+      const userDoc = firestore.collection('users').doc(email);
+      await userDoc.set({ ...profile }, { merge: true });
 
       return {
         success: true,
-        payload: { ...profile, profilePicUrl },
+        payload: profile,
       };
     } catch (error) {
       console.error(error);
+      return { success: false, error };
+    }
+  },
+  saveImages: async (
+    email: string,
+    userImages: UserImages,
+  ): Promise<FirebaseReturn> => {
+    try {
+      const userDoc = firestore.collection('users').doc(email);
+      const imageUrls = await Promise.all(
+        userImages.images.map(async (image, index) => {
+          const response = await fetch(image);
+          const blob = await response.blob();
+
+          const storageKey = `profileImages/${email}/${index}.jpg`;
+          const ref = storage.ref().child(storageKey);
+          const snapshot = await ref.put(blob, { contentType: 'image/jpeg' });
+
+          const imageUrl = await snapshot.ref.getDownloadURL();
+
+          return imageUrl;
+        }),
+      );
+      userDoc.set({ images: imageUrls }, { merge: true })
+
+      return {
+        success: true,
+        payload: { images: imageUrls },
+      };
+    } catch (error) {
       return { success: false, error };
     }
   },
@@ -151,6 +165,7 @@ const Firebase = Object.freeze({
       const data = snapshot.data()!;
       const normalizedUser = normalizeUser(data);
 
+      console.log('salut les bgs', normalizedUser)
       callback(normalizedUser);
     });
   },

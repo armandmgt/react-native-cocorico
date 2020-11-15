@@ -8,27 +8,30 @@ import {
   Modal,
   TouchableWithoutFeedback,
   Pressable,
-  TouchableNativeFeedback,
   Alert,
 } from 'react-native';
 
-import { Ionicons } from '@expo/vector-icons';
+import { Feather as Icon } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
 
 import CCRCButton from '@cocorico/components/CCRC/Button';
 
-import DefaultProfileImage from '@cocorico/assets/images/default-profile-image.jpg';
+import colors from '@cocorico/constants/colors';
 
 import styles from './ProfileImagePicker.styles';
 
 interface Props {
   value?: string;
   onValueChange: (value: string) => any;
+  onDelete?: () => any;
+  disabled?: boolean;
 }
 
 const ProfileImagePicker: FunctionComponent<Props> = ({
   value,
   onValueChange,
+  onDelete,
+  disabled,
 }) => {
   const [pickerModalVisible, setPickerModalVisible] = useState<boolean>(false);
 
@@ -57,7 +60,7 @@ const ProfileImagePicker: FunctionComponent<Props> = ({
     const options: ImagePicker.ImagePickerOptions = {
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
-      aspect: [1, 1],
+      aspect: [3, 4],
       quality: 1,
     };
     const result = await (fromCamera
@@ -138,22 +141,26 @@ const ProfileImagePicker: FunctionComponent<Props> = ({
           </View>
         </>
       </Modal>
-      <View style={styles.imageView}>
-        <Image source={DefaultProfileImage} style={styles.image} />
-        {value && (
-          <Image
-            source={{ uri: value }}
-            style={[styles.image, styles.overlapImage]}
-          />
-        )}
-        <View style={styles.chooseImageButtonView}>
-          <View style={styles.chooseImageButton}>
-            <TouchableNativeFeedback onPress={handlePicker}>
-              <Ionicons name="md-create" size={32} />
-            </TouchableNativeFeedback>
+      <Pressable disabled={disabled} onPress={handlePicker}>
+        <View style={[styles.image, styles.placeholder]}>
+          {disabled ? null : <Icon name="plus" size={34} />}
+        </View>
+      </Pressable>
+      {value ? (
+        <Image
+          source={{ uri: value }}
+          style={[styles.image, styles.overlapImage]}
+        />
+      ) : null}
+      {value ? (
+        <View style={styles.deleteImageButtonView}>
+          <View style={styles.deleteImageButton}>
+            <Pressable onPress={onDelete}>
+              <Icon color={colors.WHITE} name="x" size={18} />
+            </Pressable>
           </View>
         </View>
-      </View>
+      ) : null}
     </View>
   );
 };

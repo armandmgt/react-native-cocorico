@@ -13,15 +13,12 @@ import type { TypedNavigatorParams } from '@cocorico/components/Navigator/types'
 import Firebase, { auth } from '@cocorico/services/firebase';
 import type { Dispatch, RootState } from '@cocorico/services/store';
 
-import styles from './index.styles';
-import ProfileImagePicker from './ProfileImagePicker';
+import { Profile } from '@cocorico/constants/types';
 
-interface FormValues {
-  firstName: string;
-  lastName: string;
-  genre?: string;
-  profilePic?: string;
-}
+import styles from './index.styles';
+import ProfileImage from './ProfileImage';
+
+interface ProfileFormValues extends Profile {}
 
 interface Props extends StateProps, DispatchProps {
   navigation: StackNavigationProp<TypedNavigatorParams<'ProfileNavigator'>>;
@@ -38,21 +35,19 @@ const ProfileSchema = Yup.object().shape({
     .required('Champ obligatoire.'),
 });
 
-const ProfileScreen: FunctionComponent<Props> = ({ user }) => {
-  const initialValues: FormValues = {
+const ProfileScreen: FunctionComponent<Props> = ({ user, navigation }) => {
+  const initialValues: ProfileFormValues = {
     firstName: user?.firstName || '',
     lastName: user?.lastName || '',
-    profilePic: user?.profilePicUrl,
   };
-  const onSubmit = (values: FormValues, actions: FormikHelpers<FormValues>) => {
-    const { profilePic, ...profile } = values;
+  const onSubmit = async (
+    values: ProfileFormValues,
+    actions: FormikHelpers<ProfileFormValues>,
+  ) => {
+    if (auth.currentUser && auth.currentUser.email) {
+      await Firebase.saveProfile(auth.currentUser.email, values);
+    }
     actions.setSubmitting(false);
-    if (auth.currentUser && auth.currentUser.email)
-      Firebase.saveProfile(
-        auth.currentUser.email,
-        { ...user, ...profile },
-        profilePic,
-      );
   };
 
   return (
@@ -72,13 +67,14 @@ const ProfileScreen: FunctionComponent<Props> = ({ user }) => {
           touched,
           errors,
         }) => {
-          const errorIfPresent = (field: keyof FormValues) =>
+          const errorIfPresent = (field: keyof ProfileFormValues) =>
             touched[field] && errors[field] ? errors[field] : undefined;
+          console.log(user.images.map((image) => image.substring(0, 10)));
           return (
             <>
-              <ProfileImagePicker
-                value={values.profilePic}
-                onValueChange={handleChange('profilePic')}
+              <ProfileImage
+                profilePic={user?.images && user.images[0]}
+                onPress={() => navigation.push('ImageCollection')}
               />
               <View style={styles.field}>
                 <Text>Prénom</Text>

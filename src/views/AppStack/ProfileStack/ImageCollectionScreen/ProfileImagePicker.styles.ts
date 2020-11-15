@@ -1,10 +1,10 @@
-import { Platform, StyleSheet } from 'react-native';
+import { Platform, StyleSheet, ViewStyle } from 'react-native';
 
 import colors from '@cocorico/constants/colors';
 import { Roboto } from '@cocorico/constants/fonts';
 import spacing from '@cocorico/constants/spacing';
 
-const elevatedStyles = Platform.select({
+const elevatedStyles = Platform.select<ViewStyle>({
   ios: {
     shadowColor: colors.BLACK,
     shadowOffset: { width: 0, height: 2 },
@@ -14,34 +14,42 @@ const elevatedStyles = Platform.select({
   android: {
     elevation: 10,
   },
+  default: {},
 });
 export default StyleSheet.create({
   panel: {
-    ...spacing.mgt0_75,
-    justifyContent: 'center',
-    alignItems: 'center',
+    ...spacing.mg1,
   },
   image: {
-    width: '50%',
+    width: '100%',
     height: undefined,
-    aspectRatio: 1,
-    borderRadius: 1000,
+    aspectRatio: 1 / 1.75,
+    borderRadius: 10,
+  },
+  placeholder: {
+    borderStyle: 'dotted',
+    borderColor: colors.GREY,
+    borderWidth: 4,
+    color: colors.GREY,
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   overlapImage: { position: 'absolute' },
   imageView: {
     position: 'relative',
     borderRadius: 1000,
-    ...elevatedStyles,
   },
-  chooseImageButtonView: {
+  elevatedStyles,
+  deleteImageButtonView: {
     position: 'absolute',
-    bottom: 0,
-    right: 0,
+    bottom: -12,
+    right: -12,
   },
-  chooseImageButton: {
+  deleteImageButton: {
     ...elevatedStyles,
     ...spacing.pg1,
-    backgroundColor: colors.WHITE_ACCENT,
+    backgroundColor: colors.PINK,
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 1000,

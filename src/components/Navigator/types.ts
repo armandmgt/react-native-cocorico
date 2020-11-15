@@ -9,6 +9,7 @@ export type Screens = {
   Details: undefined;
   Mailbox: undefined;
   Profile: undefined;
+  ImageCollection: undefined;
   Settings: undefined;
   Messages: undefined;
   Message: undefined;
@@ -26,7 +27,7 @@ export type Navigators = {
     'HomeNavigator' | 'MessagesNavigator' | 'ProfileNavigator'
   >;
   HomeNavigator: Navigatable<'Home' | 'Details'>;
-  ProfileNavigator: Navigatable<'Profile' | 'Settings'>;
+  ProfileNavigator: Navigatable<'Profile' | 'ImageCollection' | 'Settings'>;
   MessagesNavigator: Navigatable<'Messages' | 'Message'>;
 };
 
