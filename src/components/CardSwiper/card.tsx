@@ -1,16 +1,21 @@
 import React, { FunctionComponent } from 'react';
-import { View, StyleSheet, Image, Text } from 'react-native';
+import { View, Image, Text, ViewStyle } from 'react-native';
 
 import Animated from 'react-native-reanimated';
 
+import { UserData } from '@cocorico/constants/types';
+
+import ImageSources from '@cocorico/assets/images';
+
 import styles from './card.styles';
-import type { Profile } from './Profile';
 
 interface Props {
-  profile: Profile;
-  picture: Profile['pictures'][number];
+  profile: UserData;
+  picture: any | undefined;
   likeOpacity?: number | Animated.Node<number>;
   nopeOpacity?: number | Animated.Node<number>;
+  style?: ViewStyle;
+  shouldDisplay?: boolean;
 }
 
 const Card: FunctionComponent<Props> = ({
@@ -18,10 +23,25 @@ const Card: FunctionComponent<Props> = ({
   picture,
   likeOpacity = 0,
   nopeOpacity = 0,
+  shouldDisplay = false,
+  style,
 }) => {
+  const hash = Date.now();
+
+  // console.log('Picture :', picture);
   return (
-    <View style={StyleSheet.absoluteFill}>
-      <Image source={picture} style={styles.image} />
+    <View key={profile.id} style={[styles.container, style]}>
+      {shouldDisplay && (
+        <Image
+          key={hash}
+          source={
+            picture
+              ? { uri: `${picture}?${hash}` }
+              : ImageSources.defaultProfile
+          }
+          style={styles.image}
+        />
+      )}
       <View style={styles.content}>
         <View style={styles.header}>
           <Animated.View
@@ -36,7 +56,7 @@ const Card: FunctionComponent<Props> = ({
           </Animated.View>
         </View>
         <View style={styles.footer}>
-          <Text style={[styles.name, styles.shadow]}>{profile.name}</Text>
+          <Text style={[styles.name, styles.shadow]}>{profile.firstName}</Text>
           <Text style={[styles.age, styles.shadow]}>
             {profile.age}
             <Text style={[styles.ageYears]}>ans</Text>

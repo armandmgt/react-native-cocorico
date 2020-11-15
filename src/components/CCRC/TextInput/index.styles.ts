@@ -19,6 +19,9 @@ export default StyleSheet.create({
   rootInvalid: {
     borderColor: colors.RED,
   },
+  multiline: {
+    ...spacing.pgt1,
+  },
   input: {
     flex: 1,
     fontSize: 15,

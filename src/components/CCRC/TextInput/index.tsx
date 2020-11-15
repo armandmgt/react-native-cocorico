@@ -48,6 +48,7 @@ const CCRCTextInput = forwardRef<CustomTextInputHandle, Props>(
       anchorStyle,
       errorStyle,
       secureTextEntry,
+      multiline,
       ...other
     },
     forwardedRef,
@@ -72,11 +73,13 @@ const CCRCTextInput = forwardRef<CustomTextInputHandle, Props>(
           style={[
             styles.root,
             outline && styles.rootOutlined,
+            multiline && styles.multiline,
             valid === false && styles.rootInvalid,
             containerStyle,
           ]}
         >
           <TextInput
+            multiline={multiline}
             ref={textInputRef}
             secureTextEntry={secureTextEntry && !passwordVisible}
             selectionColor={colors.BLACK}

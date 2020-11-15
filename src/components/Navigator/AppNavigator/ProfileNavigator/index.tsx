@@ -8,8 +8,8 @@ import {
   HeaderStyleInterpolators,
 } from '@react-navigation/stack';
 
-import ProfileScreen from '@cocorico/views/AppStack/ProfileStack/ProfileScreen';
 import ImageCollectionScreen from '@cocorico/views/AppStack/ProfileStack/ImageCollectionScreen';
+import ProfileScreen from '@cocorico/views/AppStack/ProfileStack/ProfileScreen';
 import SettingsScreen from '@cocorico/views/AppStack/ProfileStack/SettingsScreen';
 
 import type { TypedNavigatorParams } from '@cocorico/components/Navigator/types';

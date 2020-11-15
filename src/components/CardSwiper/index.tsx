@@ -9,8 +9,9 @@ import { View, StyleSheet, Dimensions } from 'react-native';
 import { PanGestureHandler, State } from 'react-native-gesture-handler';
 import Animated from 'react-native-reanimated';
 
+import { UserData } from '@cocorico/constants/types';
+
 import Card from './card';
-import type { Profile } from './Profile';
 import TouchableCard from './touchableCard';
 
 const { width, height } = Dimensions.get('window');
@@ -75,7 +76,7 @@ function runSpring(
 }
 
 interface Props {
-  profiles: Profile[];
+  profiles: UserData[];
   handleSwiped: (liked: boolean) => void;
 }
 
@@ -200,7 +201,7 @@ const CardSwiper: FunctionComponent<Props> = ({ profiles, handleSwiped }) => {
   });
   const style = {
     ...StyleSheet.absoluteFillObject,
-    zIndex: 900,
+    zIndex: 3,
     transform: [
       { translateX: translate.x },
       { translateY: translate.y },
@@ -211,11 +212,21 @@ const CardSwiper: FunctionComponent<Props> = ({ profiles, handleSwiped }) => {
   const [lastProfile, ...otherProfiles] = profiles;
 
   const renderCards = () => {
-    return otherProfiles
-      .reverse()
-      .map((profile) => (
-        <Card key={profile.id} picture={profile.pictures[0]} {...{ profile }} />
-      ));
+    return otherProfiles.reverse().map((profile, index) => {
+      console.log(
+        'DBG :',
+        profile.firstName,
+        index === otherProfiles.length - 1,
+      );
+      return (
+        <Card
+          key={profile.id}
+          picture={profile.pictures?.[0]}
+          shouldDisplay={index === otherProfiles.length - 1}
+          {...{ profile }}
+        />
+      );
+    });
   };
 
   return (

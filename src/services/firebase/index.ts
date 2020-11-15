@@ -123,7 +123,7 @@ const Firebase = Object.freeze({
     try {
       const userDoc = firestore.collection('users').doc(email);
       const imageUrls = await Promise.all(
-        userImages.images.map(async (image, index) => {
+        userImages.pictures.map(async (image, index) => {
           const response = await fetch(image);
           const blob = await response.blob();
 
@@ -136,11 +136,11 @@ const Firebase = Object.freeze({
           return imageUrl;
         }),
       );
-      userDoc.set({ images: imageUrls }, { merge: true })
+      userDoc.set({ pictures: imageUrls }, { merge: true });
 
       return {
         success: true,
-        payload: { images: imageUrls },
+        payload: { pictures: imageUrls },
       };
     } catch (error) {
       return { success: false, error };
@@ -163,9 +163,8 @@ const Firebase = Object.freeze({
 
     return doc.onSnapshot((snapshot) => {
       const data = snapshot.data()!;
-      const normalizedUser = normalizeUser(data);
+      const normalizedUser = normalizeUser(doc.id, data);
 
-      console.log('salut les bgs', normalizedUser)
       callback(normalizedUser);
     });
   },
@@ -193,6 +192,41 @@ const Firebase = Object.freeze({
     } catch (error) {
       return { success: false, error };
     }
+  },
+  getOtherProfiles: async (currentUser: UserData): Promise<FirebaseReturn> => {
+    const allDocs = await firestore.collection('users').get();
+    const otherProfiles: UserData[] = [];
+
+    try {
+      allDocs.forEach((doc) => {
+        const data = doc.data();
+        if (doc.id === currentUser.id || currentUser.likes?.includes(doc.id))
+          return;
+        const normalizedUser = normalizeUser(doc.id, data);
+
+        otherProfiles.push(normalizedUser);
+      });
+
+      return { success: true, payload: otherProfiles };
+    } catch (error) {
+      return { success: false, error };
+    }
+  },
+  addLikeToProfile: async (newLikeId: string): Promise<void> => {
+    const { currentUser } = auth;
+
+    if (!currentUser || !currentUser.email) {
+      throw new Error('currentUser.email missing');
+    }
+
+    const doc = firestore.collection('users').doc(currentUser.email);
+    await doc.update({
+      likes: firebase.firestore.FieldValue.arrayUnion(newLikeId),
+    });
+  },
+
+  createConversation: async (userIds: string[]): Promise<void> => {
+    console.log('Create Conversation for users :', userIds);
   },
 });
 

@@ -33,12 +33,15 @@ const ProfileSchema = Yup.object().shape({
     .min(2, 'Trop court !')
     .max(50, 'Trop long !')
     .required('Champ obligatoire.'),
+  age: Yup.number(),
 });
 
 const ProfileScreen: FunctionComponent<Props> = ({ user, navigation }) => {
   const initialValues: ProfileFormValues = {
     firstName: user?.firstName || '',
     lastName: user?.lastName || '',
+    age: user?.age,
+    description: user?.description || '',
   };
   const onSubmit = async (
     values: ProfileFormValues,
@@ -69,32 +72,62 @@ const ProfileScreen: FunctionComponent<Props> = ({ user, navigation }) => {
         }) => {
           const errorIfPresent = (field: keyof ProfileFormValues) =>
             touched[field] && errors[field] ? errors[field] : undefined;
-          console.log(user.images.map((image) => image.substring(0, 10)));
           return (
             <>
               <ProfileImage
-                profilePic={user?.images && user.images[0]}
+                profilePic={user?.pictures && user.pictures[0]}
                 onPress={() => navigation.push('ImageCollection')}
               />
-              <View style={styles.field}>
-                <Text>Prénom</Text>
-                <CCRCTextInput
-                  error={errorIfPresent('firstName')}
-                  style={styles.input}
-                  value={values.firstName}
-                  onBlur={handleBlur('firstName')}
-                  onChangeText={handleChange('firstName')}
-                />
-              </View>
-              <View style={styles.field}>
-                <Text>Nom de famille</Text>
-                <CCRCTextInput
-                  error={errorIfPresent('lastName')}
-                  style={styles.input}
-                  value={values.lastName}
-                  onBlur={handleBlur('lastName')}
-                  onChangeText={handleChange('lastName')}
-                />
+              <View style={styles.formContainer}>
+                <View style={styles.nameContainer}>
+                  <View style={[styles.field, styles.fieldName]}>
+                    <Text style={styles.fieldTitleSpacing}>Prénom</Text>
+                    <CCRCTextInput
+                      outline
+                      error={errorIfPresent('firstName')}
+                      style={styles.input}
+                      value={values.firstName}
+                      onBlur={handleBlur('firstName')}
+                      onChangeText={handleChange('firstName')}
+                    />
+                  </View>
+                  <View style={[styles.field, styles.fieldName]}>
+                    <Text style={styles.fieldTitleSpacing}>Nom de famille</Text>
+                    <CCRCTextInput
+                      outline
+                      error={errorIfPresent('lastName')}
+                      style={styles.input}
+                      value={values.lastName}
+                      onBlur={handleBlur('lastName')}
+                      onChangeText={handleChange('lastName')}
+                    />
+                  </View>
+                </View>
+                <View style={styles.field}>
+                  <Text style={styles.fieldTitleSpacing}>Age</Text>
+                  <CCRCTextInput
+                    outline
+                    error={errorIfPresent('age')}
+                    keyboardType="numeric"
+                    maxLength={2}
+                    style={styles.input}
+                    value={`${values.age}`}
+                    onBlur={handleBlur('age')}
+                    onChangeText={handleChange('age')}
+                  />
+                </View>
+                <View style={styles.field}>
+                  <Text style={styles.fieldTitleSpacing}>Description</Text>
+                  <CCRCTextInput
+                    multiline
+                    outline
+                    error={errorIfPresent('description')}
+                    style={styles.input}
+                    value={values.description}
+                    onBlur={handleBlur('description')}
+                    onChangeText={handleChange('description')}
+                  />
+                </View>
               </View>
               <CCRCButton
                 disabled={!isValid || isSubmitting}

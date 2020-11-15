@@ -18,7 +18,7 @@ import AuthStackNavigator from './AuthNavigator';
 
 interface Props extends StateProps, DispatchProps {}
 
-const Navigator = ({ appStatus, authStatus, subscribeAuth }: Props) => {
+const Navigator = ({ appStatus, authStatus, user, subscribeAuth }: Props) => {
   const SwitchNavigator: { [key in SwitchNavigatorKey]: React.ReactNode } = {
     SPLASH: <SplashScreen />,
     AUTH: <AuthStackNavigator />,
@@ -34,7 +34,7 @@ const Navigator = ({ appStatus, authStatus, subscribeAuth }: Props) => {
     _appStatus: AppStatus,
     _authStatus: AuthStatus,
   ) => {
-    if (_appStatus !== 'LOADED') return 'SPLASH';
+    if (_appStatus !== 'LOADED' || user === null) return 'SPLASH';
 
     switch (_authStatus) {
       case 'LOADING':
@@ -62,10 +62,11 @@ const Navigator = ({ appStatus, authStatus, subscribeAuth }: Props) => {
 
 const mapState = ({
   session: { appStatus },
-  auth: { authStatus },
+  auth: { authStatus, user },
 }: RootState) => ({
   appStatus,
   authStatus,
+  user,
 });
 type StateProps = ReturnType<typeof mapState>;
 

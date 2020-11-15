@@ -7,7 +7,6 @@ import { connect } from 'react-redux';
 import * as Yup from 'yup';
 
 import CCRCButton from '@cocorico/components/CCRC/Button';
-import CCRCTextInput from '@cocorico/components/CCRC/TextInput';
 import type { TypedNavigatorParams } from '@cocorico/components/Navigator/types';
 
 import Firebase, { auth } from '@cocorico/services/firebase';
@@ -16,7 +15,6 @@ import type { Dispatch, RootState } from '@cocorico/services/store';
 import { UserImages } from '@cocorico/constants/types';
 
 import styles from './index.styles';
-import ImagePicker from './ProfileImagePicker';
 import ProfileImagePicker from './ProfileImagePicker';
 
 interface FormValues extends UserImages {}
@@ -26,12 +24,12 @@ interface Props extends StateProps, DispatchProps {
 }
 
 const UserImagesSchema = Yup.object({
-  images: Yup.array().required(),
+  pictures: Yup.array().required(),
 });
 
 const ImageCollectionScreen: FunctionComponent<Props> = ({ user }) => {
   const initialValues: FormValues = {
-    images: user?.images || [],
+    pictures: user?.pictures || [],
   };
 
   const onSubmit = async (
@@ -63,8 +61,6 @@ const ImageCollectionScreen: FunctionComponent<Props> = ({ user }) => {
         }) => {
           const errorIfPresent = (field: keyof FormValues) =>
             touched[field] && errors[field] ? errors[field] : undefined;
-          const starts = values.images.map((i) => i.substring(0, 10));
-          console.log(starts);
           return (
             <>
               <View
@@ -75,37 +71,37 @@ const ImageCollectionScreen: FunctionComponent<Props> = ({ user }) => {
                 }}
               >
                 <FieldArray
-                  name="images"
+                  name="pictures"
                   render={(arrayHelpers) => (
                     <>
-                      {values.images.map((image, index) => (
-                        <View style={{ flexBasis: '33%' }}>
+                      {values.pictures.map((image, index) => (
+                        <View key={image} style={{ flexBasis: '33%' }}>
                           <ProfileImagePicker
                             key={image}
                             value={image}
                             onDelete={() => arrayHelpers.remove(index)}
-                            onValueChange={handleChange(`images[${index}]`)}
+                            onValueChange={handleChange(`pictures[${index}]`)}
                           />
                         </View>
                       ))}
-                      {values.images.length < 6 ? (
+                      {values.pictures.length < 6 ? (
                         <View style={{ flexBasis: '33%' }}>
                           <ProfileImagePicker
                             onValueChange={handleChange(
-                              `images[${values.images.length}]`,
+                              `pictures[${values.pictures.length}]`,
                             )}
                           />
                         </View>
                       ) : null}
-                      {5 - values.images.length !== 0
+                      {5 - values.pictures.length !== 0
                         ? Array.from(
-                            { length: 5 - values.images.length },
+                            { length: 5 - values.pictures.length },
                             (_, k) => (
                               <View key={k} style={{ flexBasis: '33%' }}>
                                 <ProfileImagePicker
                                   disabled
                                   onValueChange={handleChange(
-                                    `images[${values.images.length}]`,
+                                    `pictures[${values.pictures.length}]`,
                                   )}
                                 />
                               </View>
@@ -116,7 +112,7 @@ const ImageCollectionScreen: FunctionComponent<Props> = ({ user }) => {
                   )}
                 />
               </View>
-              <Text>{errorIfPresent('images')}</Text>
+              <Text>{errorIfPresent('pictures')}</Text>
               <CCRCButton
                 disabled={!isValid || isSubmitting}
                 title="Enregistrer"

@@ -7,14 +7,17 @@ export type AppStatus = 'LOADING' | 'LOADED';
 export interface Profile {
   firstName: string;
   lastName: string;
-  genre?: string;
+  age: number | undefined;
+  description: string | undefined;
 }
 
 export interface UserImages {
-  images: string[];
+  pictures: string[];
 }
 
 export interface UserData extends Profile, UserImages {
+  id: string;
+  likes: string[] | undefined;
 }
 
 export type Writeable<T> = { -readonly [P in keyof T]: T[P] };

@@ -10,8 +10,22 @@ export default StyleSheet.create({
     flex: 1,
     backgroundColor: colors.WHITE,
   },
+  formContainer: {
+    flex: 1,
+  },
   field: {
-    ...spacing.mgv2,
+    ...spacing.mgv1,
+    ...spacing.mgh1,
+  },
+  fieldTitleSpacing: {
+    ...spacing.mgb1,
+  },
+  fieldName: {
+    flex: 1,
+  },
+  nameContainer: {
+    flexDirection: 'row',
+    ...spacing.mgt2,
   },
   input: {},
 });

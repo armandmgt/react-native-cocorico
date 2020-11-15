@@ -6,11 +6,15 @@ export const assert = (value: any, error?: string) => {
   }
 };
 
-export const normalizeUser = (user: any): UserData => {
+export const normalizeUser = (id: string, user: any): UserData => {
   return {
+    id,
     firstName: user?.firstName,
     lastName: user?.lastName,
-    images: user?.images,
+    description: user?.description,
+    age: user?.age,
+    pictures: user?.pictures,
+    likes: user?.likes,
   };
 };
 

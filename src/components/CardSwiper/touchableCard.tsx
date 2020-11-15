@@ -1,10 +1,5 @@
 import React, { FunctionComponent, useState } from 'react';
-import {
-  View,
-  StyleSheet,
-  TouchableWithoutFeedback,
-  ViewStyle,
-} from 'react-native';
+import { View, TouchableWithoutFeedback, ViewStyle } from 'react-native';
 
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
@@ -50,13 +45,14 @@ const TouchableCard: FunctionComponent<Props> = ({
   const [pictureIndex, setPictureIndex] = useState<number>(0);
 
   function increasePictureIndex() {
-    if (pictureIndex === profile.pictures.length - 1) return false;
+    if (!profile.pictures || pictureIndex === profile.pictures?.length - 1)
+      return false;
     setPictureIndex(pictureIndex + 1);
     return true;
   }
 
   function decreasePictureIndex() {
-    if (pictureIndex === 0) return false;
+    if (!profile.pictures || pictureIndex === 0) return false;
     setPictureIndex(pictureIndex - 1);
     return true;
   }
@@ -81,10 +77,11 @@ const TouchableCard: FunctionComponent<Props> = ({
   }
 
   return (
-    <View style={StyleSheet.absoluteFill}>
+    <View style={styles.container}>
       <Card
-        picture={profile.pictures[pictureIndex]}
+        picture={profile.pictures?.[pictureIndex]}
         {...{ profile, likeOpacity, nopeOpacity }}
+        style={styles.innerCard}
       />
       <View style={styles.touchables}>
         <View style={styles.touchablesHorizontal}>

@@ -1,17 +1,18 @@
-import React, { FunctionComponent, useState } from 'react';
+import React, { FunctionComponent, useEffect } from 'react';
 import { View } from 'react-native';
 
 import { Feather as Icon } from '@expo/vector-icons';
 import { TouchableOpacity } from 'react-native-gesture-handler';
+import { connect } from 'react-redux';
 
 import CardSwiper from '@cocorico/components/CardSwiper';
 import EmptyCard from '@cocorico/components/CardSwiper/emptyCard';
 
+import Firebase from '@cocorico/services/firebase';
+import { RootState, Dispatch } from '@cocorico/services/store';
+
 import colors from '@cocorico/constants/colors';
 
-import ProfilePictures from '@cocorico/assets/images/profiles';
-
-import type { Profile } from '../../../../components/CardSwiper/Profile';
 import styles from './index.styles';
 
 interface BottomButtonProps {
@@ -29,56 +30,35 @@ const BottomButton = ({ onPress, color, icon }: BottomButtonProps) => (
   </TouchableOpacity>
 );
 
-const defaultProfiles: Profile[] = [
-  {
-    id: '1',
-    name: 'Caroline',
-    age: 24,
-    pictures: [
-      ProfilePictures.profile1,
-      ProfilePictures.profile2,
-      ProfilePictures.profile3,
-    ],
-  },
-  {
-    id: '2',
-    name: 'Jack',
-    age: 30,
-    pictures: [ProfilePictures.profile2, ProfilePictures.profile1],
-  },
-  {
-    id: '3',
-    name: 'Anet',
-    age: 21,
-    pictures: [ProfilePictures.profile3, ProfilePictures.profile1],
-  },
-  {
-    id: '4',
-    name: 'John',
-    age: 28,
-    pictures: [ProfilePictures.profile4, ProfilePictures.profile1],
-  },
-];
+interface Props extends StateProps, DispatchProps {}
 
-interface Props {}
+const HomeScreen: FunctionComponent<Props> = ({
+  getOtherProfiles,
+  popFirstElement,
+  userId,
+  otherProfiles,
+}) => {
+  useEffect(() => {
+    getOtherProfiles();
+  }, [getOtherProfiles]);
 
-const HomeScreen: FunctionComponent<Props> = () => {
-  const [profiles, setProfiles] = useState(defaultProfiles);
   const handleSwiped = (liked: boolean) => {
-    console.log('Liked :', liked);
-    setProfiles((oldProfiles) => {
-      const [, ...newProfiles] = oldProfiles;
-      return newProfiles;
-    });
+    const currentProfile = otherProfiles[0];
+    if (userId && liked) {
+      if (currentProfile.likes?.includes(userId))
+        Firebase.createConversation([userId, currentProfile.id]);
+      else Firebase.addLikeToProfile(currentProfile.id);
+    }
+    popFirstElement();
   };
 
-  const profilesAvailable = profiles.length > 0;
+  const profilesAvailable = otherProfiles.length > 0;
 
   return (
     <View style={styles.container}>
       {profilesAvailable ? (
         <>
-          <CardSwiper {...{ profiles, handleSwiped }} />
+          <CardSwiper {...{ profiles: otherProfiles, handleSwiped }} />
           <View style={styles.footer}>
             <BottomButton
               color={colors.RED}
@@ -99,4 +79,19 @@ const HomeScreen: FunctionComponent<Props> = () => {
   );
 };
 
-export default HomeScreen;
+const mapState = ({ auth: { user }, otherProfiles }: RootState) => ({
+  userId: user?.id,
+  otherProfiles: otherProfiles.list,
+});
+type StateProps = ReturnType<typeof mapState>;
+
+const mapDispatch = ({
+  firestore: { getOtherProfiles },
+  otherProfiles: { popFirstElement },
+}: Dispatch) => ({
+  getOtherProfiles,
+  popFirstElement,
+});
+type DispatchProps = ReturnType<typeof mapDispatch>;
+
+export default connect(mapState, mapDispatch)(HomeScreen);

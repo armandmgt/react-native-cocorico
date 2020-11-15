@@ -3,6 +3,12 @@ import { StyleSheet } from 'react-native';
 import colors from '@cocorico/constants/colors';
 
 export default StyleSheet.create({
+  container: {
+    ...StyleSheet.absoluteFillObject,
+    zIndex: 1,
+    backgroundColor: colors.GREY,
+    borderRadius: 16,
+  },
   image: {
     ...StyleSheet.absoluteFillObject,
     width: undefined,

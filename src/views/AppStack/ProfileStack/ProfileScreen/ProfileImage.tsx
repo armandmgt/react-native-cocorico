@@ -3,7 +3,7 @@ import { Image, View, TouchableNativeFeedback } from 'react-native';
 
 import { Feather as Icon } from '@expo/vector-icons';
 
-import DefaultProfileImage from '@cocorico/assets/images/default-profile-image.jpg';
+import ImageSources from '@cocorico/assets/images';
 
 import styles from './ProfileImage.styles';
 
@@ -18,7 +18,7 @@ const ProfileImage: FunctionComponent<Props> = ({ profilePic, onPress }) => {
       <View
         style={[styles.imageView, profilePic ? styles.elevatedStyles : null]}
       >
-        <Image source={DefaultProfileImage} style={styles.image} />
+        <Image source={ImageSources.defaultProfile} style={styles.image} />
         {profilePic && (
           <Image
             source={{ uri: profilePic }}
