@@ -213,11 +213,6 @@ const CardSwiper: FunctionComponent<Props> = ({ profiles, handleSwiped }) => {
 
   const renderCards = () => {
     return otherProfiles.reverse().map((profile, index) => {
-      console.log(
-        'DBG :',
-        profile.firstName,
-        index === otherProfiles.length - 1,
-      );
       return (
         <Card
           key={profile.id}
