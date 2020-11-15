@@ -173,7 +173,10 @@ const Firebase = Object.freeze({
 
       if (convRefs && convRefs.length !== 0) {
         conversations = await Promise.all(
-          convRefs.map(async (convRef: any) => (await convRef.get()).data()),
+          convRefs.map(async (convRef: any) => {
+            const tmp = await convRef.get().then((elem: any) => elem.data());
+            return { ref: convRef, conversations: tmp };
+          }),
         );
       }
       return { success: true, payload: conversations };

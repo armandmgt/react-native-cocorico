@@ -9,6 +9,7 @@ import type { TypedNavigatorParams } from '@cocorico/components/Navigator/types'
 
 import { RootState, Dispatch } from '@cocorico/services/store';
 
+import NoMessage from './NoMessageScreen';
 import styles from './styles';
 
 interface MessagesScreenProps extends StateProps, DispatchProps {
@@ -35,28 +36,41 @@ const MessagesScreen = ({
     const {
       lastMessage: { content },
       participants,
+      threads,
     } = item;
+
+    const { id } = participants.find(
+      (user: any) =>
+        myFirstName === user.firstName && myLastName === user.lastName,
+    );
 
     const { firstName, lastName } = participants.find(
       (user: any) =>
         myFirstName !== user.firstName && myLastName !== user.lastName,
     );
 
+    const handleRedirection = () => {
+      navigation.navigate('Message', { threads, me: id });
+    };
+
     return (
-      <Pressable onPress={() => navigation.navigate('Message')}>
+      <Pressable onPress={handleRedirection}>
         <MessageItem subtitle={content} title={`${firstName} ${lastName}`} />
       </Pressable>
     );
   };
 
-  if (!messages || !messages.length) return null;
+  if (!messages || !messages.length)
+    return <NoMessage refresh={getConv} refreshing={messagesFetched} />;
 
   return (
     <FlatList
       data={messages}
       keyExtractor={(item: any) => item.lastMessage.id}
+      refreshing={!messagesFetched}
       renderItem={renderConversations}
       style={styles.container}
+      onRefresh={getConv}
     />
   );
 };

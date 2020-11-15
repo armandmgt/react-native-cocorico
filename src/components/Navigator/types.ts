@@ -11,7 +11,7 @@ export type Screens = {
   Profile: undefined;
   Settings: undefined;
   Messages: undefined;
-  Message: undefined;
+  Message: { threads: Array<any>; me: string };
 };
 
 export type Navigators = {

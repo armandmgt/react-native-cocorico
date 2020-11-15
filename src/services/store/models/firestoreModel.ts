@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 import { createModel } from '@rematch/core';
 
 import Firebase from '@cocorico/services/firebase';
@@ -79,12 +80,19 @@ const firestoreModel = createModel<RootModel>()({
       if (response.success) {
         const { payload } = response;
 
-        if (payload) {
+        if (payload && payload.length) {
           setConversationsList(
             payload.map((conv: any) => {
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              const { last_message, participants } = conv;
-              return { lastMessage: last_message, participants };
+              const {
+                ref,
+                conversations: { last_message, participants, messages },
+              } = conv;
+              return {
+                ref,
+                lastMessage: last_message,
+                participants,
+                threads: messages,
+              };
             }),
           );
         }
