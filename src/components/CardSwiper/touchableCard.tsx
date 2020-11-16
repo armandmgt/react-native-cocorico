@@ -73,12 +73,13 @@ const TouchableCard: FunctionComponent<Props> = ({
 
   function onPressBottom() {
     selectionAsync();
-    navigation.push('Details');
+    navigation.push('Details', { profile });
   }
 
   return (
     <View style={styles.container}>
       <Card
+        shouldDisplay
         picture={profile.pictures?.[pictureIndex]}
         {...{ profile, likeOpacity, nopeOpacity }}
         style={styles.innerCard}

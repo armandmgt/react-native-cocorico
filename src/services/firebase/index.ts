@@ -219,6 +219,7 @@ const Firebase = Object.freeze({
       throw new Error('currentUser.email missing');
     }
 
+    console.log('addliketoprofile');
     const doc = firestore.collection('users').doc(currentUser.email);
     await doc.update({
       likes: firebase.firestore.FieldValue.arrayUnion(newLikeId),

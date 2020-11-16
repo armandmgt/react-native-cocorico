@@ -1,3 +1,5 @@
+import { UserData } from '@cocorico/constants/types';
+
 export type Screens = {
   Account: undefined;
   EnterPassword: { email: string };
@@ -6,7 +8,7 @@ export type Screens = {
   CreatePassword: { email: string };
   CreateAccount: { email: string; password: string };
   Home: undefined;
-  Details: undefined;
+  Details: { profile: UserData };
   Mailbox: undefined;
   Profile: undefined;
   ImageCollection: undefined;

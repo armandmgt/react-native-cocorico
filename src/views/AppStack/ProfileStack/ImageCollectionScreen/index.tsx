@@ -63,19 +63,13 @@ const ImageCollectionScreen: FunctionComponent<Props> = ({ user }) => {
             touched[field] && errors[field] ? errors[field] : undefined;
           return (
             <>
-              <View
-                style={{
-                  display: 'flex',
-                  flexDirection: 'row',
-                  flexWrap: 'wrap',
-                }}
-              >
+              <View style={styles.imagesContainer}>
                 <FieldArray
                   name="pictures"
                   render={(arrayHelpers) => (
                     <>
                       {values.pictures.map((image, index) => (
-                        <View key={image} style={{ flexBasis: '33%' }}>
+                        <View key={image} style={styles.imageCard}>
                           <ProfileImagePicker
                             key={image}
                             value={image}
@@ -85,7 +79,7 @@ const ImageCollectionScreen: FunctionComponent<Props> = ({ user }) => {
                         </View>
                       ))}
                       {values.pictures.length < 6 ? (
-                        <View style={{ flexBasis: '33%' }}>
+                        <View style={styles.imageCard}>
                           <ProfileImagePicker
                             onValueChange={handleChange(
                               `pictures[${values.pictures.length}]`,

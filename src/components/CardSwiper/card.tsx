@@ -26,19 +26,11 @@ const Card: FunctionComponent<Props> = ({
   shouldDisplay = false,
   style,
 }) => {
-  const hash = Date.now();
-
-  // console.log('Picture :', picture);
   return (
     <View key={profile.id} style={[styles.container, style]}>
       {shouldDisplay && (
         <Image
-          key={hash}
-          source={
-            picture
-              ? { uri: `${picture}?${hash}` }
-              : ImageSources.defaultProfile
-          }
+          source={picture ? { uri: picture } : ImageSources.defaultProfile}
           style={styles.image}
         />
       )}

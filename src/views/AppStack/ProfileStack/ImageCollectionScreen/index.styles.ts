@@ -10,8 +10,12 @@ export default StyleSheet.create({
     flex: 1,
     backgroundColor: colors.WHITE,
   },
-  field: {
-    ...spacing.mgv2,
+  imagesContainer: {
+    display: 'flex',
+    flexDirection: 'row',
+    flexWrap: 'wrap',
   },
-  input: {},
+  imageCard: {
+    flexBasis: '33%',
+  },
 });

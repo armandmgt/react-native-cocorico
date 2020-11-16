@@ -45,9 +45,9 @@ const HomeScreen: FunctionComponent<Props> = ({
   const handleSwiped = (liked: boolean) => {
     const currentProfile = otherProfiles[0];
     if (userId && liked) {
+      Firebase.addLikeToProfile(currentProfile.id);
       if (currentProfile.likes?.includes(userId))
         Firebase.createConversation([userId, currentProfile.id]);
-      else Firebase.addLikeToProfile(currentProfile.id);
     }
     popFirstElement();
   };

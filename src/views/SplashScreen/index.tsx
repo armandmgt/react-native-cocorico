@@ -51,7 +51,10 @@ const SplashScreen = ({ setAppStatus }: Props) => {
   const startupAsync = async () => {
     await preventAutoHideSplashAsync();
     await loadFontAsync(customFonts);
-    await Asset.loadAsync([ImageSources.defaultProfile]);
+    await Asset.loadAsync([
+      ImageSources.defaultProfile,
+      ImageSources.emptyAnimationGif,
+    ]);
     setAppStatus('LOADED');
     await hideSplashAsync();
   };
