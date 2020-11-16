@@ -1,4 +1,4 @@
-import React, { FunctionComponent, useEffect } from 'react';
+import React, { FunctionComponent, useEffect, useState } from 'react';
 import { View } from 'react-native';
 
 import { Feather as Icon } from '@expo/vector-icons';
@@ -7,6 +7,7 @@ import { connect } from 'react-redux';
 
 import CardSwiper from '@cocorico/components/CardSwiper';
 import EmptyCard from '@cocorico/components/CardSwiper/emptyCard';
+import MatchModal from '@cocorico/components/MatchModal';
 
 import Firebase from '@cocorico/services/firebase';
 import { RootState, Dispatch } from '@cocorico/services/store';
@@ -38,16 +39,28 @@ const HomeScreen: FunctionComponent<Props> = ({
   userId,
   otherProfiles,
 }) => {
+  const [matchModalOpen, setMatchModalOpen] = useState<boolean>(false);
+
   useEffect(() => {
     getOtherProfiles();
   }, [getOtherProfiles]);
+
+  function openMatchModal() {
+    setMatchModalOpen(true);
+  }
+
+  function closeMatchModal() {
+    setMatchModalOpen(false);
+  }
 
   const handleSwiped = (liked: boolean) => {
     const currentProfile = otherProfiles[0];
     if (userId && liked) {
       Firebase.addLikeToProfile(currentProfile.id);
-      if (currentProfile.likes?.includes(userId))
+      if (currentProfile.likes?.includes(userId)) {
+        openMatchModal();
         Firebase.createConversation([userId, currentProfile.id]);
+      }
     }
     popFirstElement();
   };
@@ -75,6 +88,7 @@ const HomeScreen: FunctionComponent<Props> = ({
       ) : (
         <EmptyCard />
       )}
+      <MatchModal open={matchModalOpen} onClose={closeMatchModal} />
     </View>
   );
 };
