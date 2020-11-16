@@ -4,12 +4,10 @@ import { RootModel } from './types';
 
 type MessagesState = {
   conversations: Array<any>;
-  detailsMessages: Array<any>;
   fetched: boolean;
 };
 const INITIAL_STATE: MessagesState = {
   conversations: [],
-  detailsMessages: [],
   fetched: false,
 };
 
@@ -25,9 +23,6 @@ const messagesModel = createModel<RootModel>()({
         conversations: payload,
         fetched: true,
       };
-    },
-    setDetailsMessage: (state, payload: Array<any>) => {
-      return { ...state, detailsMessages: payload };
     },
     reset: () => INITIAL_STATE,
   },
