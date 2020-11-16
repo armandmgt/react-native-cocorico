@@ -12,8 +12,9 @@ import Animated from 'react-native-reanimated';
 
 import type { TypedNavigatorParams } from '@cocorico/components/Navigator/types';
 
+import type { Profile } from '@cocorico/constants/types';
+
 import Card from './card';
-import type { Profile } from './Profile';
 import styles from './touchableCard.styles';
 
 interface TouchableAreaProps {

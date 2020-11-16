@@ -112,7 +112,6 @@ const Firebase = Object.freeze({
         payload: profile,
       };
     } catch (error) {
-      console.error(error);
       return { success: false, error };
     }
   },
@@ -219,16 +218,13 @@ const Firebase = Object.freeze({
       throw new Error('currentUser.email missing');
     }
 
-    console.log('addliketoprofile');
     const doc = firestore.collection('users').doc(currentUser.email);
     await doc.update({
       likes: firebase.firestore.FieldValue.arrayUnion(newLikeId),
     });
   },
 
-  createConversation: async (userIds: string[]): Promise<void> => {
-    console.log('Create Conversation for users :', userIds);
-  },
+  createConversation: async (): Promise<void> => {},
 });
 
 export default Firebase;

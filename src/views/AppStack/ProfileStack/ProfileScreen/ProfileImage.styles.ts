@@ -1,7 +1,6 @@
 import { Platform, StyleSheet, ViewStyle } from 'react-native';
 
 import colors from '@cocorico/constants/colors';
-import { Roboto } from '@cocorico/constants/fonts';
 import spacing from '@cocorico/constants/spacing';
 
 const elevatedStyles = Platform.select<ViewStyle>({

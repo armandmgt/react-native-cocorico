@@ -51,7 +51,6 @@ const ImageCollectionScreen: FunctionComponent<Props> = ({ user }) => {
       >
         {({
           handleChange,
-          handleBlur,
           handleSubmit,
           isValid,
           isSubmitting,
@@ -91,7 +90,7 @@ const ImageCollectionScreen: FunctionComponent<Props> = ({ user }) => {
                         ? Array.from(
                             { length: 5 - values.pictures.length },
                             (_, k) => (
-                              <View key={k} style={{ flexBasis: '33%' }}>
+                              <View key={k} style={styles.imageCard}>
                                 <ProfileImagePicker
                                   disabled
                                   onValueChange={handleChange(
