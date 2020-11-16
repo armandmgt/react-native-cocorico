@@ -1,85 +1,62 @@
 import React, { FunctionComponent } from 'react';
-import { View, StyleSheet, Image, Text } from 'react-native';
+import { View, Image, Text, ViewStyle } from 'react-native';
 
 import Animated from 'react-native-reanimated';
 
-import type { Profile } from './index';
+import { UserData } from '@cocorico/constants/types';
+
+import ImageSources from '@cocorico/assets/images';
+
+import styles from './card.styles';
 
 interface Props {
-  profile: Profile;
+  profile: UserData;
+  picture: any | undefined;
   likeOpacity?: number | Animated.Node<number>;
   nopeOpacity?: number | Animated.Node<number>;
+  style?: ViewStyle;
+  shouldDisplay?: boolean;
 }
 
 const Card: FunctionComponent<Props> = ({
   profile,
+  picture,
   likeOpacity = 0,
   nopeOpacity = 0,
+  shouldDisplay = false,
+  style,
 }) => {
   return (
-    <View style={StyleSheet.absoluteFill}>
-      <Image source={profile.profile} style={styles.image} />
+    <View key={profile.id} style={[styles.container, style]}>
+      {shouldDisplay && (
+        <Image
+          source={picture ? { uri: picture } : ImageSources.defaultProfile}
+          style={styles.image}
+        />
+      )}
       <View style={styles.content}>
         <View style={styles.header}>
           <Animated.View
             style={[styles.labelBox, styles.like, { opacity: likeOpacity }]}
           >
-            <Text style={[styles.label, styles.like]}>LIKE</Text>
+            <Text style={[styles.label, styles.like]}>COCORIYEAH</Text>
           </Animated.View>
           <Animated.View
             style={[styles.labelBox, styles.nope, { opacity: nopeOpacity }]}
           >
-            <Text style={[styles.label, styles.nope]}>NOPE</Text>
+            <Text style={[styles.label, styles.nope]}>COCORINOPE</Text>
           </Animated.View>
         </View>
         <View style={styles.footer}>
-          <Text style={styles.name}>{profile.name}</Text>
+          <Text style={[styles.name, styles.shadow]}>{profile.firstName}</Text>
+          <Text style={[styles.age, styles.shadow]}>
+            {profile.age}
+            <Text style={[styles.ageYears]}>ans</Text>
+          </Text>
         </View>
       </View>
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  image: {
-    ...StyleSheet.absoluteFillObject,
-    width: undefined,
-    height: undefined,
-    borderRadius: 16,
-  },
-  content: {
-    flex: 1,
-    justifyContent: 'space-between',
-    padding: 16,
-  },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  footer: {
-    flexDirection: 'row',
-  },
-  name: {
-    color: 'white',
-    fontSize: 32,
-  },
-  label: {
-    fontSize: 32,
-    fontWeight: 'bold',
-  },
-  labelBox: {
-    borderWidth: 4,
-    borderRadius: 5,
-    padding: 8,
-  },
-  like: {
-    borderColor: '#6ee3b4',
-    color: '#6ee3b4',
-  },
-  nope: {
-    borderColor: '#ec5288',
-    color: '#ec5288',
-  },
-});
 
 export default Card;

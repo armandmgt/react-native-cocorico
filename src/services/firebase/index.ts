@@ -1,9 +1,12 @@
 /* eslint-disable import/no-duplicates */
-import Base64 from 'Base64';
-import * as Random from 'expo-random';
 import * as firebase from 'firebase';
 
-import type { AuthStatus, Profile, UserData } from '@cocorico/constants/types';
+import type {
+  AuthStatus,
+  Profile,
+  UserData,
+  UserImages,
+} from '@cocorico/constants/types';
 
 import firebaseConfig from './firebaseConfig';
 import { normalizeUser } from './firebaseUtils';
@@ -98,39 +101,48 @@ const Firebase = Object.freeze({
   },
   saveProfile: async (
     email: string,
-    profile: UserData,
-    profilePic?: string,
+    profile: Profile,
   ): Promise<FirebaseReturn> => {
     try {
-      let { profilePicUrl } = profile;
-
-      if (profilePic) {
-        console.log(profilePic);
-        const response = await fetch(profilePic);
-        const blob = await response.blob();
-        const ref = storage.ref().child(`profileImages/${email}`);
-        const uploadTask = ref.put(blob, { contentType: 'image/jpeg' });
-        uploadTask.on(firebase.storage.TaskEvent.STATE_CHANGED, function (
-          snapshot,
-        ) {
-          const percent =
-            (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-          console.log(`${percent}% done`);
-        });
-        const snapshot = await uploadTask;
-        profilePicUrl = await snapshot.ref.getDownloadURL();
-        console.log(profilePicUrl);
-      }
-
-      const doc = firestore.collection('users').doc(email);
-      await doc.set({ ...profile, profilePicUrl });
+      const userDoc = firestore.collection('users').doc(email);
+      await userDoc.set({ ...profile }, { merge: true });
 
       return {
         success: true,
-        payload: { ...profile, profilePicUrl },
+        payload: profile,
       };
     } catch (error) {
       console.error(error);
+      return { success: false, error };
+    }
+  },
+  saveImages: async (
+    email: string,
+    userImages: UserImages,
+  ): Promise<FirebaseReturn> => {
+    try {
+      const userDoc = firestore.collection('users').doc(email);
+      const imageUrls = await Promise.all(
+        userImages.pictures.map(async (image, index) => {
+          const response = await fetch(image);
+          const blob = await response.blob();
+
+          const storageKey = `profileImages/${email}/${index}.jpg`;
+          const ref = storage.ref().child(storageKey);
+          const snapshot = await ref.put(blob, { contentType: 'image/jpeg' });
+
+          const imageUrl = await snapshot.ref.getDownloadURL();
+
+          return imageUrl;
+        }),
+      );
+      userDoc.set({ pictures: imageUrls }, { merge: true });
+
+      return {
+        success: true,
+        payload: { pictures: imageUrls },
+      };
+    } catch (error) {
       return { success: false, error };
     }
   },
@@ -151,7 +163,7 @@ const Firebase = Object.freeze({
 
     return doc.onSnapshot((snapshot) => {
       const data = snapshot.data()!;
-      const normalizedUser = normalizeUser(data);
+      const normalizedUser = normalizeUser(doc.id, data);
 
       callback(normalizedUser);
     });
@@ -183,6 +195,42 @@ const Firebase = Object.freeze({
     } catch (error) {
       return { success: false, error };
     }
+  },
+  getOtherProfiles: async (currentUser: UserData): Promise<FirebaseReturn> => {
+    const allDocs = await firestore.collection('users').get();
+    const otherProfiles: UserData[] = [];
+
+    try {
+      allDocs.forEach((doc) => {
+        const data = doc.data();
+        if (doc.id === currentUser.id || currentUser.likes?.includes(doc.id))
+          return;
+        const normalizedUser = normalizeUser(doc.id, data);
+
+        otherProfiles.push(normalizedUser);
+      });
+
+      return { success: true, payload: otherProfiles };
+    } catch (error) {
+      return { success: false, error };
+    }
+  },
+  addLikeToProfile: async (newLikeId: string): Promise<void> => {
+    const { currentUser } = auth;
+
+    if (!currentUser || !currentUser.email) {
+      throw new Error('currentUser.email missing');
+    }
+
+    console.log('addliketoprofile');
+    const doc = firestore.collection('users').doc(currentUser.email);
+    await doc.update({
+      likes: firebase.firestore.FieldValue.arrayUnion(newLikeId),
+    });
+  },
+
+  createConversation: async (userIds: string[]): Promise<void> => {
+    console.log('Create Conversation for users :', userIds);
   },
 });
 

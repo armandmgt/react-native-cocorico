@@ -26,7 +26,7 @@ export interface CustomTextInputHandle {
 interface Props extends TextInputProps {
   outline?: boolean;
   valid?: boolean;
-  error?: string;
+  error?: string | string[];
   errorPosition?: 'absolute' | 'relative';
   style?: ViewStyle;
   containerStyle?: ViewStyle;
@@ -48,6 +48,7 @@ const CCRCTextInput = forwardRef<CustomTextInputHandle, Props>(
       anchorStyle,
       errorStyle,
       secureTextEntry,
+      multiline,
       ...other
     },
     forwardedRef,
@@ -72,11 +73,13 @@ const CCRCTextInput = forwardRef<CustomTextInputHandle, Props>(
           style={[
             styles.root,
             outline && styles.rootOutlined,
+            multiline && styles.multiline,
             valid === false && styles.rootInvalid,
             containerStyle,
           ]}
         >
           <TextInput
+            multiline={multiline}
             ref={textInputRef}
             secureTextEntry={secureTextEntry && !passwordVisible}
             selectionColor={colors.BLACK}
@@ -104,7 +107,7 @@ const CCRCTextInput = forwardRef<CustomTextInputHandle, Props>(
                 { position: errorPosition },
               ]}
             >
-              {error}
+              {typeof error === 'string' ? error : error.join('\n')}
             </Text>
           )}
         </View>

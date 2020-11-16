@@ -8,6 +8,7 @@ import {
   HeaderStyleInterpolators,
 } from '@react-navigation/stack';
 
+import ImageCollectionScreen from '@cocorico/views/AppStack/ProfileStack/ImageCollectionScreen';
 import ProfileScreen from '@cocorico/views/AppStack/ProfileStack/ProfileScreen';
 import SettingsScreen from '@cocorico/views/AppStack/ProfileStack/SettingsScreen';
 
@@ -42,7 +43,7 @@ export const getProfileStackOptions = (): StackNavigationOptions => {
 const getProfileScreenOptions = ({
   navigation,
 }: NavigationRoute): StackNavigationOptions => ({
-  title: 'Profile',
+  title: 'Profil',
   headerLeft: () => (
     <HeaderSettings
       side="left"
@@ -66,7 +67,7 @@ const getProfileScreenOptions = ({
 const getSettingsScreenOptions = ({
   navigation,
 }: NavigationRoute): StackNavigationOptions => ({
-  title: 'Settings',
+  title: 'Paramètres',
   headerLeft: () => null,
   headerRight: () => (
     <HeaderBack
@@ -78,6 +79,22 @@ const getSettingsScreenOptions = ({
   ),
   ...fromBottom,
   headerStyleInterpolator: HeaderStyleInterpolators.forSlideUp,
+});
+
+const getImageCollectionScreenOptions = ({
+  navigation,
+}: NavigationRoute): StackNavigationOptions => ({
+  title: 'Images',
+  headerLeft: () => null,
+  headerRight: () => (
+    <HeaderBack
+      side="right"
+      onPress={() => {
+        navigation.goBack();
+      }}
+    />
+  ),
+  ...fromBottom,
 });
 
 const ProfileStackNavigator = () => {
@@ -96,6 +113,11 @@ const ProfileStackNavigator = () => {
         component={SettingsScreen}
         name="Settings"
         options={getSettingsScreenOptions}
+      />
+      <ProfileStack.Screen
+        component={ImageCollectionScreen}
+        name="ImageCollection"
+        options={getImageCollectionScreenOptions}
       />
     </ProfileStack.Navigator>
   );

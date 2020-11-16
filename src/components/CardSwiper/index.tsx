@@ -3,15 +3,16 @@ import React, {
   useCallback,
   useMemo,
   useEffect,
-  useState,
 } from 'react';
-import { View, StyleSheet, Dimensions, Text } from 'react-native';
+import { View, StyleSheet, Dimensions } from 'react-native';
 
-import { init } from '@rematch/core';
 import { PanGestureHandler, State } from 'react-native-gesture-handler';
 import Animated from 'react-native-reanimated';
 
+import { UserData } from '@cocorico/constants/types';
+
 import Card from './card';
+import TouchableCard from './touchableCard';
 
 const { width, height } = Dimensions.get('window');
 const toRadians = (angle) => angle * (Math.PI / 180);
@@ -25,7 +26,6 @@ const {
   spring,
   cond,
   eq,
-  event,
   lessThan,
   greaterThan,
   and,
@@ -34,19 +34,21 @@ const {
   clockRunning,
   startClock,
   stopClock,
-  Clock,
-  Value,
   concat,
   interpolate,
   Extrapolate,
 } = Animated;
 
-function runSpring(clock, value, dest) {
+function runSpring(
+  clock: Animated.Clock,
+  value: Animated.Adaptable<number>,
+  dest: Animated.Node<number>,
+) {
   const state = {
-    finished: new Value(0),
-    velocity: new Value(0),
-    position: new Value(0),
-    time: new Value(0),
+    finished: new Animated.Value(0),
+    velocity: new Animated.Value(0),
+    position: new Animated.Value(0),
+    time: new Animated.Value(0),
   };
 
   const config = {
@@ -56,7 +58,7 @@ function runSpring(clock, value, dest) {
     overshootClamping: false,
     restSpeedThreshold: 1,
     restDisplacementThreshold: 0.5,
-    toValue: new Value(0),
+    toValue: new Animated.Value(0),
   };
 
   return [
@@ -73,15 +75,8 @@ function runSpring(clock, value, dest) {
   ];
 }
 
-export type Profile = {
-  id: string;
-  name: string;
-  age: number;
-  profile: any;
-};
-
 interface Props {
-  profiles: Profile[];
+  profiles: UserData[];
   handleSwiped: (liked: boolean) => void;
 }
 
@@ -97,7 +92,6 @@ const CardSwiper: FunctionComponent<Props> = ({ profiles, handleSwiped }) => {
     }),
     [],
   );
-  const [translate, setTranslate] = useState({ x: 0, y: 0 });
 
   const onGestureEvent = useMemo(() => {
     const { translationX, translationY, velocityX, gestureState } = animation;
@@ -117,9 +111,17 @@ const CardSwiper: FunctionComponent<Props> = ({ profiles, handleSwiped }) => {
     );
   }, [animation]);
 
+  const onSwipped = useCallback(
+    ([translationX]) => {
+      const liked = translationX > 0;
+      handleSwiped(liked);
+    },
+    [handleSwiped],
+  );
+
   const initAnimation = useCallback(() => {
-    const clockX = new Clock();
-    const clockY = new Clock();
+    const clockX = new Animated.Clock();
+    const clockY = new Animated.Clock();
     const {
       translationX,
       translationY,
@@ -149,7 +151,7 @@ const CardSwiper: FunctionComponent<Props> = ({ profiles, handleSwiped }) => {
         set(translationX, runSpring(clockX, translationX, snapPoint)),
         set(offsetX, translationX),
         cond(and(eq(clockRunning(clockX), 0), neq(translationX, 0)), [
-          call([translationX], handleSwipped),
+          call([translationX], onSwipped),
         ]),
         translationX,
       ],
@@ -172,21 +174,14 @@ const CardSwiper: FunctionComponent<Props> = ({ profiles, handleSwiped }) => {
         translationY,
       ),
     );
-    setTranslate({ x: translateX, y: translateY });
-  }, [animation, handleSwipped]);
+    return { x: translateX, y: translateY };
+  }, [animation, onSwipped]);
 
-  const handleSwipped = useCallback(
-    ([translationX]) => {
-      const liked = translationX > 0;
-      handleSwiped(liked);
-      initAnimation();
-    },
-    [handleSwiped, initAnimation],
-  );
+  const translate = useMemo(initAnimation, [initAnimation]);
 
   useEffect(() => {
     initAnimation();
-  }, [initAnimation]);
+  }, [profiles, initAnimation]);
 
   const rotateZ = concat(
     interpolate(translate.x, {
@@ -206,7 +201,7 @@ const CardSwiper: FunctionComponent<Props> = ({ profiles, handleSwiped }) => {
   });
   const style = {
     ...StyleSheet.absoluteFillObject,
-    zIndex: 900,
+    zIndex: 3,
     transform: [
       { translateX: translate.x },
       { translateY: translate.y },
@@ -216,28 +211,37 @@ const CardSwiper: FunctionComponent<Props> = ({ profiles, handleSwiped }) => {
 
   const [lastProfile, ...otherProfiles] = profiles;
 
-  console.log('Render :');
-
   const renderCards = () => {
-    return otherProfiles
-      .reverse()
-      .map((profile) => <Card key={profile.id} {...{ profile }} />);
+    return otherProfiles.reverse().map((profile, index) => {
+      return (
+        <Card
+          key={profile.id}
+          picture={profile.pictures?.[0]}
+          shouldDisplay={index === otherProfiles.length - 1}
+          {...{ profile }}
+        />
+      );
+    });
   };
 
-  if (profiles.length === 0) return <Text>Plus Rien...</Text>;
-
   return (
-    <View style={styles.container}>
-      {renderCards()}
-      <PanGestureHandler
-        onHandlerStateChange={onGestureEvent}
-        {...{ onGestureEvent }}
-      >
-        <Animated.View {...{ style }}>
-          <Card profile={lastProfile} {...{ likeOpacity, nopeOpacity }} />
-        </Animated.View>
-      </PanGestureHandler>
-    </View>
+    !!lastProfile && (
+      <View style={styles.container}>
+        {renderCards()}
+        <PanGestureHandler
+          onHandlerStateChange={onGestureEvent}
+          {...{ onGestureEvent }}
+        >
+          <Animated.View {...{ style }}>
+            <TouchableCard
+              key={lastProfile.id}
+              profile={lastProfile}
+              {...{ likeOpacity, nopeOpacity }}
+            />
+          </Animated.View>
+        </PanGestureHandler>
+      </View>
+    )
   );
 };
 

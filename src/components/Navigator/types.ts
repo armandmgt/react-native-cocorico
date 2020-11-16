@@ -1,3 +1,5 @@
+import { UserData } from '@cocorico/constants/types';
+
 export type Screens = {
   Account: undefined;
   EnterPassword: { email: string };
@@ -6,9 +8,10 @@ export type Screens = {
   CreatePassword: { email: string };
   CreateAccount: { email: string; password: string };
   Home: undefined;
-  Details: undefined;
+  Details: { profile: UserData };
   Mailbox: undefined;
   Profile: undefined;
+  ImageCollection: undefined;
   Settings: undefined;
   Messages: undefined;
   Message: { threads: Array<any>; me: string };
@@ -26,7 +29,7 @@ export type Navigators = {
     'HomeNavigator' | 'MessagesNavigator' | 'ProfileNavigator'
   >;
   HomeNavigator: Navigatable<'Home' | 'Details'>;
-  ProfileNavigator: Navigatable<'Profile' | 'Settings'>;
+  ProfileNavigator: Navigatable<'Profile' | 'ImageCollection' | 'Settings'>;
   MessagesNavigator: Navigatable<'Messages' | 'Message'>;
 };
 

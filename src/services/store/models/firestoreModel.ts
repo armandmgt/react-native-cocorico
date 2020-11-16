@@ -98,6 +98,22 @@ const firestoreModel = createModel<RootModel>()({
         }
       }
     },
+    async getOtherProfiles(_, root) {
+      const {
+        auth: { user },
+      } = root;
+      const {
+        otherProfiles: { setList },
+      } = dispatch;
+
+      const response = await Firebase.getOtherProfiles(user);
+
+      if (response.success) {
+        const { payload } = response;
+
+        setList(payload);
+      }
+    },
   }),
 });
 

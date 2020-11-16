@@ -49,7 +49,7 @@ const HeaderProfile: FunctionComponent<HeaderProfileProps> = ({
       color={colors.BLACK}
       name="user"
       size={20}
-      style={getSideStyle(side)}
+      style={[styles.icon, getSideStyle(side)]}
       onPress={onPress}
     />
   );
@@ -69,7 +69,7 @@ const HeaderMailbox: FunctionComponent<HeaderMailboxProps> = ({
       color={colors.BLACK}
       name="message-circle"
       size={20}
-      style={getSideStyle(side)}
+      style={[styles.icon, getSideStyle(side)]}
       onPress={onPress}
     />
   );
@@ -91,7 +91,7 @@ const HeaderHome: FunctionComponent<HeaderHomeProps> = ({
       color={colors.BLACK}
       name={`chevron-${direction}`}
       size={20}
-      style={getSideStyle(side)}
+      style={[styles.icon, getSideStyle(side)]}
       onPress={onPress}
     />
   );
@@ -111,7 +111,7 @@ const HeaderSettings: FunctionComponent<HeaderSettingsProps> = ({
       color={colors.BLACK}
       name="settings"
       size={20}
-      style={getSideStyle(side)}
+      style={[styles.icon, getSideStyle(side)]}
       onPress={onPress}
     />
   );
@@ -131,7 +131,7 @@ const HeaderBack: FunctionComponent<HeaderBackProps> = ({
       color={colors.BLACK}
       name="x"
       size={20}
-      style={getSideStyle(side)}
+      style={[styles.icon, getSideStyle(side)]}
       onPress={onPress}
     />
   );

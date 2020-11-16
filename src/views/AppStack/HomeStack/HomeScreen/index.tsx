@@ -1,68 +1,111 @@
-import React, { FunctionComponent, useState } from 'react';
+import React, { FunctionComponent, useEffect, useState } from 'react';
 import { View } from 'react-native';
 
-import { StackNavigationProp } from '@react-navigation/stack';
+import { Feather as Icon } from '@expo/vector-icons';
+import { TouchableOpacity } from 'react-native-gesture-handler';
+import { connect } from 'react-redux';
 
 import CardSwiper from '@cocorico/components/CardSwiper';
-import CCRCButton from '@cocorico/components/CCRC/Button';
-import type { TypedNavigatorParams } from '@cocorico/components/Navigator/types';
+import EmptyCard from '@cocorico/components/CardSwiper/emptyCard';
+import MatchModal from '@cocorico/components/MatchModal';
 
-import ProfilePictures from '@cocorico/assets/images/profiles';
+import Firebase from '@cocorico/services/firebase';
+import { RootState, Dispatch } from '@cocorico/services/store';
+
+import colors from '@cocorico/constants/colors';
 
 import styles from './index.styles';
-import type { Profile } from './Profile';
-import Profiles from './Profiles';
 
-const defaultProfiles: Profile[] = [
-  {
-    id: '1',
-    name: 'Caroline',
-    age: 24,
-    profile: ProfilePictures.profile1,
-  },
-  {
-    id: '2',
-    name: 'Jack',
-    age: 30,
-    profile: ProfilePictures.profile2,
-  },
-  {
-    id: '3',
-    name: 'Anet',
-    age: 21,
-    profile: ProfilePictures.profile3,
-  },
-  {
-    id: '4',
-    name: 'John',
-    age: 28,
-    profile: ProfilePictures.profile4,
-  },
-];
-
-interface Props {
-  navigation: StackNavigationProp<TypedNavigatorParams<'HomeNavigator'>>;
+interface BottomButtonProps {
+  onPress: () => void;
+  color: string;
+  icon: string;
 }
 
-const HomeScreen: FunctionComponent<Props> = ({ navigation }) => {
-  const [profiles, setProfiles] = useState(defaultProfiles);
-  const handleSwiped = (liked) => {
-    console.log('Liked :', liked);
-    setProfiles((oldProfiles) => {
-      const [_, ...newProfiles] = oldProfiles;
-      return newProfiles;
-    });
+const BottomButton = ({ onPress, color, icon }: BottomButtonProps) => (
+  <TouchableOpacity
+    style={[styles.bottomIconContainer, { borderColor: color }]}
+    {...{ onPress }}
+  >
+    <Icon color={color} name={icon} size={35} onPress={onPress} />
+  </TouchableOpacity>
+);
+
+interface Props extends StateProps, DispatchProps {}
+
+const HomeScreen: FunctionComponent<Props> = ({
+  getOtherProfiles,
+  popFirstElement,
+  userId,
+  otherProfiles,
+}) => {
+  const [matchModalOpen, setMatchModalOpen] = useState<boolean>(false);
+
+  useEffect(() => {
+    getOtherProfiles();
+  }, [getOtherProfiles]);
+
+  function openMatchModal() {
+    setMatchModalOpen(true);
+  }
+
+  function closeMatchModal() {
+    setMatchModalOpen(false);
+  }
+
+  const handleSwiped = (liked: boolean) => {
+    const currentProfile = otherProfiles[0];
+    if (userId && liked) {
+      Firebase.addLikeToProfile(currentProfile.id);
+      if (currentProfile.likes?.includes(userId)) {
+        openMatchModal();
+        Firebase.createConversation([userId, currentProfile.id]);
+      }
+    }
+    popFirstElement();
   };
 
-  console.log('Profiles :', profiles);
+  const profilesAvailable = otherProfiles.length > 0;
 
   return (
     <View style={styles.container}>
-      {/* <Profiles {...{ profiles }} /> */}
-      <CardSwiper {...{ profiles, handleSwiped }} />
-      {/* <CCRCButton title="details" onPress={() => navigation.push('Details')} /> */}
+      {profilesAvailable ? (
+        <>
+          <CardSwiper {...{ profiles: otherProfiles, handleSwiped }} />
+          <View style={styles.footer}>
+            <BottomButton
+              color={colors.RED}
+              icon="x"
+              onPress={() => handleSwiped(false)}
+            />
+            <BottomButton
+              color={colors.GREEN}
+              icon="heart"
+              onPress={() => handleSwiped(true)}
+            />
+          </View>
+        </>
+      ) : (
+        <EmptyCard />
+      )}
+      <MatchModal open={matchModalOpen} onClose={closeMatchModal} />
     </View>
   );
 };
 
-export default HomeScreen;
+const mapState = ({ auth: { user }, otherProfiles }: RootState) => ({
+  userId: user?.id,
+  otherProfiles: otherProfiles.list,
+});
+type StateProps = ReturnType<typeof mapState>;
+
+const mapDispatch = ({
+  firestore: { getOtherProfiles },
+  otherProfiles: { popFirstElement },
+}: Dispatch) => ({
+  getOtherProfiles,
+  popFirstElement,
+});
+type DispatchProps = ReturnType<typeof mapDispatch>;
+
+export default connect(mapState, mapDispatch)(HomeScreen);

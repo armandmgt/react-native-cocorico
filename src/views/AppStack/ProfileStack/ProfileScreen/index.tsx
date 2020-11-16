@@ -13,15 +13,12 @@ import type { TypedNavigatorParams } from '@cocorico/components/Navigator/types'
 import Firebase, { auth } from '@cocorico/services/firebase';
 import type { Dispatch, RootState } from '@cocorico/services/store';
 
-import styles from './index.styles';
-import ProfileImagePicker from './ProfileImagePicker';
+import { Profile } from '@cocorico/constants/types';
 
-interface FormValues {
-  firstName: string;
-  lastName: string;
-  genre?: string;
-  profilePic?: string;
-}
+import styles from './index.styles';
+import ProfileImage from './ProfileImage';
+
+interface ProfileFormValues extends Profile {}
 
 interface Props extends StateProps, DispatchProps {
   navigation: StackNavigationProp<TypedNavigatorParams<'ProfileNavigator'>>;
@@ -36,23 +33,24 @@ const ProfileSchema = Yup.object().shape({
     .min(2, 'Trop court !')
     .max(50, 'Trop long !')
     .required('Champ obligatoire.'),
+  age: Yup.number(),
 });
 
-const ProfileScreen: FunctionComponent<Props> = ({ user }) => {
-  const initialValues: FormValues = {
+const ProfileScreen: FunctionComponent<Props> = ({ user, navigation }) => {
+  const initialValues: ProfileFormValues = {
     firstName: user?.firstName || '',
     lastName: user?.lastName || '',
-    profilePic: user?.profilePicUrl,
+    age: user?.age,
+    description: user?.description || '',
   };
-  const onSubmit = (values: FormValues, actions: FormikHelpers<FormValues>) => {
-    const { profilePic, ...profile } = values;
+  const onSubmit = async (
+    values: ProfileFormValues,
+    actions: FormikHelpers<ProfileFormValues>,
+  ) => {
+    if (auth.currentUser && auth.currentUser.email) {
+      await Firebase.saveProfile(auth.currentUser.email, values);
+    }
     actions.setSubmitting(false);
-    if (auth.currentUser && auth.currentUser.email)
-      Firebase.saveProfile(
-        auth.currentUser.email,
-        { ...user, ...profile },
-        profilePic,
-      );
   };
 
   return (
@@ -72,33 +70,64 @@ const ProfileScreen: FunctionComponent<Props> = ({ user }) => {
           touched,
           errors,
         }) => {
-          const errorIfPresent = (field: keyof FormValues) =>
+          const errorIfPresent = (field: keyof ProfileFormValues) =>
             touched[field] && errors[field] ? errors[field] : undefined;
           return (
             <>
-              <ProfileImagePicker
-                value={values.profilePic}
-                onValueChange={handleChange('profilePic')}
+              <ProfileImage
+                profilePic={user?.pictures && user.pictures[0]}
+                onPress={() => navigation.push('ImageCollection')}
               />
-              <View style={styles.field}>
-                <Text>Prénom</Text>
-                <CCRCTextInput
-                  error={errorIfPresent('firstName')}
-                  style={styles.input}
-                  value={values.firstName}
-                  onBlur={handleBlur('firstName')}
-                  onChangeText={handleChange('firstName')}
-                />
-              </View>
-              <View style={styles.field}>
-                <Text>Nom de famille</Text>
-                <CCRCTextInput
-                  error={errorIfPresent('lastName')}
-                  style={styles.input}
-                  value={values.lastName}
-                  onBlur={handleBlur('lastName')}
-                  onChangeText={handleChange('lastName')}
-                />
+              <View style={styles.formContainer}>
+                <View style={styles.nameContainer}>
+                  <View style={[styles.field, styles.fieldName]}>
+                    <Text style={styles.fieldTitleSpacing}>Prénom</Text>
+                    <CCRCTextInput
+                      outline
+                      error={errorIfPresent('firstName')}
+                      style={styles.input}
+                      value={values.firstName}
+                      onBlur={handleBlur('firstName')}
+                      onChangeText={handleChange('firstName')}
+                    />
+                  </View>
+                  <View style={[styles.field, styles.fieldName]}>
+                    <Text style={styles.fieldTitleSpacing}>Nom de famille</Text>
+                    <CCRCTextInput
+                      outline
+                      error={errorIfPresent('lastName')}
+                      style={styles.input}
+                      value={values.lastName}
+                      onBlur={handleBlur('lastName')}
+                      onChangeText={handleChange('lastName')}
+                    />
+                  </View>
+                </View>
+                <View style={styles.field}>
+                  <Text style={styles.fieldTitleSpacing}>Age</Text>
+                  <CCRCTextInput
+                    outline
+                    error={errorIfPresent('age')}
+                    keyboardType="numeric"
+                    maxLength={2}
+                    style={styles.input}
+                    value={`${values.age}`}
+                    onBlur={handleBlur('age')}
+                    onChangeText={handleChange('age')}
+                  />
+                </View>
+                <View style={styles.field}>
+                  <Text style={styles.fieldTitleSpacing}>Description</Text>
+                  <CCRCTextInput
+                    multiline
+                    outline
+                    error={errorIfPresent('description')}
+                    style={styles.input}
+                    value={values.description}
+                    onBlur={handleBlur('description')}
+                    onChangeText={handleChange('description')}
+                  />
+                </View>
               </View>
               <CCRCButton
                 disabled={!isValid || isSubmitting}

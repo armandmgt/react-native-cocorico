@@ -30,6 +30,7 @@
     "expo-asset": "~8.2.0",
     "expo-constants": "~9.2.0",
     "expo-font": "~8.3.0",
+    "expo-haptics": "~8.3.0",
     "expo-image-picker": "~9.1.0",
     "expo-linear-gradient": "~8.3.0",
     "expo-random": "~9.0.0",
@@ -37,9 +38,11 @@
     "expo-status-bar": "~1.0.2",
     "firebase": "7.9.0",
     "formik": "^2.2.0",
+    "lottie-react-native": "~2.6.1",
     "react": "16.13.1",
     "react-dom": "16.13.1",
     "react-native": "https://github.com/expo/react-native/archive/sdk-39.0.3.tar.gz",
+    "react-native-confetti-cannon": "^1.5.1",
     "react-native-gesture-handler": "~1.7.0",
     "react-native-gifted-chat": "^0.16.3",
     "react-native-reanimated": "~1.13.0",
@@ -70,7 +73,7 @@
     "eslint-plugin-react-native": "^3.10.0",
     "prettier": "^2.1.2",
     "react-native-web": "~0.13.7",
-    "typescript": "~3.9.2"
+    "typescript": "^4.1.0-beta"
   },
   "private": true
 }

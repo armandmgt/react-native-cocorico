@@ -26,7 +26,7 @@ import { connect } from 'react-redux';
 
 import type { Dispatch } from '@cocorico/services/store';
 
-import ProfilePictures from '@cocorico/assets/images/profiles';
+import ImageSources from '@cocorico/assets/images';
 
 const customFonts = {
   Roboto_100Thin,
@@ -52,10 +52,8 @@ const SplashScreen = ({ setAppStatus }: Props) => {
     await preventAutoHideSplashAsync();
     await loadFontAsync(customFonts);
     await Asset.loadAsync([
-      ProfilePictures.profile1,
-      ProfilePictures.profile2,
-      ProfilePictures.profile3,
-      ProfilePictures.profile4,
+      ImageSources.defaultProfile,
+      ImageSources.emptyAnimationGif,
     ]);
     setAppStatus('LOADED');
     await hideSplashAsync();
