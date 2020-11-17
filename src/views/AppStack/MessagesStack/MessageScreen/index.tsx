@@ -38,9 +38,10 @@ const MessageScreen: FunctionComponent<MessageScreenProps> = ({
   if (!userInfo?.id || !userInfo.firstName) return null;
 
   const formatMessages = () => {
-    const conv = listMessages.find((elem) => elem.ref === convRef).threads;
+    const conv = listMessages.find((elem) => elem.ref === convRef);
+    const listThreads = [...conv.threads];
 
-    return conv.reverse().map((thread: any, key: number) => {
+    return listThreads.reverse().map((thread: any, key: number) => {
       return {
         _id: `${convRef}${key}`,
         text: thread.content,
