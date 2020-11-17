@@ -38,18 +38,18 @@ const MessageScreen: FunctionComponent<MessageScreenProps> = ({
   if (!userInfo?.id || !userInfo.firstName) return null;
 
   const formatMessages = () => {
-    return listMessages
-      .find((elem) => elem.ref === convRef)
-      .threads.map((thread: any, key: number) => {
-        return {
-          _id: `${convRef}${key}`,
-          text: thread.content,
-          user: {
-            _id: thread.senderId,
-            name: thread.senderName,
-          },
-        };
-      });
+    const conv = listMessages.find((elem) => elem.ref === convRef).threads;
+
+    return conv.reverse().map((thread: any, key: number) => {
+      return {
+        _id: `${convRef}${key}`,
+        text: thread.content,
+        user: {
+          _id: thread.senderId,
+          name: thread.senderName,
+        },
+      };
+    });
   };
 
   return (
