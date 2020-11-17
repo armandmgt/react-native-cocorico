@@ -14,11 +14,7 @@ export type Screens = {
   ImageCollection: undefined;
   Settings: undefined;
   Messages: undefined;
-  Message: {
-    threads: Array<any>;
-    me: { id: string; name: string };
-    onSend: (message: any) => Promise<void>;
-  };
+  Message: { convRef: string };
 };
 
 export type Navigators = {

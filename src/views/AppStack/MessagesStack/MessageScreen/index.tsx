@@ -1,4 +1,4 @@
-import React, { FunctionComponent } from 'react';
+import React, { FunctionComponent, useEffect } from 'react';
 import {
   StyleSheet,
   View,
@@ -8,6 +8,9 @@ import {
 } from 'react-native';
 
 import { GiftedChat } from 'react-native-gifted-chat';
+import { connect } from 'react-redux';
+
+import { RootState, Dispatch } from '@cocorico/services/store';
 
 interface StyleProps {
   container: ViewProps;
@@ -18,44 +21,52 @@ const styles = StyleSheet.create<StyleProps>({
   },
 });
 
-interface MessageScreenProps {
+interface MessageScreenProps extends StateProps, DispatchProps {
   route: any;
 }
 
-const MessageScreen: FunctionComponent<MessageScreenProps> = ({ route }) => {
+const MessageScreen: FunctionComponent<MessageScreenProps> = ({
+  route,
+  userInfo,
+  listMessages,
+  sendMessage,
+}) => {
   const {
-    params: { threads, me, onSend },
+    params: { convRef },
   } = route;
-  const { id, name } = me;
+
+  if (!userInfo?.id || !userInfo.firstName) return null;
 
   const formatMessages = () => {
-    return threads.reverse().map((thread: any) => {
-      return {
-        _id: thread.id,
-        text: thread.content,
-        createdAt: new Date(),
-        user: {
-          _id: thread.senderId,
-          name: thread.senderName,
-        },
-        sent: true,
-        received: true,
-      };
-    });
+    return listMessages
+      .find((elem) => elem.ref === convRef)
+      .threads.map((thread: any, key: number) => {
+        return {
+          _id: `${convRef}${key}`,
+          text: thread.content,
+          user: {
+            _id: thread.senderId,
+            name: thread.senderName,
+          },
+        };
+      });
   };
 
   return (
     <View style={styles.container}>
       <GiftedChat
         messages={formatMessages()}
-        user={{ _id: id }}
+        user={{ _id: userInfo.id }}
         onSend={(mes) => {
           const { text, createdAt } = mes[0];
-          onSend({
-            content: text,
-            senderId: id,
-            senderName: name,
-            createdAt,
+          sendMessage({
+            ref: convRef,
+            newMessage: {
+              content: text,
+              senderId: userInfo.id,
+              senderName: userInfo.firstName,
+              createdAt,
+            },
           });
         }}
       />
@@ -64,4 +75,15 @@ const MessageScreen: FunctionComponent<MessageScreenProps> = ({ route }) => {
   );
 };
 
-export default MessageScreen;
+const mapState = (state: RootState) => ({
+  userInfo: state.auth.user,
+  listMessages: state.messages.conversations,
+});
+type StateProps = ReturnType<typeof mapState>;
+
+const mapDispatch = (dispatch: Dispatch) => ({
+  sendMessage: dispatch.firestore.sendMessage,
+});
+type DispatchProps = ReturnType<typeof mapDispatch>;
+
+export default connect(mapState, mapDispatch)(MessageScreen);

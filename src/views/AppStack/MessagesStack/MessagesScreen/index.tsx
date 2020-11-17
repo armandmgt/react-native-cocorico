@@ -23,7 +23,6 @@ const MessagesScreen = ({
   messagesFetched,
   listMessages,
   getMessages,
-  sendMessage,
 }: MessagesScreenProps) => {
   const getConv = async () => {
     await getMessages();
@@ -37,28 +36,16 @@ const MessagesScreen = ({
     const {
       lastMessage: { content },
       participants,
-      threads,
       ref,
     } = item;
-
-    const myself = participants.find(
-      (user: any) =>
-        myFirstName === user.firstName && myLastName === user.lastName,
-    );
 
     const { firstName, lastName } = participants.find(
       (user: any) =>
         myFirstName !== user.firstName && myLastName !== user.lastName,
     );
 
-    const onSend = (message: any) => sendMessage({ ref, newMessage: message });
-
     const handleRedirection = () => {
-      navigation.navigate('Message', {
-        threads,
-        me: { id: myself.id, name: myself.firstName },
-        onSend,
-      });
+      navigation.navigate('Message', { convRef: ref });
     };
 
     return (
@@ -72,12 +59,12 @@ const MessagesScreen = ({
   };
 
   if (!listMessages || !listMessages.length)
-    return <NoMessage refresh={getConv} refreshing={messagesFetched} />;
+    return <NoMessage refresh={getConv} refreshing={!messagesFetched} />;
 
   return (
     <FlatList
       data={listMessages}
-      keyExtractor={(item: any) => item.key}
+      keyExtractor={(item: any) => item.ref}
       refreshing={!messagesFetched}
       renderItem={renderConversations}
       style={styles.container}

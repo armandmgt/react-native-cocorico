@@ -59,14 +59,18 @@ const HomeScreen: FunctionComponent<Props> = ({
       Firebase.addLikeToProfile(currentProfile.id);
       if (currentProfile.likes?.includes(user.id)) {
         openMatchModal();
-        Firebase.createConversation([
-          user.id,
-          user.firstName,
-          user.lastName,
-          currentProfile.id,
-          currentProfile.firstName,
-          currentProfile.lastName,
-        ]);
+        Firebase.createConversation({
+          otherUser: {
+            idOther: user.id,
+            firstNameOther: user.firstName,
+            lastNameOther: user.lastName,
+          },
+          user: {
+            myId: currentProfile.id,
+            firstName: currentProfile.firstName,
+            lastName: currentProfile.lastName,
+          },
+        });
       }
     }
     popFirstElement();

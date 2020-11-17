@@ -82,15 +82,14 @@ const firestoreModel = createModel<RootModel>()({
 
         if (payload && payload.length) {
           setConversationsList(
-            payload.map((conv: any, key: number) => {
+            payload.map((conv: any) => {
               const {
                 ref,
-                conversations: { last_message, participants, messages },
+                conversations: { lastMessage, participants, messages },
               } = conv;
               return {
-                key: `${key}`,
                 ref,
-                lastMessage: last_message,
+                lastMessage,
                 participants,
                 threads: messages,
               };
@@ -115,7 +114,7 @@ const firestoreModel = createModel<RootModel>()({
         setList(payload);
       }
     },
-    async sendMessage(payload: { ref: any; newMessage: any }) {
+    async sendMessage(payload: { ref: string; newMessage: any }) {
       const { ref, newMessage } = payload;
 
       await Firebase.sendMessage(ref, newMessage);
