@@ -24,19 +24,22 @@ interface MessageScreenProps {
 
 const MessageScreen: FunctionComponent<MessageScreenProps> = ({ route }) => {
   const {
-    params: { threads, me },
+    params: { threads, me, onSend },
   } = route;
+  const { id, name } = me;
 
   const formatMessages = () => {
     return threads.reverse().map((thread: any, key: number) => {
       return {
-        _id: key + thread.senderId,
+        _id: thread.senderId + key,
         text: thread.content,
         createdAt: new Date(),
         user: {
           _id: thread.senderId,
           name: thread.senderName,
         },
+        sent: true,
+        received: true,
       };
     });
   };
@@ -45,8 +48,16 @@ const MessageScreen: FunctionComponent<MessageScreenProps> = ({ route }) => {
     <View style={styles.container}>
       <GiftedChat
         messages={formatMessages()}
-        user={{ _id: me }}
-        onSend={() => {}}
+        user={{ _id: id }}
+        onSend={(mes) => {
+          const { text, createdAt } = mes[0];
+          onSend({
+            content: text,
+            senderId: id,
+            senderName: name,
+            createdAt,
+          });
+        }}
       />
       {Platform.OS === 'android' && <KeyboardAvoidingView behavior="padding" />}
     </View>

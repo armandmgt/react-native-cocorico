@@ -232,6 +232,21 @@ const Firebase = Object.freeze({
   createConversation: async (userIds: string[]): Promise<void> => {
     console.log('Create Conversation for users :', userIds);
   },
+  sendMessage: async (docRef: any, newMessage: any) => {
+    const { currentUser } = auth;
+
+    if (!currentUser || !currentUser.email) {
+      throw new Error('currentUser.email missing');
+    }
+
+    await docRef.update({
+      messages: firebase.firestore.FieldValue.arrayUnion(newMessage),
+    });
+    await docRef.update({
+      'last_message.content': newMessage.content,
+      'last_message.id': currentUser.email,
+    });
+  },
 });
 
 export default Firebase;

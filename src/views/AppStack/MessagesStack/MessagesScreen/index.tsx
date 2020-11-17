@@ -23,6 +23,7 @@ const MessagesScreen = ({
   messagesFetched,
   messages,
   getMessages,
+  sendMessage,
 }: MessagesScreenProps) => {
   const getConv = async () => {
     await getMessages();
@@ -37,9 +38,10 @@ const MessagesScreen = ({
       lastMessage: { content },
       participants,
       threads,
+      ref,
     } = item;
 
-    const { id } = participants.find(
+    const myself = participants.find(
       (user: any) =>
         myFirstName === user.firstName && myLastName === user.lastName,
     );
@@ -49,8 +51,14 @@ const MessagesScreen = ({
         myFirstName !== user.firstName && myLastName !== user.lastName,
     );
 
+    const onSend = (message: any) => sendMessage({ ref, newMessage: message });
+
     const handleRedirection = () => {
-      navigation.navigate('Message', { threads, me: id });
+      navigation.navigate('Message', {
+        threads,
+        me: { id: myself.id, name: myself.firstName },
+        onSend,
+      });
     };
 
     return (
@@ -85,6 +93,7 @@ type StateProps = ReturnType<typeof mapState>;
 
 const mapDispatch = (dispatch: Dispatch) => ({
   getMessages: dispatch.firestore.getMessages,
+  sendMessage: dispatch.firestore.sendMessage,
 });
 type DispatchProps = ReturnType<typeof mapDispatch>;
 

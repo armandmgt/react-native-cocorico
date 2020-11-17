@@ -114,6 +114,11 @@ const firestoreModel = createModel<RootModel>()({
         setList(payload);
       }
     },
+    async sendMessage(payload: { ref: any; newMessage: any }) {
+      const { ref, newMessage } = payload;
+
+      await Firebase.sendMessage(ref, newMessage);
+    },
   }),
 });
 

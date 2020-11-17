@@ -14,7 +14,11 @@ export type Screens = {
   ImageCollection: undefined;
   Settings: undefined;
   Messages: undefined;
-  Message: { threads: Array<any>; me: string };
+  Message: {
+    threads: Array<any>;
+    me: { id: string; name: string };
+    onSend: (message: any) => Promise<void>;
+  };
 };
 
 export type Navigators = {
