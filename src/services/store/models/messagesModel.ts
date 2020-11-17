@@ -17,11 +17,33 @@ const messagesModel = createModel<RootModel>()({
     setFetched: (state, payload: boolean) => {
       return { ...state, fetched: payload };
     },
-    setConversationsList: (state, payload: Array<any>) => {
+    setConversationsList: (
+      state,
+      payload: {
+        lastMessage: Array<any>;
+        participants: Array<any>;
+        threads: Array<any>;
+        ref: string;
+      },
+    ) => {
+      const { ref } = payload;
+      const convIndex = state.conversations.findIndex(
+        (elem) => elem.ref === ref,
+      );
+
+      if (convIndex === -1) {
+        const newConv = [...state.conversations];
+        newConv.push(payload);
+        return { ...state, conversations: newConv, fetched: true };
+      }
       return {
         ...state,
-        conversations: payload,
         fetched: true,
+        conversations: [
+          ...state.conversations.slice(0, convIndex),
+          payload,
+          ...state.conversations.slice(convIndex + 1),
+        ],
       };
     },
     reset: () => INITIAL_STATE,

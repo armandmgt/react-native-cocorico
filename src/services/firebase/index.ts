@@ -168,7 +168,9 @@ const Firebase = Object.freeze({
       callback(normalizedUser);
     });
   },
-  getMessages: async (): Promise<FirebaseReturn> => {
+  getMessages: async (
+    callback: (data: any) => void,
+  ): Promise<FirebaseReturn> => {
     const { currentUser } = auth;
 
     if (!currentUser || !currentUser.email) {
@@ -181,21 +183,25 @@ const Firebase = Object.freeze({
         .doc(currentUser.email)
         .get();
       const convRefs = await userDoc.data()?.conversations;
-      let conversations;
 
       if (convRefs && convRefs.length !== 0) {
-        conversations = await Promise.all(
-          convRefs.map(async (convRef: any) => {
-            const tmp = await firestore
-              .collection('conversations')
-              .doc(convRef)
-              .get()
-              .then((elem: any) => elem.data());
-            return { ref: convRef, conversations: tmp };
-          }),
-        );
+        convRefs.map(async (convRef: any) => {
+          firestore
+            .collection('conversations')
+            .doc(convRef)
+            .onSnapshot((snapshot) => {
+              const data = snapshot.data();
+              const formatedData = {
+                lastMessage: data?.lastMessage,
+                participants: data?.participants,
+                threads: data?.messages,
+                ref: convRef,
+              };
+              callback(formatedData);
+            });
+        });
       }
-      return { success: true, payload: conversations };
+      return { success: true };
     } catch (error) {
       return { success: false, error };
     }

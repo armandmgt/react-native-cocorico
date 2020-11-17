@@ -75,7 +75,7 @@ const firestoreModel = createModel<RootModel>()({
         messages: { setConversationsList },
       } = dispatch;
 
-      const response = await Firebase.getMessages();
+      const response = await Firebase.getMessages(setConversationsList);
 
       if (response.success) {
         const { payload } = response;
