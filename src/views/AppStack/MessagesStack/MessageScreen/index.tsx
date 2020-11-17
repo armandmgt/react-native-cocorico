@@ -45,6 +45,7 @@ const MessageScreen: FunctionComponent<MessageScreenProps> = ({
       return {
         _id: `${convRef}${key}`,
         text: thread.content,
+        createdAt: new Date(),
         user: {
           _id: thread.senderId,
           name: thread.senderName,
