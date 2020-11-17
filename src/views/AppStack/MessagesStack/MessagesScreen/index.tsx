@@ -9,6 +9,7 @@ import type { TypedNavigatorParams } from '@cocorico/components/Navigator/types'
 
 import { RootState, Dispatch } from '@cocorico/services/store';
 
+import NoMessage from './NoMessageScreen';
 import styles from './styles';
 
 interface MessagesScreenProps extends StateProps, DispatchProps {
@@ -20,7 +21,7 @@ const MessagesScreen = ({
   myLastName,
   navigation,
   messagesFetched,
-  messages,
+  listMessages,
   getMessages,
 }: MessagesScreenProps) => {
   const getConv = async () => {
@@ -35,6 +36,7 @@ const MessagesScreen = ({
     const {
       lastMessage: { content },
       participants,
+      ref,
     } = item;
 
     const { firstName, lastName } = participants.find(
@@ -42,21 +44,31 @@ const MessagesScreen = ({
         myFirstName !== user.firstName && myLastName !== user.lastName,
     );
 
+    const handleRedirection = () => {
+      navigation.navigate('Message', { convRef: ref });
+    };
+
     return (
-      <Pressable onPress={() => navigation.navigate('Message')}>
-        <MessageItem subtitle={content} title={`${firstName} ${lastName}`} />
+      <Pressable onPress={handleRedirection}>
+        <MessageItem
+          subtitle={content || ''}
+          title={`${firstName} ${lastName}`}
+        />
       </Pressable>
     );
   };
 
-  if (!messages || !messages.length) return null;
+  if (!listMessages || !listMessages.length)
+    return <NoMessage refresh={getConv} refreshing={!messagesFetched} />;
 
   return (
     <FlatList
-      data={messages}
-      keyExtractor={(item: any) => item.lastMessage.id}
+      data={listMessages}
+      keyExtractor={(item: any) => item.ref}
+      refreshing={!messagesFetched}
       renderItem={renderConversations}
       style={styles.container}
+      onRefresh={getConv}
     />
   );
 };
@@ -65,12 +77,13 @@ const mapState = (state: RootState) => ({
   myFirstName: state.auth.user?.firstName,
   myLastName: state.auth.user?.lastName,
   messagesFetched: state.messages.fetched,
-  messages: state.messages.conversations,
+  listMessages: state.messages.conversations,
 });
 type StateProps = ReturnType<typeof mapState>;
 
 const mapDispatch = (dispatch: Dispatch) => ({
   getMessages: dispatch.firestore.getMessages,
+  sendMessage: dispatch.firestore.sendMessage,
 });
 type DispatchProps = ReturnType<typeof mapDispatch>;
 

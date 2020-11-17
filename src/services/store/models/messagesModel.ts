@@ -4,12 +4,10 @@ import { RootModel } from './types';
 
 type MessagesState = {
   conversations: Array<any>;
-  detailsMessages: Array<any>;
   fetched: boolean;
 };
 const INITIAL_STATE: MessagesState = {
   conversations: [],
-  detailsMessages: [],
   fetched: false,
 };
 
@@ -19,15 +17,34 @@ const messagesModel = createModel<RootModel>()({
     setFetched: (state, payload: boolean) => {
       return { ...state, fetched: payload };
     },
-    setConversationsList: (state, payload: Array<any>) => {
+    setConversationsList: (
+      state,
+      payload: {
+        lastMessage: Array<any>;
+        participants: Array<any>;
+        threads: Array<any>;
+        ref: string;
+      },
+    ) => {
+      const { ref } = payload;
+      const convIndex = state.conversations.findIndex(
+        (elem) => elem.ref === ref,
+      );
+
+      if (convIndex === -1) {
+        const newConv = [...state.conversations];
+        newConv.push(payload);
+        return { ...state, conversations: newConv, fetched: true };
+      }
       return {
         ...state,
-        conversations: payload,
         fetched: true,
+        conversations: [
+          ...state.conversations.slice(0, convIndex),
+          payload,
+          ...state.conversations.slice(convIndex + 1),
+        ],
       };
-    },
-    setDetailsMessage: (state, payload: Array<any>) => {
-      return { ...state, detailsMessages: payload };
     },
     reset: () => INITIAL_STATE,
   },

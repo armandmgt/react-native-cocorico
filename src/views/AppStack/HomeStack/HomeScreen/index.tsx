@@ -36,7 +36,7 @@ interface Props extends StateProps, DispatchProps {}
 const HomeScreen: FunctionComponent<Props> = ({
   getOtherProfiles,
   popFirstElement,
-  userId,
+  user,
   otherProfiles,
 }) => {
   const [matchModalOpen, setMatchModalOpen] = useState<boolean>(false);
@@ -55,11 +55,22 @@ const HomeScreen: FunctionComponent<Props> = ({
 
   const handleSwiped = (liked: boolean) => {
     const currentProfile = otherProfiles[0];
-    if (userId && liked) {
+    if (user?.id && liked) {
       Firebase.addLikeToProfile(currentProfile.id);
-      if (currentProfile.likes?.includes(userId)) {
+      if (currentProfile.likes?.includes(user.id)) {
         openMatchModal();
-        Firebase.createConversation([userId, currentProfile.id]);
+        Firebase.createConversation({
+          otherUser: {
+            idOther: user.id,
+            firstNameOther: user.firstName,
+            lastNameOther: user.lastName,
+          },
+          user: {
+            myId: currentProfile.id,
+            firstName: currentProfile.firstName,
+            lastName: currentProfile.lastName,
+          },
+        });
       }
     }
     popFirstElement();
@@ -94,7 +105,7 @@ const HomeScreen: FunctionComponent<Props> = ({
 };
 
 const mapState = ({ auth: { user }, otherProfiles }: RootState) => ({
-  userId: user?.id,
+  user,
   otherProfiles: otherProfiles.list,
 });
 type StateProps = ReturnType<typeof mapState>;

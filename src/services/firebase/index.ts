@@ -167,7 +167,9 @@ const Firebase = Object.freeze({
       callback(normalizedUser);
     });
   },
-  getMessages: async (): Promise<FirebaseReturn> => {
+  getMessages: async (
+    callback: (data: any) => void,
+  ): Promise<FirebaseReturn> => {
     const { currentUser } = auth;
 
     if (!currentUser || !currentUser.email) {
@@ -180,14 +182,25 @@ const Firebase = Object.freeze({
         .doc(currentUser.email)
         .get();
       const convRefs = await userDoc.data()?.conversations;
-      let conversations;
 
       if (convRefs && convRefs.length !== 0) {
-        conversations = await Promise.all(
-          convRefs.map(async (convRef: any) => (await convRef.get()).data()),
-        );
+        convRefs.map(async (convRef: any) => {
+          firestore
+            .collection('conversations')
+            .doc(convRef)
+            .onSnapshot((snapshot) => {
+              const data = snapshot.data();
+              const formatedData = {
+                lastMessage: data?.lastMessage,
+                participants: data?.participants,
+                threads: data?.messages,
+                ref: convRef,
+              };
+              callback(formatedData);
+            });
+        });
       }
-      return { success: true, payload: conversations };
+      return { success: true };
     } catch (error) {
       return { success: false, error };
     }
@@ -224,7 +237,69 @@ const Firebase = Object.freeze({
     });
   },
 
-  createConversation: async (): Promise<void> => {},
+  createConversation: (usersDetails: {
+    user: { myId: string; firstName: string; lastName: string };
+    otherUser: {
+      idOther: string;
+      firstNameOther: string;
+      lastNameOther: string;
+    };
+  }) => {
+    const { currentUser } = auth;
+
+    if (!currentUser || !currentUser.email) {
+      throw new Error('currentUser.email missing');
+    }
+
+    const {
+      user: { myId, firstName, lastName },
+      otherUser: { idOther, firstNameOther, lastNameOther },
+    } = usersDetails;
+    const convRef = firestore.collection('conversations').doc();
+
+    convRef
+      .set(
+        {
+          lastMessage: [],
+          messages: [],
+          participants: [
+            { id: myId, firstName, lastName },
+            { id: idOther, firstName: firstNameOther, lastName: lastNameOther },
+          ],
+        },
+        { merge: true },
+      )
+      .then(() => {
+        firestore
+          .collection('users')
+          .doc(myId)
+          .update({
+            conversations: firebase.firestore.FieldValue.arrayUnion(convRef.id),
+          });
+        firestore
+          .collection('users')
+          .doc(idOther)
+          .update({
+            conversations: firebase.firestore.FieldValue.arrayUnion(convRef.id),
+          });
+      });
+  },
+  sendMessage: async (docRef: string, newMessage: any): Promise<void> => {
+    const { currentUser } = auth;
+
+    if (!currentUser || !currentUser.email) {
+      throw new Error('currentUser.email missing');
+    }
+
+    await firestore
+      .collection('conversations')
+      .doc(docRef)
+      .update({
+        messages: firebase.firestore.FieldValue.arrayUnion(newMessage),
+        'lastMessage.content': newMessage.content,
+        'lastMessage.id': currentUser.email,
+      });
+  },
 });
 
 export default Firebase;

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 import { createModel } from '@rematch/core';
 
 import Firebase from '@cocorico/services/firebase';
@@ -74,17 +75,24 @@ const firestoreModel = createModel<RootModel>()({
         messages: { setConversationsList },
       } = dispatch;
 
-      const response = await Firebase.getMessages();
+      const response = await Firebase.getMessages(setConversationsList);
 
       if (response.success) {
         const { payload } = response;
 
-        if (payload) {
+        if (payload && payload.length) {
           setConversationsList(
             payload.map((conv: any) => {
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              const { last_message, participants } = conv;
-              return { lastMessage: last_message, participants };
+              const {
+                ref,
+                conversations: { lastMessage, participants, messages },
+              } = conv;
+              return {
+                ref,
+                lastMessage,
+                participants,
+                threads: messages,
+              };
             }),
           );
         }
@@ -105,6 +113,11 @@ const firestoreModel = createModel<RootModel>()({
 
         setList(payload);
       }
+    },
+    async sendMessage(payload: { ref: string; newMessage: any }) {
+      const { ref, newMessage } = payload;
+
+      await Firebase.sendMessage(ref, newMessage);
     },
   }),
 });

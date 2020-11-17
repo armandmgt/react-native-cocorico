@@ -14,7 +14,7 @@ export type Screens = {
   ImageCollection: undefined;
   Settings: undefined;
   Messages: undefined;
-  Message: undefined;
+  Message: { convRef: string };
 };
 
 export type Navigators = {
