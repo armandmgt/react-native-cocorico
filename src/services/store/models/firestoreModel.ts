@@ -82,12 +82,13 @@ const firestoreModel = createModel<RootModel>()({
 
         if (payload && payload.length) {
           setConversationsList(
-            payload.map((conv: any) => {
+            payload.map((conv: any, key: number) => {
               const {
                 ref,
                 conversations: { last_message, participants, messages },
               } = conv;
               return {
+                key: `${key}`,
                 ref,
                 lastMessage: last_message,
                 participants,

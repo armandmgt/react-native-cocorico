@@ -77,7 +77,7 @@ const MessagesScreen = ({
   return (
     <FlatList
       data={listMessages}
-      keyExtractor={(item: any) => item.lastMessage.id}
+      keyExtractor={(item: any) => item.key}
       refreshing={!messagesFetched}
       renderItem={renderConversations}
       style={styles.container}

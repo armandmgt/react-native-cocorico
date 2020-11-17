@@ -29,9 +29,9 @@ const MessageScreen: FunctionComponent<MessageScreenProps> = ({ route }) => {
   const { id, name } = me;
 
   const formatMessages = () => {
-    return threads.reverse().map((thread: any, key: number) => {
+    return threads.reverse().map((thread: any) => {
       return {
-        _id: thread.senderId + key,
+        _id: thread.id,
         text: thread.content,
         createdAt: new Date(),
         user: {

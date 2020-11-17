@@ -238,25 +238,31 @@ const Firebase = Object.freeze({
 
     const convRef = firestore.collection('conversations').doc();
 
-    convRef.set({
-      last_message: [],
-      messages: [],
-      participants: [
-        { id: userIds[0], firstName: userIds[1], lastName: userIds[2] },
-        { id: userIds[3], firstName: userIds[4], lastName: userIds[5] },
-      ],
-    });
-    await firestore
-      .collection('users')
-      .doc(userIds[0])
-      .update({
-        conversations: firebase.firestore.FieldValue.arrayUnion(convRef),
-      });
-    await firestore
-      .collection('users')
-      .doc(userIds[3])
-      .update({
-        conversations: firebase.firestore.FieldValue.arrayUnion(convRef),
+    convRef
+      .set(
+        {
+          last_message: [],
+          messages: [],
+          participants: [
+            { id: userIds[0], firstName: userIds[1], lastName: userIds[2] },
+            { id: userIds[3], firstName: userIds[4], lastName: userIds[5] },
+          ],
+        },
+        { merge: true },
+      )
+      .then(async () => {
+        await firestore
+          .collection('users')
+          .doc(userIds[0])
+          .update({
+            conversations: firebase.firestore.FieldValue.arrayUnion(convRef),
+          });
+        await firestore
+          .collection('users')
+          .doc(userIds[3])
+          .update({
+            conversations: firebase.firestore.FieldValue.arrayUnion(convRef),
+          });
       });
   },
   sendMessage: async (docRef: any, newMessage: any): Promise<void> => {
