@@ -21,7 +21,7 @@ const MessagesScreen = ({
   myLastName,
   navigation,
   messagesFetched,
-  messages,
+  listMessages,
   getMessages,
   sendMessage,
 }: MessagesScreenProps) => {
@@ -63,17 +63,20 @@ const MessagesScreen = ({
 
     return (
       <Pressable onPress={handleRedirection}>
-        <MessageItem subtitle={content} title={`${firstName} ${lastName}`} />
+        <MessageItem
+          subtitle={content || ''}
+          title={`${firstName} ${lastName}`}
+        />
       </Pressable>
     );
   };
 
-  if (!messages || !messages.length)
+  if (!listMessages || !listMessages.length)
     return <NoMessage refresh={getConv} refreshing={messagesFetched} />;
 
   return (
     <FlatList
-      data={messages}
+      data={listMessages}
       keyExtractor={(item: any) => item.lastMessage.id}
       refreshing={!messagesFetched}
       renderItem={renderConversations}
@@ -87,7 +90,7 @@ const mapState = (state: RootState) => ({
   myFirstName: state.auth.user?.firstName,
   myLastName: state.auth.user?.lastName,
   messagesFetched: state.messages.fetched,
-  messages: state.messages.conversations,
+  listMessages: state.messages.conversations,
 });
 type StateProps = ReturnType<typeof mapState>;
 
