@@ -1,4 +1,5 @@
 import React from 'react';
+import { View } from 'react-native';
 
 import { Pacifico_400Regular } from '@expo-google-fonts/pacifico';
 import {
@@ -15,13 +16,8 @@ import {
   Roboto_900Black,
   Roboto_900Black_Italic,
 } from '@expo-google-fonts/roboto';
-import { AppLoading } from 'expo';
 import { Asset } from 'expo-asset';
 import { loadAsync as loadFontAsync } from 'expo-font';
-import {
-  preventAutoHideAsync as preventAutoHideSplashAsync,
-  hideAsync as hideSplashAsync,
-} from 'expo-splash-screen';
 import { connect } from 'react-redux';
 
 import type { Dispatch } from '@cocorico/services/store';
@@ -49,19 +45,17 @@ interface Props extends DispatchProps {}
 
 const SplashScreen = ({ setAppStatus }: Props) => {
   const startupAsync = async () => {
-    await preventAutoHideSplashAsync();
     await loadFontAsync(customFonts);
     await Asset.loadAsync([
       ImageSources.defaultProfile,
       ImageSources.emptyAnimationGif,
     ]);
     setAppStatus('LOADED');
-    await hideSplashAsync();
   };
 
   startupAsync();
 
-  return <AppLoading />;
+  return <View />;
 };
 
 const mapDispatch = ({ session: { setAppStatus } }: Dispatch) => ({

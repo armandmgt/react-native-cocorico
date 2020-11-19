@@ -34,13 +34,13 @@ const Navigator = ({ appStatus, authStatus, user, subscribeAuth }: Props) => {
     _appStatus: AppStatus,
     _authStatus: AuthStatus,
   ) => {
-    if (_appStatus !== 'LOADED' || user === null) return 'SPLASH';
+    if (_appStatus !== 'LOADED') return 'SPLASH';
 
     switch (_authStatus) {
       case 'LOADING':
         return 'SPLASH';
       case 'LOGGED_IN':
-        return 'APP';
+        return user === null ? 'SPLASH' : 'APP';
       case 'LOGGED_OUT':
         return 'AUTH';
       default:
